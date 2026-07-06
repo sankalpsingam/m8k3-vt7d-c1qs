@@ -1,0 +1,955 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --hero-grad-1: #ffffff;
+    --hero-grad-2: #fbfbfd;
+    --text: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-tertiary: #86868b;
+    --border: #e8e8ed;
+    --border-soft: #f2f2f4;
+    --accent: #0071e3;
+    --accent-soft: #e8f2ff;
+    --pos: #1a9d4b;
+    --pos-soft: #e6f7ec;
+    --neg: #d70015;
+    --neg-soft: #ffe9e6;
+    --warn-soft: #fff2e0;
+    --warn-text: #b26a00;
+    --chip-bg: #f5f5f7;
+    --ring-track: #f2f2f4;
+    --shadow-1: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.05);
+    --shadow-2: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+    --footnote: #b1b1b6;
+  }
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #000000;
+    --card: #1c1c1e;
+    --hero-grad-1: #1c1c1e;
+    --hero-grad-2: #17171a;
+    --text: #f5f5f7;
+    --text-secondary: #a1a1a6;
+    --text-tertiary: #86868b;
+    --border: #2c2c2e;
+    --border-soft: #2c2c2e;
+    --accent: #2997ff;
+    --accent-soft: #0f2438;
+    --pos: #32d74b;
+    --pos-soft: #0f2b18;
+    --neg: #ff453a;
+    --neg-soft: #331013;
+    --warn-soft: #3a2a0f;
+    --warn-text: #f0b429;
+    --chip-bg: #2c2c2e;
+    --ring-track: #2c2c2e;
+    --shadow-1: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.4);
+    --shadow-2: 0 1px 2px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.25);
+    --footnote: #48484a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    padding: 32px 40px 64px;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .top-left { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .top h1 {
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .top .sub {
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+  .top-right { display: flex; align-items: center; gap: 10px; }
+  .refresh-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    box-shadow: var(--shadow-2);
+  }
+  .refresh-btn:active { transform: scale(0.97); }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border-radius: 100px;
+    padding: 4px;
+    box-shadow: var(--shadow-2);
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid var(--border);
+  }
+  .theme-toggle .opt {
+    display: flex; align-items: center; justify-content: center;
+    width: 30px; height: 26px; border-radius: 100px;
+    font-size: 13px; color: var(--text-tertiary);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .theme-toggle .opt.active { background: var(--accent); color: #fff; }
+
+  .hero {
+    background: linear-gradient(180deg, var(--hero-grad-1) 0%, var(--hero-grad-2) 100%);
+    border-radius: 22px;
+    padding: 36px 40px;
+    box-shadow: var(--shadow-1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .hero-left .label {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+  .hero-left .value {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .hero-left .delta {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .hero-left .delta.pos { color: var(--pos); }
+  .hero-left .delta.neg { color: var(--neg); }
+
+  .ring-wrap { display: flex; align-items: center; gap: 24px; }
+  .ring { position: relative; width: 128px; height: 128px; flex-shrink: 0; }
+  .ring svg { transform: rotate(-90deg); width: 128px; height: 128px; }
+  .ring-center {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+  }
+  .ring-center .pct { font-size: 20px; font-weight: 700; }
+  .ring-center .lbl { font-size: 10px; color: var(--text-tertiary); }
+  .legend { display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+  .grid4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 900px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+
+  .stat-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow-2);
+  }
+  .stat-card .label { font-size: 12px; color: var(--text-tertiary); font-weight: 500; margin-bottom: 6px; }
+  .stat-card .value { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .stat-card .sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+  .section { margin-bottom: 32px; }
+  .section-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 14px 2px;
+  }
+
+  .card {
+    background: var(--card);
+    border-radius: 18px;
+    box-shadow: var(--shadow-2);
+    overflow: hidden;
+  }
+
+  .owner-header {
+    padding: 16px 22px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 10px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody td {
+    padding: 12px 22px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .ticker { font-weight: 600; }
+  .gain-pos { color: var(--pos); font-weight: 600; }
+  .gain-neg { color: var(--neg); font-weight: 600; }
+
+  .re-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .re-grid { grid-template-columns: 1fr; } }
+  .re-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 22px 24px;
+    box-shadow: var(--shadow-2);
+  }
+  .re-card .name { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+  .re-card .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 100px;
+    margin-bottom: 14px;
+  }
+  .tag.ppor { background: var(--accent-soft); color: var(--accent); }
+  .tag.inv { background: var(--warn-soft); color: var(--warn-text); }
+  .re-row { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; color: var(--text-secondary); border-top: 1px solid var(--border-soft); }
+  .re-row:first-of-type { border-top: none; padding-top: 0; }
+  .re-row .v { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .re-range { font-size: 11px; color: var(--text-tertiary); margin: 4px 0 12px; }
+  .re-equity { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: baseline; }
+  .re-equity .lbl { font-size: 12px; color: var(--text-tertiary); }
+  .re-equity .val { font-size: 19px; font-weight: 700; }
+  .re-source { font-size: 10px; color: var(--text-tertiary); margin-top: 10px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; padding: 22px 24px 8px; }
+  .chip {
+    background: var(--chip-bg);
+    border-radius: 12px;
+    padding: 10px 16px;
+    min-width: 150px;
+  }
+  .chip .k { font-size: 11px; color: var(--text-tertiary); font-weight: 500; margin-bottom: 3px; }
+  .chip .v { font-size: 14px; font-weight: 600; }
+  .goal-block { padding: 6px 24px 22px; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .goal-block b { color: var(--text); }
+
+  .advice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .advice-grid { grid-template-columns: 1fr; } }
+  .advice-card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 22px 24px;
+    box-shadow: var(--shadow-2);
+  }
+  .advice-card .icon {
+    width: 34px; height: 34px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; margin-bottom: 12px;
+  }
+  .advice-card .title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .advice-card .body { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+  .sev-high .icon { background: var(--neg-soft); }
+  .sev-med .icon { background: var(--warn-soft); }
+  .sev-good .icon { background: var(--pos-soft); }
+  .sev-info .icon { background: var(--accent-soft); }
+
+  .goal-card { background: var(--card); border-radius: 18px; padding: 24px 26px; box-shadow: var(--shadow-2); }
+  .goal-card .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .goal-card .row .t { font-size: 15px; font-weight: 600; }
+  .goal-card .row .p { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .progress-track { height: 10px; border-radius: 100px; background: var(--ring-track); overflow: hidden; margin-bottom: 12px; }
+  .progress-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--accent), #64b5ff); transition: width 0.4s ease; }
+  .goal-meta { display: flex; flex-wrap: wrap; gap: 18px; font-size: 12px; color: var(--text-secondary); }
+  .goal-meta b { color: var(--text); font-weight: 600; }
+
+  .risk-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .risk-grid { grid-template-columns: 1fr; } }
+  .risk-card { background: var(--card); border-radius: 18px; padding: 20px 22px; box-shadow: var(--shadow-2); }
+  .risk-card .label { font-size: 12px; color: var(--text-tertiary); font-weight: 500; margin-bottom: 6px; }
+  .risk-card .value { font-size: 24px; font-weight: 700; }
+  .risk-card .badge {
+    display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 600;
+    padding: 3px 10px; border-radius: 100px;
+  }
+  .badge.risk-hi { background: var(--neg-soft); color: var(--neg); }
+  .badge.risk-mid { background: var(--warn-soft); color: var(--warn-text); }
+  .badge.risk-lo { background: var(--pos-soft); color: var(--pos); }
+
+  .chart-card { background: var(--card); border-radius: 18px; padding: 22px 24px; box-shadow: var(--shadow-2); }
+  .chart-wrap { position: relative; height: 220px; }
+  .chart-empty { text-align: center; color: var(--text-tertiary); font-size: 12px; padding: 70px 0; }
+
+  .footnote {
+    text-align: center;
+    font-size: 11px;
+    color: var(--footnote);
+    margin-top: 24px;
+  }
+  .loading { text-align: center; padding: 80px 0; color: var(--text-tertiary); font-size: 14px; }
+  .errbox { background: var(--card); border-radius: 18px; padding: 24px; color: var(--neg); font-size: 13px; line-height: 1.6; }
+  .errbox b { color: var(--text); }
+  .errbox code { background: var(--chip-bg); padding: 2px 6px; border-radius: 6px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="top-left">
+      <h1>Portfolio Analysis Dashboard</h1>
+      <div class="sub" id="updatedAt">Loading live data…</div>
+    </div>
+    <div class="top-right">
+      <div class="refresh-btn" id="refreshBtn">⟳ Refresh</div>
+      <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle light/dark mode">
+        <div class="opt" data-mode="light">☀️</div>
+        <div class="opt" data-mode="dark">🌙</div>
+      </div>
+    </div>
+  </div>
+  <div id="app"><div class="loading">Fetching live holdings, property and profile data…</div></div>
+</div>
+
+<script>
+(function(){
+  const saved = localStorage.getItem("pad-theme") || "light";
+  document.documentElement.setAttribute("data-theme", saved);
+})();
+</script>
+
+<script>
+const FILE_ID = "1vrkMfl0idRqAcTDHkYWc7PqOFgSe2wsDMq245eGiOmM";
+const SHEET_NAME = "Dashboard Data";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/" + FILE_ID + "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(SHEET_NAME);
+
+function setTheme(mode){
+  document.documentElement.setAttribute("data-theme", mode);
+  localStorage.setItem("pad-theme", mode);
+  document.querySelectorAll(".theme-toggle .opt").forEach(el => {
+    el.classList.toggle("active", el.dataset.mode === mode);
+  });
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const current = localStorage.getItem("pad-theme") || "light";
+  setTheme(current);
+  document.getElementById("themeToggle").addEventListener("click", (e) => {
+    const opt = e.target.closest(".opt");
+    const mode = opt ? opt.dataset.mode : (current === "light" ? "dark" : "light");
+    setTheme(mode);
+  });
+  document.getElementById("refreshBtn").addEventListener("click", load);
+  load();
+  // Auto-refresh every 5 minutes while the tab stays open
+  setInterval(load, 5 * 60 * 1000);
+});
+
+const PROPERTY_META = {
+  "1 Percy Road (PPOR)": { tag: "PPOR — Owner Occupied", cls: "ppor" },
+  "382 Lilley Ave": { tag: "Investment — Interest Only", cls: "inv" },
+  "26 Bimble Ave": { tag: "Investment — Interest Only", cls: "inv" },
+};
+
+function clean(s){ return (s||"").replace(/\\\\/g,"").trim(); }
+function parseCurrency(s){
+  s = clean(s);
+  if (!s || s === "-" || s === "–") return 0;
+  let neg = /^\(.*\)$/.test(s);
+  s = s.replace(/[()$,]/g,"");
+  let n = parseFloat(s.replace(/[^0-9.\-]/g,"")) || 0;
+  return neg ? -Math.abs(n) : n;
+}
+function parsePercent(s){
+  s = clean(s).replace("%","");
+  return parseFloat(s) || 0;
+}
+function fmtCurrency(n){
+  const neg = n < 0;
+  const v = Math.abs(Math.round(n)).toLocaleString("en-AU");
+  return (neg ? "-$" : "$") + v;
+}
+function fmtPct(n, digits=1){ return n.toFixed(digits) + "%"; }
+
+// Minimal RFC4180 CSV parser (handles quoted fields, embedded commas/quotes/newlines)
+function parseCSV(text){
+  const rows = [];
+  let row = [], field = "", inQuotes = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (inQuotes){
+      if (c === '"'){
+        if (text[i+1] === '"'){ field += '"'; i++; }
+        else { inQuotes = false; }
+      } else field += c;
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ','){ row.push(field); field = ""; }
+      else if (c === '\n'){ row.push(field); rows.push(row); row = []; field = ""; }
+      else if (c === '\r'){ /* skip */ }
+      else field += c;
+    }
+  }
+  if (field.length || row.length){ row.push(field); rows.push(row); }
+  return rows.map(r => r.map(c => clean(c)));
+}
+
+async function load(){
+  document.getElementById("updatedAt").textContent = "Refreshing…";
+  try {
+    const res = await fetch(CSV_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const text = await res.text();
+    if (/^\s*<|accounts\.google\.com|Sign in/i.test(text)) {
+      throw new Error("SHARING");
+    }
+    const rows = parseCSV(text);
+    render(rows);
+  } catch (e) {
+    const sharingIssue = e && e.message === "SHARING";
+    document.getElementById("app").innerHTML =
+      '<div class="errbox"><b>Could not load live data from the Google Sheet.</b><br><br>' +
+      (sharingIssue
+        ? 'This usually means the Sheet\'s link-sharing isn\'t turned on yet. In the Sheet, click <b>Share</b> → under "General access" choose <b>Anyone with the link</b> → <b>Viewer</b> → Done. Then hit Refresh here.'
+        : 'Details: ' + (e && e.message ? e.message : "unknown error") + '. Check your internet connection and try Refresh.') +
+      '</div>';
+    document.getElementById("updatedAt").textContent = "Load failed";
+  }
+}
+
+function render(rows){
+  // Holdings
+  const holdingsByOwner = { Sankalp: [], Adwaita: [] };
+  let holdingsTotal = { mv: 0, cb: 0 };
+  rows.forEach(r => {
+    if ((r[0] === "Sankalp" || r[0] === "Adwaita") && r.length >= 10) {
+      const item = {
+        ticker: r[1], shares: r[3], price: r[5],
+        mv: parseCurrency(r[6]), cb: parseCurrency(r[7]),
+        gainPct: parsePercent(r[9])
+      };
+      holdingsByOwner[r[0]].push(item);
+      holdingsTotal.mv += item.mv;
+      holdingsTotal.cb += item.cb;
+    }
+  });
+
+  // Real estate — CMA Low / Mid (Est. Value) / High / Loan / Offset / Net Debt / Net Equity / Updated / Source
+  const properties = [];
+  let re = { value: 0, loan: 0, offset: 0, equity: 0 };
+  rows.forEach(r => {
+    if (PROPERTY_META[r[0]] && r.length >= 10) {
+      const p = {
+        name: r[0],
+        low: parseCurrency(r[3]), value: parseCurrency(r[4]), high: parseCurrency(r[5]),
+        loan: parseCurrency(r[6]), offset: parseCurrency(r[7]),
+        netDebt: parseCurrency(r[8]), equity: parseCurrency(r[9]),
+        updated: r[10] || "", source: r[11] || ""
+      };
+      properties.push(p);
+      re.value += p.value; re.loan += p.loan; re.offset += p.offset; re.equity += p.equity;
+    }
+  });
+
+  // Profile + Summary — simple label -> value map
+  const map = {};
+  rows.forEach(r => { if (r.length >= 2 && r[0] && r[1] !== undefined) map[r[0]] = r[1]; });
+
+  const netWorth = holdingsTotal.mv + re.equity;
+  const eqPct = netWorth ? (holdingsTotal.mv / netWorth) * 100 : 0;
+  const propPct = 100 - eqPct;
+
+  document.getElementById("updatedAt").textContent =
+    "Live · updated " + new Date().toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" });
+
+  const ringCirc = 2 * Math.PI * 52;
+  const eqLen = (eqPct/100) * ringCirc;
+
+  // Log today's snapshot for the history chart (one entry per calendar day)
+  const history = logSnapshot(netWorth, eqPct, propPct);
+
+  let html = "";
+
+  // Hero
+  html += `
+  <div class="hero">
+    <div class="hero-left">
+      <div class="label">Total Household Net Worth</div>
+      <div class="value">${fmtCurrency(netWorth)}</div>
+      <div class="delta">Excludes superannuation · AUD</div>
+    </div>
+    <div class="ring-wrap">
+      <div class="ring">
+        <svg viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="var(--ring-track)" stroke-width="12"/>
+          <circle cx="60" cy="60" r="52" fill="none" stroke="var(--accent)" stroke-width="12"
+            stroke-dasharray="${eqLen} ${ringCirc-eqLen}" stroke-linecap="round"/>
+        </svg>
+        <div class="ring-center">
+          <div class="pct">${fmtPct(eqPct,0)}</div>
+          <div class="lbl">Equities</div>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="dot" style="background:var(--accent)"></span>Equities · ${fmtPct(eqPct)}</div>
+        <div class="legend-item"><span class="dot" style="background:var(--ring-track);border:1px solid var(--border)"></span>Property equity · ${fmtPct(propPct)}</div>
+      </div>
+    </div>
+  </div>`;
+
+  // Stat cards
+  html += `
+  <div class="grid4">
+    <div class="stat-card">
+      <div class="label">Equities (Stocks & ETFs)</div>
+      <div class="value">${fmtCurrency(holdingsTotal.mv)}</div>
+      <div class="sub">Cost basis ${fmtCurrency(holdingsTotal.cb)}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Property Net Equity</div>
+      <div class="value">${fmtCurrency(re.equity)}</div>
+      <div class="sub">of ${fmtCurrency(re.value)} value</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Total Mortgage Debt</div>
+      <div class="value">${fmtCurrency(re.loan)}</div>
+      <div class="sub">${fmtCurrency(re.offset)} in offsets</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Annual Savings Rate</div>
+      <div class="value">${map["Annual Savings Rate"] || "—"}</div>
+      <div class="sub">${map["Savings Rate pct of income"] || ""} of combined income</div>
+    </div>
+  </div>`;
+
+  // FIRE goal progress + net worth history
+  const fireCorpusTodayAUD = parseCurrency(map["FIRE Corpus Required Today (AUD, no inflation)"]);
+  const fireProgressPct = parsePercent(map["FIRE Progress %"]);
+  const fxRate = parseFloat(map["AUD/INR Exchange Rate (Live)"]) || 0;
+  const fireProjection = projectYearsToFire(netWorth, map, fxRate);
+
+  html += `<div class="section"><div class="grid4" style="grid-template-columns: 1.3fr 1fr;">
+    <div class="goal-card">
+      <div class="row"><span class="t">FIRE Goal — India Relocation</span><span class="p">${fmtPct(Math.min(fireProgressPct,100),0)}</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${Math.min(fireProgressPct,100)}%"></div></div>
+      <div class="goal-meta">
+        <div>Target corpus today: <b>${fmtCurrency(fireCorpusTodayAUD)}</b></div>
+        <div>Current net worth: <b>${fmtCurrency(netWorth)}</b></div>
+        <div>AUD/INR: <b>${fxRate ? fxRate.toFixed(2) : "—"}</b></div>
+        <div>${fireProjection && fireProjection.futureCorpusAUD !== null ? `Est. <b>${fireProjection.years} yrs</b> to goal — target inflates to <b>${fmtCurrency(fireProjection.futureCorpusAUD)}</b> by then` : fireProjection ? `Beyond 60-yr projection at current savings/growth — revisit assumptions in the sheet` : "Add savings/growth assumptions in the sheet to project a timeline"}</div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="label" style="font-size:12px;color:var(--text-tertiary);font-weight:500;margin-bottom:10px;">Net Worth History</div>
+      <div class="chart-wrap">
+        ${history.length > 1 ? '<canvas id="historyChart"></canvas>' : '<div class="chart-empty">Come back after a few refreshes to see the trend build up.</div>'}
+      </div>
+    </div>
+  </div></div>`;
+
+  // Holdings table
+  html += `<div class="section"><h2 class="section-title">Holdings</h2><div class="card">`;
+  ["Sankalp","Adwaita"].forEach((owner,idx) => {
+    const items = holdingsByOwner[owner];
+    if (!items.length) return;
+    html += `<div class="owner-header">${owner}${idx===0 ? "" : ""}</div>
+    <table>
+      <thead><tr>
+        <th>Ticker</th><th class="num">Shares</th><th class="num">Price</th>
+        <th class="num">Market Value</th><th class="num">Cost Basis</th><th class="num">Gain / Loss</th>
+      </tr></thead>
+      <tbody>`;
+    items.forEach(it => {
+      const cls = it.gainPct >= 0 ? "gain-pos" : "gain-neg";
+      html += `<tr>
+        <td class="ticker">${it.ticker}</td>
+        <td class="num">${it.shares}</td>
+        <td class="num">$${it.price}</td>
+        <td class="num">${fmtCurrency(it.mv)}</td>
+        <td class="num">${fmtCurrency(it.cb)}</td>
+        <td class="num ${cls}">${it.gainPct >= 0 ? "+" : ""}${fmtPct(it.gainPct)}</td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+  });
+  html += `</div></div>`;
+
+  // Real estate cards
+  html += `<div class="section"><h2 class="section-title">Real Estate</h2><div class="re-grid">`;
+  properties.forEach(p => {
+    const meta = PROPERTY_META[p.name] || { tag: "Property", cls: "inv" };
+    html += `
+    <div class="re-card">
+      <div class="name">${p.name}</div>
+      <span class="tag ${meta.cls}">${meta.tag}</span>
+      <div class="re-row" style="border-top:none;padding-top:0"><span>CMA estimate</span><span class="v">${fmtCurrency(p.value)}</span></div>
+      <div class="re-range">Range ${fmtCurrency(p.low)} – ${fmtCurrency(p.high)}</div>
+      <div class="re-row"><span>Loan balance</span><span class="v">${fmtCurrency(p.loan)}</span></div>
+      <div class="re-row"><span>Offset balance</span><span class="v">${fmtCurrency(p.offset)}</span></div>
+      <div class="re-equity"><span class="lbl">Net Equity</span><span class="val">${fmtCurrency(p.equity)}</span></div>
+      <div class="re-source">${p.source}${p.updated ? " · updated " + p.updated : ""}</div>
+    </div>`;
+  });
+  html += `</div></div>`;
+
+  // Concentration risk score
+  const allHoldingsPre = [
+    ...holdingsByOwner.Sankalp.map(h => ({...h, owner:"Sankalp"})),
+    ...holdingsByOwner.Adwaita.map(h => ({...h, owner:"Adwaita"}))
+  ];
+  const risk = computeConcentrationRisk(allHoldingsPre, holdingsTotal.mv);
+  const largestAsset = computeLargestAsset(holdingsTotal.mv, properties, netWorth);
+  const breakdown = computeNetWorthBreakdown(allHoldingsPre, holdingsTotal.mv, properties, netWorth);
+
+  html += `
+  <div class="section">
+    <h2 class="section-title">Portfolio Concentration</h2>
+    <div class="risk-grid">
+      <div class="risk-card">
+        <div class="label">Largest Single Equity Position</div>
+        <div class="value">${risk.topTicker} · ${fmtPct(risk.topPct,0)}</div>
+        <span class="badge ${risk.topBadge}">${risk.topLabel}</span>
+      </div>
+      <div class="risk-card">
+        <div class="label">Largest Single Asset (of net worth)</div>
+        <div class="value">${largestAsset.name} · ${fmtPct(largestAsset.pct,0)}</div>
+        <span class="badge ${largestAsset.badge}">${largestAsset.label}</span>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-top:16px;">
+      <div class="label" style="font-size:12px;color:var(--text-tertiary);font-weight:500;margin-bottom:14px;">Net Worth Allocation — Equities & Real Estate</div>
+      ${breakdown.map(s => `
+        <div style="margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+            <span>${s.name} <span style="color:var(--text-tertiary);font-size:11px;">${s.group}</span></span><span style="font-weight:600;">${fmtPct(s.pct,0)}</span>
+          </div>
+          <div class="progress-track" style="height:8px;">
+            <div class="progress-fill" style="width:${s.pct}%;background:${s.color};"></div>
+          </div>
+        </div>`).join("")}
+      <div style="font-size:11px;color:var(--text-tertiary);margin-top:6px;">Every bar is sized against total net worth (${fmtCurrency(netWorth)}), so equity sectors and individual properties are directly comparable.</div>
+    </div>
+  </div>`;
+
+  // Investor profile
+  html += `
+  <div class="section">
+    <h2 class="section-title">Investor Profile</h2>
+    <div class="card">
+      <div class="chips">
+        <div class="chip"><div class="k">Risk Tolerance</div><div class="v">${map["Risk Tolerance"]||"—"}</div></div>
+        <div class="chip"><div class="k">Time Horizon</div><div class="v">${map["Time Horizon"]||"—"}</div></div>
+        <div class="chip"><div class="k">Combined Income</div><div class="v">${map["Combined Annual Income"]||"—"}</div></div>
+        <div class="chip"><div class="k">Monthly Savings</div><div class="v">${map["Monthly Savings Rate"]||"—"}</div></div>
+      </div>
+      <div class="goal-block">
+        <div style="margin-bottom:6px"><b>Goal 1 — Retirement.</b> Standard long-term retirement funding across both partners.</div>
+        <div><b>Goal 2 — FIRE & India Relocation.</b> ${map["Primary Goal 2"] || ""}</div>
+      </div>
+    </div>
+  </div>`;
+
+  // Advisor recommendations — computed from live allocation
+  const recs = buildRecommendations({ eqPct, propPct, re, holdingsTotal, properties, allHoldings: allHoldingsPre, map });
+  html += `<div class="section"><h2 class="section-title">Advisor Recommendations</h2><div class="advice-grid">`;
+  recs.forEach(r => {
+    html += `
+    <div class="advice-card sev-${r.sev}">
+      <div class="icon">${r.emoji}</div>
+      <div class="title">${r.title}</div>
+      <div class="body">${r.body}</div>
+    </div>`;
+  });
+  html += `</div></div>`;
+
+  html += `<div class="footnote">Stock & ETF prices refresh live from Google Sheets (GOOGLEFINANCE) via a direct CSV pull — hit Refresh or reload the page to re-fetch. Property values, loan balances and profile figures are updated manually in the sheet.</div>`;
+
+  document.getElementById("app").innerHTML = html;
+
+  if (history.length > 1) drawHistoryChart(history);
+}
+
+// ---- Net worth history (localStorage, one snapshot per calendar day) ----
+function logSnapshot(netWorth, eqPct, propPct){
+  const key = "pad-history";
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem(key) || "[]"); } catch(e) { hist = []; }
+  const today = new Date().toISOString().slice(0,10);
+  const entry = { date: today, netWorth, eqPct, propPct };
+  const idx = hist.findIndex(h => h.date === today);
+  if (idx >= 0) hist[idx] = entry; else hist.push(entry);
+  hist.sort((a,b) => a.date.localeCompare(b.date));
+  if (hist.length > 365) hist = hist.slice(hist.length - 365);
+  localStorage.setItem(key, JSON.stringify(hist));
+  return hist;
+}
+
+let historyChartInstance = null;
+function drawHistoryChart(history){
+  const canvas = document.getElementById("historyChart");
+  if (!canvas || typeof Chart === "undefined") return;
+  if (historyChartInstance) { historyChartInstance.destroy(); }
+  const styles = getComputedStyle(document.documentElement);
+  const accent = styles.getPropertyValue("--accent").trim() || "#0071e3";
+  const gridColor = styles.getPropertyValue("--border-soft").trim() || "#f2f2f4";
+  const textColor = styles.getPropertyValue("--text-tertiary").trim() || "#86868b";
+  historyChartInstance = new Chart(canvas.getContext("2d"), {
+    type: "line",
+    data: {
+      labels: history.map(h => h.date),
+      datasets: [{
+        label: "Net Worth",
+        data: history.map(h => h.netWorth),
+        borderColor: accent,
+        backgroundColor: accent + "22",
+        fill: true,
+        tension: 0.35,
+        pointRadius: 0,
+        borderWidth: 2.5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 }, maxTicksLimit: 6 } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 },
+              callback: (v) => "$" + (v/1000).toFixed(0) + "k" } }
+      }
+    }
+  });
+}
+
+// ---- FIRE timeline projection ----
+// The target itself grows every year (income need + home cost inflate in INR),
+// while the portfolio grows via assumed returns + ongoing savings. Find the
+// first year the (FX-converted) inflated target is met.
+function projectYearsToFire(currentNetWorth, map, fxRate){
+  const monthlyIncomeToday = parseCurrency(map["Desired Monthly Passive Income Today (INR)"]);
+  const homeCostToday = parseCurrency(map["Target India Home Cost Today (INR)"]);
+  const swr = parsePercent(map["Safe Withdrawal Rate"]) / 100;
+  const inflation = parsePercent(map["Assumed India Inflation Rate"]) / 100;
+  const growthRate = parsePercent(map["Assumed Annual Portfolio Growth Rate"]) / 100;
+  const annualSavings = parseCurrency(map["Annual Savings Rate"]);
+  if (!fxRate || !swr || (monthlyIncomeToday === 0 && homeCostToday === 0)) return null;
+
+  const annualIncomeToday = monthlyIncomeToday * 12;
+  const corpusTodayInr = (annualIncomeToday / swr) + homeCostToday;
+  const corpusTodayAud = corpusTodayInr / fxRate;
+  if (currentNetWorth >= corpusTodayAud) return { years: 0, futureCorpusAUD: corpusTodayAud };
+
+  let balance = currentNetWorth;
+  for (let year = 1; year <= 60; year++) {
+    balance = balance * (1 + growthRate) + annualSavings;
+    const inflatedIncome = annualIncomeToday * Math.pow(1 + inflation, year);
+    const inflatedHome = homeCostToday * Math.pow(1 + inflation, year);
+    const targetInrYear = (inflatedIncome / swr) + inflatedHome;
+    const targetAudYear = targetInrYear / fxRate; // FX rate held constant as a simplifying assumption
+    if (balance >= targetAudYear) return { years: year, futureCorpusAUD: targetAudYear };
+  }
+  return { years: "60+", futureCorpusAUD: null };
+}
+
+// ---- Concentration risk score ----
+function computeConcentrationRisk(allHoldings, totalMv){
+  const byTicker = {};
+  allHoldings.forEach(h => {
+    byTicker[h.ticker] = (byTicker[h.ticker] || 0) + h.mv;
+  });
+  let topTicker = "—", topMv = 0, hhi = 0;
+  Object.entries(byTicker).forEach(([ticker, mv]) => {
+    if (mv > topMv) { topMv = mv; topTicker = ticker; }
+    const weight = totalMv ? mv / totalMv : 0;
+    hhi += weight * weight * 10000;
+  });
+  const topPct = totalMv ? (topMv / totalMv) * 100 : 0;
+  const resourceMv = RESOURCE_TICKERS.reduce((s,t) => s + (byTicker[t] || 0), 0);
+  const resourcePct = totalMv ? (resourceMv / totalMv) * 100 : 0;
+
+  const topBadge = topPct > 25 ? "risk-hi" : topPct > 12 ? "risk-mid" : "risk-lo";
+  const topLabel = topPct > 25 ? "Very concentrated" : topPct > 12 ? "Elevated" : "Reasonable";
+  const hhiBadge = hhi > 2500 ? "risk-hi" : hhi > 1500 ? "risk-mid" : "risk-lo";
+  const hhiLabel = hhi > 2500 ? "Highly concentrated" : hhi > 1500 ? "Moderately concentrated" : "Well diversified";
+  const resourceBadge = resourcePct > 40 ? "risk-hi" : resourcePct > 20 ? "risk-mid" : "risk-lo";
+  const resourceLabel = resourcePct > 40 ? "Single-sector bet" : resourcePct > 20 ? "Overweight" : "Balanced";
+
+  return {
+    topTicker, topPct, topBadge, topLabel,
+    hhi: Math.round(hhi), hhiBadge, hhiLabel,
+    resourcePct, resourceBadge, resourceLabel
+  };
+}
+
+const RESOURCE_TICKERS = ["BHP","RIO","FMG","WDS"];
+const SECTOR_MAP = {
+  "BHP": "Resources & Energy", "RIO": "Resources & Energy", "FMG": "Resources & Energy", "WDS": "Resources & Energy",
+  "CSL": "Healthcare",
+  "CBA": "Financials",
+  "IVV": "Diversified ETFs (US/Global)", "VGS": "Diversified ETFs (US/Global)", "NDQ": "Diversified ETFs (US/Global)",
+  "BGBL": "Diversified ETFs (US/Global)", "VAE": "Diversified ETFs (US/Global)"
+};
+const SECTOR_COLORS = {
+  "Resources & Energy": "#d70015",
+  "Healthcare": "#8e44ec",
+  "Financials": "#b26a00",
+  "Diversified ETFs (US/Global)": "#0071e3",
+  "Other": "#86868b"
+};
+const PROPERTY_COLORS = ["#1a9d4b", "#2fbf71", "#7bd4a3"];
+
+// The single biggest asset in the household — could be the whole equity book or one property
+function computeLargestAsset(equitiesMv, properties, netWorth){
+  if (!netWorth) return { name: "—", pct: 0, badge: "risk-lo", label: "—" };
+  const candidates = [
+    { name: "Total Equities", value: equitiesMv },
+    ...properties.map(p => ({ name: p.name, value: p.equity }))
+  ];
+  const top = candidates.reduce((a, b) => (b.value > a.value ? b : a));
+  const pct = (top.value / netWorth) * 100;
+  const badge = pct > 60 ? "risk-hi" : pct > 35 ? "risk-mid" : "risk-lo";
+  const label = pct > 60 ? "Dominant asset" : pct > 35 ? "Concentrated" : "Balanced";
+  return { name: top.name, pct, badge, label };
+}
+
+// One breakdown: equity sectors + each property's net equity, all sized against total net worth
+function computeNetWorthBreakdown(allHoldings, equitiesMv, properties, netWorth){
+  if (!netWorth) return [];
+  const sectorMv = {};
+  allHoldings.forEach(h => {
+    const sector = SECTOR_MAP[h.ticker] || "Other";
+    sectorMv[sector] = (sectorMv[sector] || 0) + h.mv;
+  });
+  const rows = Object.entries(sectorMv).map(([name, mv]) => ({
+    name, group: "Equities", pct: (mv/netWorth)*100, color: SECTOR_COLORS[name] || SECTOR_COLORS.Other
+  }));
+  properties.forEach((p, i) => {
+    rows.push({ name: p.name, group: "Real Estate", pct: (p.equity/netWorth)*100, color: PROPERTY_COLORS[i % PROPERTY_COLORS.length] });
+  });
+  return rows.sort((a,b) => b.pct - a.pct);
+}
+
+function buildRecommendations({ holdingsTotal, allHoldings, map }){
+  const recs = [];
+  const T = holdingsTotal.mv;
+  const byTicker = {};
+  allHoldings.forEach(h => {
+    byTicker[h.ticker] = byTicker[h.ticker] || { mv: 0, owners: [] };
+    byTicker[h.ticker].mv += h.mv;
+    byTicker[h.ticker].owners.push(h.owner);
+  });
+
+  // 1. FMG single-stock concentration
+  const fmg = allHoldings.find(h => h.ticker === "FMG");
+  if (fmg && T > 0) {
+    const fmgPct = (fmg.mv / T) * 100;
+    if (fmgPct > 15) {
+      const targetPct = 15;
+      const sellAmount = fmg.mv - (targetPct/100) * T;
+      recs.push({
+        sev: "high", emoji: "🎯",
+        title: `Trim FMG — it's ${fmtPct(fmgPct,0)} of your entire share portfolio`,
+        body: `${fmg.shares} FMG shares (${fmtCurrency(fmg.mv)}) is a single-stock position bigger than most people's whole portfolio. The unrealised gain is small (only ${fmtPct(fmg.gainPct)}), so there's minimal CGT cost to acting now. Sell roughly ${fmtCurrency(sellAmount)} of FMG (about ${Math.round(sellAmount / (fmg.mv/fmg.shares)).toLocaleString()} shares at current prices) in 2–3 tranches over the next two quarters and route the proceeds into VGS or IVV, which you already hold — no new admin required. This alone brings FMG down to ~${targetPct}% of the book.`
+      });
+    }
+  }
+
+  // 2. Resources sector concentration
+  const resourceMv = RESOURCE_TICKERS.reduce((s,t) => s + (byTicker[t]?.mv || 0), 0);
+  if (T > 0) {
+    const resPct = (resourceMv / T) * 100;
+    if (resPct > 25) {
+      const targetPct = 20;
+      const trimAmount = resourceMv - (targetPct/100) * T;
+      const held = RESOURCE_TICKERS.filter(t => byTicker[t]).join(", ");
+      recs.push({
+        sev: "high", emoji: "⛏️",
+        title: `Resources sector is ${fmtPct(resPct,0)} of your shares — one commodity cycle, one outcome`,
+        body: `BHP, RIO, FMG and WDS combined (${held}) total ${fmtCurrency(resourceMv)} — all correlated to iron ore/energy prices and China demand, so this isn't really four separate bets, it's one. After trimming FMG, review BHP and RIO too: cutting a further ${fmtCurrency(Math.max(trimAmount,0))} across the basket gets the sector to ~${targetPct}% of the share portfolio. Set a standing rule: don't let any single sector exceed 20% of equities, and rebalance every 6 months against that line.`
+      });
+    }
+  }
+
+  // 3. CSL cost-basis anomaly
+  const csl = allHoldings.find(h => h.ticker === "CSL");
+  if (csl && csl.gainPct < -30) {
+    recs.push({
+      sev: "med", emoji: "🔍",
+      title: "CSL is showing an unusually large loss — verify before acting",
+      body: `Your CHESS data shows CSL at a ${fmtPct(Math.abs(csl.gainPct))} loss (cost ${fmtCurrency(csl.cb)} vs current ${fmtCurrency(csl.mv)}), which is a bigger drawdown than CSL's actual share price history supports. Check your broker statement for a corporate action (capital return, consolidation) that may have distorted the recorded cost base. If the loss is genuine, it's a candidate for tax-loss harvesting — sell to realise the loss against this year's gains (e.g. on FMG or BHP if trimmed), then either stay out of CSL for 30+ days or switch into a healthcare-sector ETF to avoid a wash-sale-style ATO challenge.`
+    });
+  }
+
+  // 4. Duplicate NDQ across both portfolios
+  const ndq = byTicker["NDQ"];
+  if (ndq && ndq.owners.length > 1) {
+    const sankalpNdq = allHoldings.find(h => h.ticker === "NDQ" && h.owner === "Sankalp");
+    const adwaitaNdq = allHoldings.find(h => h.ticker === "NDQ" && h.owner === "Adwaita");
+    recs.push({
+      sev: "info", emoji: "🗂️",
+      title: "You're both independently holding NDQ — consolidate the tracking",
+      body: `Sankalp holds ${sankalpNdq ? sankalpNdq.shares : "?"} NDQ units and Adwaita holds ${adwaitaNdq ? adwaitaNdq.shares : "?"} — ${fmtCurrency(ndq.mv)} combined in the same ETF across two brokers (CHESS + Stake). This isn't a diversification problem, but it doubles the admin (two DRPs, two tax statements for the same exposure). Going forward, top up NDQ from whichever account already holds the larger position rather than splitting new buys across both, so CGT records stay in one place.`
+    });
+  }
+
+  // 5. Monthly savings allocation — specific, no super
+  const monthlyStr = map["Monthly Savings Rate"] || "";
+  const monthly = parseCurrency(monthlyStr);
+  if (monthly > 0) {
+    const toEquities = Math.round(monthly * 0.7 / 100) * 100;
+    const toFxFund = monthly - toEquities;
+    recs.push({
+      sev: "info", emoji: "💵",
+      title: `Put the ${fmtCurrency(monthly)}/month surplus on autopilot`,
+      body: `Set up two standing transfers on payday: ${fmtCurrency(toEquities)}/month (70%) into VGS/IVV via your existing broker until FMG and the resources basket are back under their targets above, and ${fmtCurrency(toFxFund)}/month (30%) held back for the India-relocation fund below. Automating this removes the temptation to let surplus cash sit idle or drift back into another AU property purchase.`
+    });
+  }
+
+  // 6. FX / India tilt
+  if (monthly > 0) {
+    const fxAmount = Math.round(monthly * 0.3 / 100) * 100;
+    recs.push({
+      sev: "info", emoji: "🌏",
+      title: "Start building the India fund now, not at move time",
+      body: `Your assets are 100% AUD while the goal (₹10cr+ home, lifetime income in India) is INR-denominated — converting a lump sum in one hit at relocation is a timing bet you don't need to take. Direct the ${fmtCurrency(fxAmount)}/month earmarked above into an ASX-listed India ETF (e.g. NDIA) or a recurring AUD→INR transfer into an Indian NRE fixed deposit/mutual fund via your bank's forex desk. Review the AUD/INR rate quarterly and accelerate transfers when it's favourable rather than on a fixed schedule.`
+    });
+  }
+
+  return recs;
+}
+</script>
+</body>
+</html>
