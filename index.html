@@ -355,8 +355,8 @@
 <script>
 const FILE_ID = "1vrkMfl0idRqAcTDHkYWc7PqOFgSe2wsDMq245eGiOmM";
 const SHEET_GID = "904344185"; 
-// Using the visualization query endpoint to bypass browser auth blocks
-const CSV_URL = "https://docs.google.com/spreadsheets/d/" + FILE_ID + "/gviz/tq?tqx=out:csv&gid=" + SHEET_GID;
+// Keep headers=0 so Google does not infer the title row as headers and blank string columns such as Ticker.
+const CSV_URL = "https://docs.google.com/spreadsheets/d/" + FILE_ID + "/gviz/tq?tqx=out:csv&headers=0&gid=" + SHEET_GID;
 
 function setTheme(mode){
   document.documentElement.setAttribute("data-theme", mode);
@@ -428,6 +428,15 @@ function parseCSV(text){
   return rows.map(r => r.map(c => clean(c)));
 }
 
+function hasUsableHoldings(rows){
+  return rows.some(r =>
+    (r[0] === "Sankalp" || r[0] === "Adwaita") &&
+    r.length >= 10 &&
+    r[1] &&
+    parseCurrency(r[6]) > 0
+  );
+}
+
 async function load(){
   document.getElementById("updatedAt").textContent = "Refreshing…";
   try {
@@ -438,6 +447,9 @@ async function load(){
       throw new Error("SHARING");
     }
     const rows = parseCSV(text);
+    if (!hasUsableHoldings(rows)) {
+      throw new Error("The sheet loaded, but the holdings rows were missing ticker/value data.");
+    }
     render(rows);
   } catch (e) {
     const sharingIssue = e && e.message === "SHARING";
