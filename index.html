@@ -354,8 +354,9 @@
 
 <script>
 const FILE_ID = "1vrkMfl0idRqAcTDHkYWc7PqOFgSe2wsDMq245eGiOmM";
-const SHEET_NAME = "Dashboard Data";
-const CSV_URL = "https://docs.google.com/spreadsheets/d/" + FILE_ID + "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(SHEET_NAME);
+const SHEET_GID = "904344185"; 
+// Using the visualization query endpoint to bypass browser auth blocks
+const CSV_URL = "https://docs.google.com/spreadsheets/d/" + FILE_ID + "/gviz/tq?tqx=out:csv&gid=" + SHEET_GID;
 
 function setTheme(mode){
   document.documentElement.setAttribute("data-theme", mode);
