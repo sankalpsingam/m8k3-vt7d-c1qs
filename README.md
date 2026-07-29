@@ -1,81 +1,83 @@
 # Portfolio Analysis Dashboard
 
-A single-file (`index.html`), zero-build household net-worth dashboard. It reads a
-Google Sheet as CSV and renders holdings, real estate, allocation, concentration
-analytics, a FIRE-goal projection and rule-based portfolio signals. No server, no
-framework — open the file (or host it on GitHub Pages) and go.
+A self-contained household net-worth dashboard. All financial data lives
+**encrypted inside this repository** (`data.enc.json`) — no Google Sheets, no
+third-party services. Prices refresh automatically via GitHub Actions, and
+edits are made in the dashboard's built-in editor, which commits changes back
+to the repo through the GitHub API.
 
-## Setup
+## How it works
 
-1. Open `index.html` in a browser (or your hosted copy).
-2. You'll see a **Connect your data source** screen. Paste either:
-   - **Your Google Sheet tab URL** — copy it from the address bar so it includes
-     `gid=…`. The sheet must have link-sharing on
-     (Share → General access → *Anyone with the link* → *Viewer*), **or**
-   - **An Apps Script proxy URL** (recommended — keeps the sheet private, see below).
-3. Done. The URL is stored only in that browser's `localStorage` — it is never
-   committed to this repository. Use the ⚙ button to change it later.
+| Piece | What it does |
+| --- | --- |
+| `index.html` | The entire dashboard: full-lock passphrase screen, analytics, and the data editor |
+| `data.enc.json` | All holdings/properties/profile data, AES-256-GCM encrypted in your browser |
+| `tickers.json` | Plain list of ticker symbols (only thing readable without the passphrase) |
+| `prices.json` | Latest ASX prices + AUD/INR, written by the scheduled workflow |
+| `.github/workflows/prices.yml` | Fetches prices ~4× per ASX trading day (and on demand) |
+| `scripts/fetch_prices.py` | The fetcher — Yahoo Finance quotes with a frankfurter.app FX fallback |
 
-## Privacy
+## First-time setup
 
-Earlier versions hardcoded the spreadsheet's file ID in `index.html`, which meant
-anyone with access to this repo (or the page source) could download the sheet.
-That is no longer the case — the source contains no sheet ID, no names, no
-property addresses. Two things to be aware of:
+1. Open the dashboard (GitHub Pages URL). You'll get a **setup wizard**:
+   - *Import from my Google Sheet* (one-time; link-sharing can be turned off
+     right after) or *Start fresh*.
+   - Choose a **passphrase** (min 8 chars). This encrypts everything and is
+     required to view the dashboard. **It cannot be reset** — export a backup
+     from the editor and keep it somewhere safe.
+   - Create a **fine-grained GitHub token** (the wizard links to the right
+     page): Repository access = only this repo; Permissions = *Contents: Read
+     and write* (plus *Actions: Read and write* if you want new tickers priced
+     immediately). Paste it in — it stays in your browser only.
+2. That's it. On any other device: open the URL, enter the passphrase
+   (and paste the token there too if you want to edit from that device).
 
-- **Git history still contains the old file ID.** If this repo is (or ever
-  becomes) visible to others, either restrict the sheet's sharing (best — see
-  the proxy below) or copy your data into a fresh spreadsheet so the old ID is
-  dead, then turn off sharing on the old one.
-- **Direct CSV access requires "Anyone with the link" sharing.** Anyone who
-  obtains the URL can read the sheet. The Apps Script proxy removes this
-  requirement entirely.
+## Day-to-day use
 
-### Keeping the sheet fully private (Apps Script proxy)
+- **View**: open the page, enter your passphrase (or tick *Keep me unlocked on
+  this device*). Prices auto-refresh every 5 minutes while the tab is open.
+- **Bought shares?** ✎ Edit → press **＋** on the holding → enter the **new
+  total shares** and **what you paid for the top-up** — shares bought and the
+  cost-basis increase are computed for you. (A lower total records a sale,
+  reducing the cost basis proportionally.)
+- **New holding/property, changed offset?** ✎ Edit → change the field or add a
+  row → **Save to GitHub**. Every save is a commit, so the repo history is a
+  complete audit trail of your data (encrypted at every point).
+- **Lock** button clears the keys from the device immediately.
 
-`apps-script/Code.gs` is a ~40-line Google Apps Script that reads the sheet with
-*your* credentials and serves CSV only to callers presenting a shared-secret
-token. Setup takes about two minutes — instructions are in the file's header
-comment. Once deployed, paste the `…/exec?token=…` URL into the dashboard's ⚙
-settings and set the spreadsheet back to **Restricted**.
+## Security model
 
-## Expected sheet layout
+- The passphrase derives an AES-256-GCM key in the browser (PBKDF2,
+  310k iterations). Data is encrypted/decrypted **only in the browser**; the
+  passphrase and key never leave it. The public Pages site exposes only
+  ciphertext, the ticker list, and prices.
+- The GitHub token is stored in the browser's localStorage and sent only to
+  `api.github.com`. Scope it to this single repository.
+- Anyone without the passphrase sees a lock screen — even with the URL.
+- **There is no passphrase recovery.** Use ✎ Edit → *Export data backup* after
+  meaningful changes and keep the file safe. Restoring = setup wizard → import
+  backup (or Edit → Import data backup).
+- Historic note: git history from the Google-Sheets era contains the old
+  spreadsheet's file ID. Once you've imported, set that sheet's sharing to
+  **Restricted** (Share → General access) and it's inert.
 
-The dashboard detects rows by shape, not position, so you can add owners,
-holdings or properties freely:
+## The price feed
 
-- **Holdings rows** — an owner name, an ASX-style ticker (e.g. `VGS`), shares,
-  price, market value, cost basis and gain %. If a header row containing
-  `Ticker` exists, columns are mapped by name (`Shares`, `Price`,
-  `Market Value`, `Cost Basis`, `Gain %`, optional `Sector`); otherwise the
-  original column positions are assumed. A blank owner cell inherits the owner
-  above it.
-- **Property rows** — a name plus CMA low / estimate / high, loan, offset,
-  updated, source. Names containing `PPOR` are tagged as owner-occupied. Rows
-  whose name contains `Total`/`Subtotal`/`Combined`/`Sum` are ignored.
-  **Net equity is computed by the dashboard as `value − loan + offset`** —
-  offset cash cancels the loan dollar-for-dollar, so a fully offset loan
-  counts as 100% ownership. The sheet's own Net Equity column, if present, is
-  not used for the maths.
-- **Profile rows** — simple `Label, Value` pairs (e.g. `Risk Tolerance`,
-  `Monthly Savings Rate`, the FIRE assumption fields, `AUD/INR Exchange Rate
-  (Live)`).
+`prices.yml` runs on a schedule during ASX hours and can be run manually
+(Actions tab → *Update prices* → *Run workflow*). It reads `tickers.json`,
+fetches each ticker with an `.AX` suffix from Yahoo Finance, gets AUD/INR, and
+commits `prices.json` only when something changed. If a ticker has no price
+yet (brand-new purchase), the dashboard flags it and uses the fallback price
+you set in the editor until the next run.
 
-## Features
+> GitHub pauses scheduled workflows on repos with no activity for ~60 days.
+> The dashboard warns you when prices look stale; one click of *Run workflow*
+> in the Actions tab revives it.
 
-- **Live data** with a 5-minute auto-refresh (paused while the tab is hidden).
-  A failed refresh keeps the last good data on screen with a warning banner
-  instead of wiping the dashboard.
-- **Concentration analytics** — largest position, HHI, top sector exposure and
-  largest single asset, all aggregated per-ticker across owners.
-- **Rule-based signals** — oversized positions (diversified ETFs exempt),
-  sector concentration, large-loss verification / tax-loss harvesting
-  candidates, duplicated holdings across owners, savings automation and
-  FX-mismatch prompts. All generated from live data by fixed thresholds;
-  informational only, not financial advice.
-- **FIRE projection** — inflates the INR-denominated target each year while
-  compounding the portfolio, and reports the crossover year.
-- **Net-worth history** — one snapshot per local calendar day in
-  `localStorage`, charted with an equities overlay. History is per-browser;
-  use the Export/Import buttons on the chart card to move it between devices.
-- **Light/dark theme**, mobile-friendly layout, keyboard-accessible controls.
+## Net-worth conventions
+
+- Property **net equity = value − loan + offset** — offset cash cancels the
+  loan dollar-for-dollar, so a fully offset loan counts as 100% ownership.
+- Net worth = equities market value + property net equity (super excluded).
+- The history chart stores one snapshot per day, encrypted, per browser — use
+  Export/Import on the chart card to move it between devices.
