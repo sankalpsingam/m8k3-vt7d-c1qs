@@ -79,5 +79,18 @@ you set in the editor until the next run.
 - Property **net equity = value − loan + offset** — offset cash cancels the
   loan dollar-for-dollar, so a fully offset loan counts as 100% ownership.
 - Net worth = equities market value + property net equity (super excluded).
-- The history chart stores one snapshot per day, encrypted, per browser — use
-  Export/Import on the chart card to move it between devices.
+
+## The wealth-history chart
+
+The chart is **reconstructed, not recorded**: the price workflow publishes a
+year of real daily closes per ticker (`history.json`), and the dashboard
+multiplies them by the holdings you had on each date. Every editor save
+stores a snapshot (date, property equity, share counts) inside the encrypted
+data file, so purchases, sales and property revaluations step in on the right
+dates; dates before your first save assume the oldest recorded mix. This
+means the chart is identical on every device, needs no browser storage, and
+extends back a full year from day one.
+
+Views: **Stacked** (property equity + equities; the top edge is net worth),
+or single lines for **Net worth / Equities / Property**, over **3M / 6M / 1Y /
+All**.
