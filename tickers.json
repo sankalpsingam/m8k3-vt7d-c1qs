@@ -1,3 +1,15 @@
 {
-  "tickers": []
+  "tickers": [
+    "BGBL",
+    "BHP",
+    "CBA",
+    "CSL",
+    "FMG",
+    "IVV",
+    "NDQ",
+    "RIO",
+    "VAE",
+    "VGS",
+    "WDS"
+  ]
 }
