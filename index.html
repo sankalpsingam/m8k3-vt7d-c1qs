@@ -516,12 +516,25 @@ function findIn(low, names){
   for (const n of names){ const i = low.findIndex(c => c.includes(n)); if (i >= 0) return i; }
   return -1;
 }
+// A header row is text-only — a row carrying real figures (e.g. a
+// "Total Property Net Equity | $920,000" summary line) must never be
+// mistaken for one, or the column remap reads data from the wrong cells.
+function isTextOnlyRow(r){
+  return !r.some(c => Math.abs(parseCurrency(c)) > 999);
+}
+const HOLD_HEADER_NAMES = ["shares", "units", "qty", "quantity", "price", "market value", "cost basis", "cost base", "gain"];
+const PROP_HEADER_NAMES = ["net equity", "net debt", "loan", "offset", "cma", "est. value", "est value", "high", "low", "source", "updated"];
+
 function findColumnMaps(rows){
   const H = Object.assign({}, DEFAULT_H), P = Object.assign({}, DEFAULT_P);
-  for (const r of rows){
+  const headerRows = new Set();
+  let foundH = false, foundP = false;
+  rows.forEach((r, i) => {
     const low = r.map(c => (c || "").toLowerCase());
-    if (low.some(c => c === "ticker")){
-      const set = (key, names) => { const i = findIn(low, names); if (i >= 0) H[key] = i; };
+    if (!foundH && low.some(c => c === "ticker") && isTextOnlyRow(r) &&
+        low.filter(c => c && HOLD_HEADER_NAMES.some(n => c.includes(n))).length >= 2){
+      foundH = true; headerRows.add(i);
+      const set = (key, names) => { const idx = findIn(low, names); if (idx >= 0) H[key] = idx; };
       set("ticker", ["ticker"]);
       set("shares", ["shares", "units", "qty", "quantity"]);
       set("price", ["price"]);
@@ -529,13 +542,12 @@ function findColumnMaps(rows){
       set("cb", ["cost basis", "cost base", "total cost"]);
       set("gainPct", ["gain %", "gain%", "gain / loss %", "gain/loss %", "return %"]);
       const si = findIn(low, ["sector"]); if (si >= 0) H.sector = si;
-      break;
+      return;
     }
-  }
-  for (const r of rows){
-    const low = r.map(c => (c || "").toLowerCase());
-    if (low.some(c => c.includes("net equity"))){
-      const set = (key, names) => { const i = findIn(low, names); if (i >= 0) P[key] = i; };
+    if (!foundP && low.some(c => c.includes("net equity")) && isTextOnlyRow(r) &&
+        low.filter(c => c && PROP_HEADER_NAMES.some(n => c.includes(n))).length >= 4){
+      foundP = true; headerRows.add(i);
+      const set = (key, names) => { const idx = findIn(low, names); if (idx >= 0) P[key] = idx; };
       set("low", ["cma low", "low"]);
       set("value", ["est. value", "est value", "mid"]);
       set("high", ["cma high", "high"]);
@@ -545,14 +557,13 @@ function findColumnMaps(rows){
       set("equity", ["net equity"]);
       set("updated", ["updated"]);
       set("source", ["source"]);
-      break;
     }
-  }
-  return { H, P };
+  });
+  return { H, P, headerRows };
 }
 
 function classifyAll(rows){
-  const { H, P } = findColumnMaps(rows);
+  const { H, P, headerRows } = findColumnMaps(rows);
   const holdingsByOwner = {};
   const owners = [];
   const properties = [];
@@ -561,11 +572,9 @@ function classifyAll(rows){
   const re = { value: 0, loan: 0, offset: 0, equity: 0 };
   let lastOwner = "";
 
-  rows.forEach(r => {
+  rows.forEach((r, ri) => {
     const low0 = (r[0] || "").toLowerCase();
-    const isHeader = r.some(c => (c || "").toLowerCase() === "ticker") ||
-                     r.some(c => (c || "").toLowerCase().includes("net equity"));
-    if (isHeader) return;
+    if (headerRows.has(ri)) return;
 
     // Holdings row: ticker-shaped symbol with positive shares and market value
     const tick = r[H.ticker] || "";
@@ -587,18 +596,27 @@ function classifyAll(rows){
       return;
     }
 
-    // Property row: has a name plus CMA low/mid/high and non-zero net equity
+    // Property row: has a name, a substantial estimated value, and at least
+    // one other property-shaped figure. Summary rows (any name containing
+    // total/subtotal/combined/sum) are excluded so they can't double-count.
     const name = r[P.name] || "";
-    if (name && !/^(total|combined|grand)/i.test(name)){
+    if (name && !/\b(total|subtotal|combined|sum)\b/i.test(name)){
       const val = parseCurrency(r[P.value]);
       const lowV = parseCurrency(r[P.low]);
       const highV = parseCurrency(r[P.high]);
-      const eq = parseCurrency(r[P.equity]);
-      if (val > 50000 && lowV > 0 && highV >= val && eq !== 0){
+      const sheetEq = parseCurrency(r[P.equity]);
+      const loan = parseCurrency(r[P.loan]);
+      const offset = parseCurrency(r[P.offset]);
+      const propShaped = lowV > 0 || highV > 0 || loan > 0 || offset > 0 || sheetEq !== 0;
+      if (val > 50000 && propShaped){
+        // Equity is computed here, not read from the sheet: value less net
+        // debt, where offset cash cancels loan dollar-for-dollar. A fully
+        // offset loan therefore means 100% equity in the property.
+        const netDebt = Math.max(loan - offset, 0);
+        const equity = val - loan + offset;
         const p = {
           name, low: lowV, value: val, high: highV,
-          loan: parseCurrency(r[P.loan]), offset: parseCurrency(r[P.offset]),
-          netDebt: parseCurrency(r[P.netDebt]), equity: eq,
+          loan, offset, netDebt, equity,
           updated: r[P.updated] || "", source: r[P.source] || ""
         };
         properties.push(p);
@@ -803,7 +821,7 @@ function render(data, opts){
     <div class="stat-card">
       <div class="label">Property Net Equity</div>
       <div class="value">${fmtCurrency(re.equity)}</div>
-      <div class="sub">of ${fmtCurrency(re.value)} value${re.value ? " · LVR " + fmtPct(re.loan / re.value * 100, 0) : ""}</div>
+      <div class="sub">of ${fmtCurrency(re.value)} value${re.value ? " · net LVR " + fmtPct(Math.max(re.loan - re.offset, 0) / re.value * 100, 0) : ""}</div>
     </div>
     <div class="stat-card">
       <div class="label">Total Mortgage Debt</div>
@@ -893,22 +911,23 @@ function render(data, opts){
     html += `<div class="section"><h2 class="section-title">Real Estate</h2><div class="re-grid">`;
     properties.forEach(p => {
       const isPpor = /ppor|owner occ/i.test(p.name);
-      const lvr = p.value ? (p.loan / p.value) * 100 : 0;
-      const lvrColor = lvr > 80 ? "var(--neg)" : lvr > 60 ? "var(--warn-text)" : "var(--pos)";
+      const netLvr = p.value ? (p.netDebt / p.value) * 100 : 0;
+      const netLvrColor = netLvr > 80 ? "var(--neg)" : netLvr > 60 ? "var(--warn-text)" : "var(--pos)";
       html += `
       <div class="re-card">
         <div class="name">${esc(p.name)}</div>
         <span class="tag ${isPpor ? "ppor" : "inv"}">${isPpor ? "PPOR — Owner Occupied" : "Investment"}</span>
         <div class="re-row" style="border-top:none;padding-top:0"><span>CMA estimate</span><span class="v">${fmtCurrency(p.value)}</span></div>
-        <div class="re-range">Range ${fmtCurrency(p.low)} – ${fmtCurrency(p.high)}</div>
+        ${p.low > 0 && p.high > 0 ? `<div class="re-range">Range ${fmtCurrency(p.low)} – ${fmtCurrency(p.high)}</div>` : ""}
         <div class="re-row"><span>Loan balance</span><span class="v">${fmtCurrency(p.loan)}</span></div>
         <div class="re-row"><span>Offset balance</span><span class="v">${fmtCurrency(p.offset)}</span></div>
-        <div class="re-row"><span>LVR</span><span class="v" style="color:${lvrColor}">${fmtPct(lvr, 0)}</span></div>
+        <div class="re-row"><span>Net debt (loan − offset)</span><span class="v">${fmtCurrency(p.netDebt)}</span></div>
+        <div class="re-row"><span>Net LVR (after offset)</span><span class="v" style="color:${netLvrColor}">${p.netDebt <= 0 ? "0% — fully offset" : fmtPct(netLvr, 0)}</span></div>
         <div class="re-equity"><span class="lbl">Net Equity</span><span class="val">${fmtCurrency(p.equity)}</span></div>
         <div class="re-source">${esc(p.source)}${p.updated ? " · updated " + esc(p.updated) : ""}</div>
       </div>`;
     });
-    html += `</div></div>`;
+    html += `</div><div class="section-note">Net equity is computed as value − loan + offset, so a fully offset loan counts as 100% ownership. Figures come straight from the sheet's value, loan and offset columns.</div></div>`;
   }
 
   // Concentration analytics
@@ -995,7 +1014,8 @@ function render(data, opts){
     html += `</div><div class="section-note">Signals are generated live from the sheet data by fixed threshold rules (position &gt;15%, sector &gt;25%, loss &lt;−30%, etc.) — informational only, not financial advice.</div></div>`;
   }
 
-  html += `<div class="footnote">Stock & ETF prices refresh live from Google Sheets (GOOGLEFINANCE) via CSV — auto-refreshes every 5 minutes while the tab is visible. Property values, loan balances and profile figures are updated manually in the sheet. Data source is configured per-browser (⚙).</div>`;
+  const allCount = owners.reduce((s, o) => s + holdingsByOwner[o].length, 0);
+  html += `<div class="footnote">Stock & ETF prices refresh live from Google Sheets (GOOGLEFINANCE) via CSV — auto-refreshes every 5 minutes while the tab is visible. Property values, loan balances and profile figures are updated manually in the sheet. Data source is configured per-browser (⚙).<br>Parsed from the sheet: ${allCount} holdings across ${owners.length} owner${owners.length === 1 ? "" : "s"} · ${properties.length} propert${properties.length === 1 ? "y" : "ies"} · ${Object.keys(map).length} profile fields.</div>`;
 
   document.getElementById("app").innerHTML = html;
 

@@ -50,9 +50,13 @@ holdings or properties freely:
   `Market Value`, `Cost Basis`, `Gain %`, optional `Sector`); otherwise the
   original column positions are assumed. A blank owner cell inherits the owner
   above it.
-- **Property rows** — a name plus CMA low / estimate / high, loan, offset, net
-  debt, net equity, updated, source. Names containing `PPOR` are tagged as
-  owner-occupied. Rows starting with `Total`/`Combined` are ignored.
+- **Property rows** — a name plus CMA low / estimate / high, loan, offset,
+  updated, source. Names containing `PPOR` are tagged as owner-occupied. Rows
+  whose name contains `Total`/`Subtotal`/`Combined`/`Sum` are ignored.
+  **Net equity is computed by the dashboard as `value − loan + offset`** —
+  offset cash cancels the loan dollar-for-dollar, so a fully offset loan
+  counts as 100% ownership. The sheet's own Net Equity column, if present, is
+  not used for the maths.
 - **Profile rows** — simple `Label, Value` pairs (e.g. `Risk Tolerance`,
   `Monthly Savings Rate`, the FIRE assumption fields, `AUD/INR Exchange Rate
   (Live)`).
