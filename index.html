@@ -215,6 +215,13 @@
   .chart-head .label { font-size: 12px; color: var(--text-tertiary); font-weight: 500; }
   .chart-actions { display: flex; gap: 12px; }
   .mini-btn { background: none; border: none; color: var(--accent); font-size: 11px; font-weight: 600; cursor: pointer; padding: 0; }
+  .chip-btn {
+    background: var(--chip-bg); border: none; border-radius: 100px;
+    padding: 4px 10px; font-size: 11px; font-weight: 600;
+    color: var(--text-secondary); cursor: pointer;
+  }
+  .chip-btn.active { background: var(--accent); color: #fff; }
+  .chart-actions { flex-wrap: wrap; }
   .chart-wrap { position: relative; height: 220px; }
   .chart-empty { text-align: center; color: var(--text-tertiary); font-size: 12px; padding: 70px 0; }
 
@@ -335,6 +342,7 @@
 const DATA_FILE = "data.enc.json";
 const TICKERS_FILE = "tickers.json";
 const PRICES_FILE = "prices.json";
+const HISTORY_FILE = "history.json";
 const KDF_ITER = 310000;
 const LS = {
   theme: "pad-theme",
@@ -342,17 +350,19 @@ const LS = {
   encCache: "pad-enc-cache",   // last known envelope (covers Pages deploy lag)
   token: "pad-token",          // GitHub fine-grained token
   repo: "pad-repo",            // {owner, repo}
-  histEnc: "pad-history-enc",  // encrypted net-worth history
-  // legacy keys from the Google-Sheets era, removed on boot:
-  legacy: ["pad-config", "pad-cache", "pad-history"]
+  chart: "pad-chart",          // chart mode/range preference
+  // legacy keys from earlier architectures, removed on boot:
+  legacy: ["pad-config", "pad-cache", "pad-history", "pad-history-enc"]
 };
 
 let DATA = null;       // decrypted data object
 let PRICES = null;     // {updated, fx:{AUDINR}, prices:{TICKER:n}}
+let PRICEHIST = null;  // {updated, series:{TICKER:[[date,close],...]}}
 let CRYPTO = null;     // {key: CryptoKey, saltB64, iter}
 let WORKING = null;    // editor working copy
-let HISTORY = [];      // decrypted snapshots
 let EDITOR_UI = { buyIdx: null }; // which holding has the buy form open
+let CHART_UI = lsGetJsonStatic("pad-chart") || { mode: "stacked", range: "1Y" };
+function lsGetJsonStatic(k){ try { return JSON.parse(localStorage.getItem(k) || "null"); } catch(e) { return null; } }
 
 /* ================= Small utilities ================= */
 function esc(s){
@@ -486,7 +496,7 @@ async function loadEnvelope(){
 }
 async function boot(){
   LS.legacy.forEach(k => localStorage.removeItem(k));
-  PRICES = await fetchJsonFile(PRICES_FILE);
+  [PRICES, PRICEHIST] = await Promise.all([fetchJsonFile(PRICES_FILE), fetchJsonFile(HISTORY_FILE)]);
   const env = await loadEnvelope();
   if (!env || !env.ct){ renderOnboarding(); return; }
   if (await restoreKey(env)){ await afterUnlock(); return; }
@@ -495,13 +505,12 @@ async function boot(){
 async function afterUnlock(){
   document.getElementById("editBtn").style.display = "";
   document.getElementById("lockBtn").style.display = "";
-  HISTORY = await loadHistory();
   await renderDashboard();
 }
 function lockNow(){
   sessionStorage.removeItem(LS.keyLocal);
   localStorage.removeItem(LS.keyLocal);
-  CRYPTO = null; DATA = null; WORKING = null; HISTORY = [];
+  CRYPTO = null; DATA = null; WORKING = null; lastSeries = null;
   if (historyChartInstance){ historyChartInstance.destroy(); historyChartInstance = null; }
   document.getElementById("editBtn").style.display = "none";
   document.getElementById("lockBtn").style.display = "none";
@@ -800,8 +809,7 @@ async function renderDashboard(){
   const annualSavings = num(m.profile.annualSavings);
   const fireProjection = projectYearsToFire(m.netWorth, m.fire, annualSavings, m.fx);
   const pricesAge = m.pricesUpdated ? (Date.now() - m.pricesUpdated.getTime()) / 36e5 : null;
-
-  HISTORY = await logSnapshot(m.netWorth, m.holdingsTotal.mv, m.re.equity);
+  const series = buildWealthSeries(m);
 
   document.getElementById("updatedAt").textContent = m.pricesUpdated
     ? "Prices updated " + m.pricesUpdated.toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" })
@@ -884,19 +892,22 @@ async function renderDashboard(){
       </div>
     </div>`;
   }
+  const modeChips = [["stacked", "Stacked"], ["nw", "Net worth"], ["eq", "Equities"], ["re", "Property"]];
+  const rangeChips = [["3M", "3M"], ["6M", "6M"], ["1Y", "1Y"], ["ALL", "All"]];
   html += `
     <div class="chart-card">
       <div class="chart-head">
-        <div class="label">Net Worth History</div>
+        <div class="label">Wealth History</div>
         <div class="chart-actions">
-          <button class="mini-btn" id="histExport">Export</button>
-          <button class="mini-btn" id="histImport">Import</button>
-          <input type="file" id="histFile" accept="application/json" style="display:none">
+          ${modeChips.map(c => `<button class="chip-btn${CHART_UI.mode === c[0] ? " active" : ""}" data-chart-mode="${c[0]}">${c[1]}</button>`).join("")}
+          <span style="width:6px"></span>
+          ${rangeChips.map(c => `<button class="chip-btn${CHART_UI.range === c[0] ? " active" : ""}" data-chart-range="${c[0]}">${c[1]}</button>`).join("")}
         </div>
       </div>
       <div class="chart-wrap">
-        ${HISTORY.length > 1 ? '<canvas id="historyChart"></canvas>' : '<div class="chart-empty">Come back after a few visits to see the trend build up.<br>History is stored (encrypted) per-browser — use Import to restore an export.</div>'}
+        ${series.length > 1 ? '<canvas id="historyChart"></canvas>' : '<div class="chart-empty">The history chart appears once the price workflow has published <b>history.json</b> — run it now via the repo\'s Actions tab → Update prices → Run workflow.</div>'}
       </div>
+      ${series.length > 1 ? '<div style="font-size:10px;color:var(--text-tertiary);margin-top:8px;">Equities reconstructed from daily closes × your holdings (holdings & property values step in at each save; earlier dates assume the oldest recorded mix).</div>' : ""}
     </div>
   </div></div>`;
 
@@ -1051,101 +1062,128 @@ async function renderDashboard(){
 
   document.getElementById("app").innerHTML = html;
 
-  if (HISTORY.length > 1) drawHistoryChart(HISTORY);
-  const ex = document.getElementById("histExport");
-  if (ex) ex.addEventListener("click", exportHistory);
-  const im = document.getElementById("histImport");
-  const fileInput = document.getElementById("histFile");
-  if (im && fileInput){
-    im.addEventListener("click", () => fileInput.click());
-    fileInput.addEventListener("change", (e) => importHistory(e.target.files[0]));
-  }
+  if (series.length > 1) drawWealthChart(series);
+  document.querySelectorAll("[data-chart-mode]").forEach(b => b.addEventListener("click", () => {
+    CHART_UI.mode = b.dataset.chartMode; lsSetJson(LS.chart, CHART_UI); renderDashboard();
+  }));
+  document.querySelectorAll("[data-chart-range]").forEach(b => b.addEventListener("click", () => {
+    CHART_UI.range = b.dataset.chartRange; lsSetJson(LS.chart, CHART_UI); renderDashboard();
+  }));
 }
 
-/* ================= History (encrypted, per-browser) ================= */
-async function loadHistory(){
-  const blob = lsGetJson(LS.histEnc);
-  if (!blob) return [];
-  try { return await decryptWithKey(CRYPTO.key, blob); } catch(e) { return []; }
+/* ================= Wealth history =================
+   Reconstructed, not stored: equities value through time comes from real
+   daily closes (history.json) × the holdings you had at that date. Every
+   editor save records a snapshot {date, re, shares} inside the encrypted
+   data file, so holdings changes and property revaluations step in at the
+   right dates. Dates before the first snapshot assume the oldest known mix. */
+function appendSnapshot(W){
+  const m = computeModel(W, PRICES);
+  const shares = {};
+  (W.holdings || []).forEach(h => { shares[h.ticker] = (shares[h.ticker] || 0) + num(h.shares); });
+  const snap = { date: localDateStr(), re: Math.round(m.re.equity), shares };
+  W.history = (W.history || []).filter(s => s.date !== snap.date);
+  W.history.push(snap);
+  W.history.sort((a, b) => a.date.localeCompare(b.date));
+  if (W.history.length > 400) W.history = W.history.slice(-400);
 }
-async function persistHistory(hist){
-  try { lsSetJson(LS.histEnc, await encryptWithKey(CRYPTO.key, hist)); } catch(e) {}
-}
-async function logSnapshot(netWorth, eqMv, reEquity){
-  let hist = HISTORY.length ? HISTORY : await loadHistory();
+function buildWealthSeries(m){
+  const seriesSrc = (PRICEHIST && PRICEHIST.series) || {};
+  const snaps = (DATA.history || []).slice().sort((a, b) => a.date.localeCompare(b.date));
   const today = localDateStr();
-  const entry = { date: today, netWorth, eq: eqMv, re: reEquity };
-  const idx = hist.findIndex(h => h.date === today);
-  if (idx >= 0) hist[idx] = entry; else hist.push(entry);
-  hist.sort((a, b) => a.date.localeCompare(b.date));
-  if (hist.length > 730) hist = hist.slice(hist.length - 730);
-  await persistHistory(hist);
-  return hist;
-}
-function exportHistory(){
-  const blob = new Blob([JSON.stringify(HISTORY, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "networth-history-" + localDateStr() + ".json";
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-function importHistory(file){
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = async () => {
-    try {
-      const imported = JSON.parse(reader.result);
-      if (!Array.isArray(imported)) throw new Error("not an array");
-      const byDate = {};
-      imported.forEach(h => { if (h && h.date && typeof h.netWorth === "number") byDate[h.date] = h; });
-      HISTORY.forEach(h => { byDate[h.date] = h; });
-      let merged = Object.values(byDate).sort((a, b) => a.date.localeCompare(b.date));
-      if (merged.length > 730) merged = merged.slice(merged.length - 730);
-      HISTORY = merged;
-      await persistHistory(merged);
-      await renderDashboard();
-    } catch(e) {
-      alert("Could not import that file — expected a JSON export from this dashboard.");
+
+  const dateSet = new Set();
+  Object.values(seriesSrc).forEach(arr => arr.forEach(p => dateSet.add(p[0])));
+  const dates = Array.from(dateSet).filter(d => d <= today).sort();
+  if (!dates.length || dates[dates.length - 1] !== today) dates.push(today);
+
+  const currentShares = {};
+  (DATA.holdings || []).forEach(h => { currentShares[h.ticker] = (currentShares[h.ticker] || 0) + num(h.shares); });
+  const oldestShares = snaps.length ? snaps[0].shares : currentShares;
+  const oldestRe = snaps.length ? snaps[0].re : m.re.equity;
+
+  const ptr = {}, lastClose = {}, firstClose = {};
+  Object.entries(seriesSrc).forEach(([t, arr]) => { ptr[t] = 0; firstClose[t] = arr.length ? arr[0][1] : null; });
+
+  let snapPtr = -1;
+  const rows = [];
+  for (const d of dates){
+    while (snapPtr + 1 < snaps.length && snaps[snapPtr + 1].date <= d) snapPtr++;
+    const shares = snapPtr >= 0 ? snaps[snapPtr].shares : oldestShares;
+    const re = snapPtr >= 0 ? snaps[snapPtr].re : oldestRe;
+    Object.entries(seriesSrc).forEach(([t, arr]) => {
+      while (ptr[t] < arr.length && arr[ptr[t]][0] <= d){ lastClose[t] = arr[ptr[t]][1]; ptr[t]++; }
+    });
+    let eq = 0;
+    for (const [t, n] of Object.entries(shares)){
+      const c = lastClose[t] != null ? lastClose[t] : firstClose[t];
+      if (c != null) eq += n * c;
+      else if (d === today){
+        const live = num(PRICES && PRICES.prices && PRICES.prices[t]);
+        if (live > 0) eq += n * live;
+      }
     }
-  };
-  reader.readAsText(file);
+    if (d === today) eq = m.holdingsTotal.mv; // exact figure from the live model
+    rows.push({ date: d, eq: Math.round(eq), re: Math.round(re), nw: Math.round(eq + re) });
+  }
+  return rows.filter(r => r.nw > 0);
+}
+function sliceByRange(rows, range){
+  if (range === "ALL") return rows;
+  const days = range === "3M" ? 92 : range === "6M" ? 183 : 366;
+  const cutoff = new Date(Date.now() - days * 864e5);
+  const cutoffStr = cutoff.getFullYear() + "-" + String(cutoff.getMonth() + 1).padStart(2, "0") + "-" + String(cutoff.getDate()).padStart(2, "0");
+  return rows.filter(r => r.date >= cutoffStr);
 }
 
 let historyChartInstance = null;
-function drawHistoryChart(history){
+let lastSeries = null;
+function drawWealthChart(series){
+  lastSeries = series;
   const canvas = document.getElementById("historyChart");
   if (!canvas || typeof Chart === "undefined") return;
   if (historyChartInstance){ historyChartInstance.destroy(); historyChartInstance = null; }
+  const rows = sliceByRange(series, CHART_UI.range);
+  if (!rows.length) return;
   const styles = getComputedStyle(document.documentElement);
   const accent = styles.getPropertyValue("--accent").trim() || "#0071e3";
   const pos = styles.getPropertyValue("--pos").trim() || "#1a9d4b";
   const gridColor = styles.getPropertyValue("--border-soft").trim() || "#f2f2f4";
   const textColor = styles.getPropertyValue("--text-tertiary").trim() || "#86868b";
-  const eqSeries = history.map(h => h.eq != null ? h.eq : (h.eqPct != null ? h.netWorth * h.eqPct / 100 : null));
+  const labels = rows.map(r => r.date);
+  const line = (label, key, color, fill) => ({
+    label, data: rows.map(r => r[key]), borderColor: color,
+    backgroundColor: color + "22", fill: !!fill, tension: 0.3, pointRadius: 0, borderWidth: 2.5
+  });
+  let datasets, stacked = false;
+  if (CHART_UI.mode === "stacked"){
+    stacked = true;
+    datasets = [
+      { label: "Property equity", data: rows.map(r => r.re), borderColor: pos, backgroundColor: pos + "33", fill: "origin", tension: 0.3, pointRadius: 0, borderWidth: 1.5 },
+      { label: "Equities", data: rows.map(r => r.eq), borderColor: accent, backgroundColor: accent + "33", fill: "-1", tension: 0.3, pointRadius: 0, borderWidth: 1.5 }
+    ];
+  } else if (CHART_UI.mode === "nw") datasets = [line("Net worth", "nw", accent, true)];
+  else if (CHART_UI.mode === "eq") datasets = [line("Equities", "eq", accent, true)];
+  else datasets = [line("Property equity", "re", pos, true)];
+
   historyChartInstance = new Chart(canvas.getContext("2d"), {
     type: "line",
-    data: {
-      labels: history.map(h => h.date),
-      datasets: [{
-        label: "Net Worth", data: history.map(h => h.netWorth),
-        borderColor: accent, backgroundColor: accent + "22",
-        fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2.5
-      }, {
-        label: "Equities", data: eqSeries,
-        borderColor: pos, fill: false, tension: 0.35, pointRadius: 0,
-        borderWidth: 1.5, borderDash: [5, 4], spanGaps: true
-      }]
-    },
+    data: { labels, datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
       plugins: {
-        legend: { display: true, labels: { color: textColor, boxWidth: 10, boxHeight: 2, font: { size: 10 } } },
-        tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ": " + fmtCurrency(ctx.parsed.y) } }
+        legend: { display: datasets.length > 1, labels: { color: textColor, boxWidth: 10, boxHeight: 2, font: { size: 10 } } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => ctx.dataset.label + ": " + fmtCurrency(stacked ? rows[ctx.dataIndex][ctx.datasetIndex === 0 ? "re" : "eq"] : ctx.parsed.y),
+            footer: (items) => stacked && items.length ? "Net worth: " + fmtCurrency(rows[items[0].dataIndex].nw) : ""
+          }
+        }
       },
       scales: {
         x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 }, maxTicksLimit: 6 } },
-        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: (v) => "$" + (v / 1000).toFixed(0) + "k" } }
+        y: { stacked, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: (v) => "$" + (v / 1000).toFixed(0) + "k" } }
       }
     }
   });
@@ -1157,6 +1195,7 @@ function emptyData(){
     version: 1,
     holdings: [],
     properties: [],
+    history: [],
     profile: { riskTolerance: "", timeHorizon: "", combinedIncome: "", monthlySavings: 0, annualSavings: 0, savingsRatePct: "", goal1: "", goal2: "" },
     fire: { monthlyIncomeINR: 0, homeCostINR: 0, swrPct: 3.5, inflationPct: 6, growthPct: 7 }
   };
@@ -1344,9 +1383,9 @@ async function saveWorking(){
       if (newPass.length < 8){ setStatus("⚠ New passphrase must be at least 8 characters."); return; }
       await setPassphrase(newPass);
       await rememberKey(!!localStorage.getItem(LS.keyLocal));
-      await persistHistory(HISTORY); // re-encrypt history under the new key
     }
     const oldTickers = JSON.stringify(tickersOf(DATA));
+    appendSnapshot(WORKING); // record {date, property equity, share counts} for the wealth chart
     const env = await makeEnvelope(WORKING);
     setStatus("Committing to GitHub…");
     await ghPutFile(DATA_FILE, JSON.stringify(env), "Update portfolio data");
@@ -1494,6 +1533,7 @@ function renderOnboarding(step, state){
           }
         }
         DATA = state.data;
+        appendSnapshot(DATA);
         const env = await makeEnvelope(DATA);
         if (withToken){
           await ghPutFile(DATA_FILE, JSON.stringify(env), "Initialise encrypted portfolio data");
@@ -1613,7 +1653,7 @@ function setTheme(mode){
   document.querySelectorAll(".theme-toggle .opt").forEach(el => {
     el.classList.toggle("active", el.dataset.mode === mode);
   });
-  if (historyChartInstance && HISTORY.length > 1 && document.getElementById("historyChart")) drawHistoryChart(HISTORY);
+  if (historyChartInstance && lastSeries && document.getElementById("historyChart")) drawWealthChart(lastSeries);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1627,6 +1667,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btn = document.getElementById("refreshBtn");
     btn.disabled = true; btn.textContent = "⟳ Refreshing…";
     PRICES = await fetchJsonFile(PRICES_FILE) || PRICES;
+    PRICEHIST = await fetchJsonFile(HISTORY_FILE) || PRICEHIST;
     if (DATA && !WORKING) await renderDashboard();
     btn.disabled = false; btn.textContent = "⟳ Refresh";
   });
@@ -1683,7 +1724,11 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(async () => {
     if (document.hidden || !DATA || WORKING) return;
     const fresh = await fetchJsonFile(PRICES_FILE);
-    if (fresh && (!PRICES || fresh.updated !== PRICES.updated)){ PRICES = fresh; await renderDashboard(); }
+    if (fresh && (!PRICES || fresh.updated !== PRICES.updated)){
+      PRICES = fresh;
+      PRICEHIST = await fetchJsonFile(HISTORY_FILE) || PRICEHIST;
+      await renderDashboard();
+    }
   }, 5 * 60 * 1000);
 });
 </script>
