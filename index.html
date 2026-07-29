@@ -71,50 +71,25 @@
   button { font-family: inherit; }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-  .top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
+  .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
   .top-left { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
-  .top h1 {
-    font-size: 28px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin: 0;
-  }
-  .top .sub {
-    font-size: 13px;
-    color: var(--text-tertiary);
-  }
+  .top h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin: 0; }
+  .top .sub { font-size: 13px; color: var(--text-tertiary); }
   .top-right { display: flex; align-items: center; gap: 10px; }
   .refresh-btn {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 8px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--accent);
-    cursor: pointer;
-    box-shadow: var(--shadow-2);
+    background: var(--card); border: 1px solid var(--border); border-radius: 100px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--accent);
+    cursor: pointer; box-shadow: var(--shadow-2);
   }
   .refresh-btn:active { transform: scale(0.97); }
   .refresh-btn:disabled { opacity: 0.6; cursor: default; }
+  .refresh-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .refresh-btn.danger { color: var(--neg); }
 
   .theme-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--card);
-    border-radius: 100px;
-    padding: 4px;
-    box-shadow: var(--shadow-2);
-    user-select: none;
-    border: 1px solid var(--border);
+    display: flex; align-items: center; gap: 8px; background: var(--card);
+    border-radius: 100px; padding: 4px; box-shadow: var(--shadow-2);
+    user-select: none; border: 1px solid var(--border);
   }
   .theme-toggle .opt {
     display: flex; align-items: center; justify-content: center;
@@ -125,125 +100,55 @@
   }
   .theme-toggle .opt.active { background: var(--accent); color: #fff; }
 
-  .stale-banner {
-    background: var(--warn-soft);
-    color: var(--warn-text);
-    border-radius: 12px;
-    padding: 10px 16px;
-    font-size: 13px;
-    margin-bottom: 16px;
-    line-height: 1.5;
-  }
+  .banner { border-radius: 12px; padding: 10px 16px; font-size: 13px; margin-bottom: 16px; line-height: 1.5; }
+  .banner.warn { background: var(--warn-soft); color: var(--warn-text); }
+  .banner.info { background: var(--accent-soft); color: var(--accent); }
 
   .hero {
     background: linear-gradient(180deg, var(--hero-grad-1) 0%, var(--hero-grad-2) 100%);
-    border-radius: 22px;
-    padding: 36px 40px;
-    box-shadow: var(--shadow-1);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 32px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+    border-radius: 22px; padding: 36px 40px; box-shadow: var(--shadow-1);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 32px; margin-bottom: 20px; flex-wrap: wrap;
   }
-  .hero-left .label {
-    font-size: 13px;
-    color: var(--text-tertiary);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 6px;
-  }
-  .hero-left .value {
-    font-size: 48px;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-  }
-  .hero-left .delta {
-    margin-top: 8px;
-    font-size: 14px;
-    color: var(--text-secondary);
-  }
-  .hero-left .delta.pos { color: var(--pos); }
-  .hero-left .delta.neg { color: var(--neg); }
+  .hero-left .label { font-size: 13px; color: var(--text-tertiary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .hero-left .value { font-size: 48px; font-weight: 700; letter-spacing: -0.03em; }
+  .hero-left .delta { margin-top: 8px; font-size: 14px; color: var(--text-secondary); }
 
   .ring-wrap { display: flex; align-items: center; gap: 24px; }
   .ring { position: relative; width: 128px; height: 128px; flex-shrink: 0; }
   .ring svg { transform: rotate(-90deg); width: 128px; height: 128px; }
-  .ring-center {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-    flex-direction: column;
-  }
+  .ring-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; }
   .ring-center .pct { font-size: 20px; font-weight: 700; }
   .ring-center .lbl { font-size: 10px; color: var(--text-tertiary); }
   .legend { display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
   .legend-item { display: flex; align-items: center; gap: 8px; }
   .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 
-  .grid4 {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 32px;
-  }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
   @media (max-width: 900px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
-
   .grid-fire { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; }
   @media (max-width: 900px) { .grid-fire { grid-template-columns: 1fr; } }
 
-  .stat-card {
-    background: var(--card);
-    border-radius: 18px;
-    padding: 20px 22px;
-    box-shadow: var(--shadow-2);
-  }
+  .stat-card { background: var(--card); border-radius: 18px; padding: 20px 22px; box-shadow: var(--shadow-2); }
   .stat-card .label { font-size: 12px; color: var(--text-tertiary); font-weight: 500; margin-bottom: 6px; }
   .stat-card .value { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
   .stat-card .sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
 
   .section { margin-bottom: 32px; }
-  .section-title {
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    margin: 0 0 14px 2px;
-  }
+  .section-title { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 14px 2px; }
+  .section-note { font-size: 11px; color: var(--footnote); margin: 12px 2px 0; }
 
-  .card {
-    background: var(--card);
-    border-radius: 18px;
-    box-shadow: var(--shadow-2);
-    overflow: hidden;
-  }
-
-  .owner-header {
-    padding: 16px 22px 10px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
+  .card { background: var(--card); border-radius: 18px; box-shadow: var(--shadow-2); overflow: hidden; }
+  .owner-header { padding: 16px 22px 10px; font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.03em; }
 
   .table-scroll { overflow-x: auto; }
   .table-scroll table { min-width: 640px; }
   table { width: 100%; border-collapse: collapse; }
   thead th {
-    text-align: left;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-tertiary);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding: 10px 22px;
-    border-bottom: 1px solid var(--border);
+    text-align: left; font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.03em; padding: 10px 22px; border-bottom: 1px solid var(--border);
   }
-  tbody td {
-    padding: 12px 22px;
-    font-size: 14px;
-    border-bottom: 1px solid var(--border-soft);
-  }
+  tbody td { padding: 12px 22px; font-size: 14px; border-bottom: 1px solid var(--border-soft); }
   tbody tr:last-child td { border-bottom: none; }
   tr.subtotal td { font-weight: 600; border-top: 1px solid var(--border); border-bottom: none; background: var(--chip-bg); font-size: 13px; }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
@@ -253,21 +158,9 @@
 
   .re-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   @media (max-width: 900px) { .re-grid { grid-template-columns: 1fr; } }
-  .re-card {
-    background: var(--card);
-    border-radius: 18px;
-    padding: 22px 24px;
-    box-shadow: var(--shadow-2);
-  }
+  .re-card { background: var(--card); border-radius: 18px; padding: 22px 24px; box-shadow: var(--shadow-2); }
   .re-card .name { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
-  .re-card .tag {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 9px;
-    border-radius: 100px;
-    margin-bottom: 14px;
-  }
+  .re-card .tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 100px; margin-bottom: 14px; }
   .tag.ppor { background: var(--accent-soft); color: var(--accent); }
   .tag.inv { background: var(--warn-soft); color: var(--warn-text); }
   .re-row { display: flex; justify-content: space-between; font-size: 13px; padding: 6px 0; color: var(--text-secondary); border-top: 1px solid var(--border-soft); }
@@ -280,12 +173,7 @@
   .re-source { font-size: 10px; color: var(--text-tertiary); margin-top: 10px; }
 
   .chips { display: flex; flex-wrap: wrap; gap: 10px; padding: 22px 24px 8px; }
-  .chip {
-    background: var(--chip-bg);
-    border-radius: 12px;
-    padding: 10px 16px;
-    min-width: 150px;
-  }
+  .chip { background: var(--chip-bg); border-radius: 12px; padding: 10px 16px; min-width: 150px; }
   .chip .k { font-size: 11px; color: var(--text-tertiary); font-weight: 500; margin-bottom: 3px; }
   .chip .v { font-size: 14px; font-weight: 600; }
   .goal-block { padding: 6px 24px 22px; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
@@ -293,24 +181,14 @@
 
   .advice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
   @media (max-width: 900px) { .advice-grid { grid-template-columns: 1fr; } }
-  .advice-card {
-    background: var(--card);
-    border-radius: 18px;
-    padding: 22px 24px;
-    box-shadow: var(--shadow-2);
-  }
-  .advice-card .icon {
-    width: 34px; height: 34px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; margin-bottom: 12px;
-  }
+  .advice-card { background: var(--card); border-radius: 18px; padding: 22px 24px; box-shadow: var(--shadow-2); }
+  .advice-card .icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-bottom: 12px; }
   .advice-card .title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
   .advice-card .body { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
   .sev-high .icon { background: var(--neg-soft); }
   .sev-med .icon { background: var(--warn-soft); }
   .sev-good .icon { background: var(--pos-soft); }
   .sev-info .icon { background: var(--accent-soft); }
-  .section-note { font-size: 11px; color: var(--footnote); margin: 12px 2px 0; }
 
   .goal-card { background: var(--card); border-radius: 18px; padding: 24px 26px; box-shadow: var(--shadow-2); }
   .goal-card .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
@@ -326,10 +204,7 @@
   .risk-card { background: var(--card); border-radius: 18px; padding: 20px 22px; box-shadow: var(--shadow-2); }
   .risk-card .label { font-size: 12px; color: var(--text-tertiary); font-weight: 500; margin-bottom: 6px; }
   .risk-card .value { font-size: 24px; font-weight: 700; }
-  .risk-card .badge {
-    display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 600;
-    padding: 3px 10px; border-radius: 100px;
-  }
+  .risk-card .badge { display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 100px; }
   .risk-card .sub { font-size: 11px; color: var(--text-tertiary); margin-top: 8px; }
   .badge.risk-hi { background: var(--neg-soft); color: var(--neg); }
   .badge.risk-mid { background: var(--warn-soft); color: var(--warn-text); }
@@ -343,34 +218,68 @@
   .chart-wrap { position: relative; height: 220px; }
   .chart-empty { text-align: center; color: var(--text-tertiary); font-size: 12px; padding: 70px 0; }
 
-  .setup-card { padding: 28px 30px; max-width: 640px; margin: 40px auto; }
-  .setup-card h2 { margin: 0 0 10px; font-size: 19px; letter-spacing: -0.01em; }
-  .setup-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-  .setup-card code { background: var(--chip-bg); padding: 2px 6px; border-radius: 6px; font-size: 12px; }
-  .setup-card input {
-    width: 100%;
-    padding: 11px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text);
-    font-size: 13px;
-    margin: 8px 0 14px;
+  /* Lock / onboarding screens */
+  .gate-card { padding: 32px 34px; max-width: 560px; margin: 48px auto; }
+  .gate-card h2 { margin: 0 0 10px; font-size: 20px; letter-spacing: -0.01em; }
+  .gate-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .gate-card .big-emoji { font-size: 40px; margin-bottom: 12px; }
+  .gate-card input[type="password"], .gate-card input[type="text"], .gate-card input[type="url"] {
+    width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); font-size: 14px; margin: 6px 0 12px;
   }
-  .setup-actions { display: flex; gap: 10px; }
-  .setup-note { background: var(--warn-soft); color: var(--warn-text); border-radius: 10px; padding: 9px 14px; font-size: 12px; margin-bottom: 12px; }
-  .setup-hint { font-size: 11px !important; color: var(--text-tertiary) !important; margin-top: 16px; }
+  .gate-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+  .gate-note { background: var(--warn-soft); color: var(--warn-text); border-radius: 10px; padding: 9px 14px; font-size: 12px; margin-bottom: 12px; }
+  .gate-hint { font-size: 11px !important; color: var(--text-tertiary) !important; margin-top: 16px; }
+  .gate-card label.check { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); cursor: pointer; }
+  .gate-card code { background: var(--chip-bg); padding: 2px 6px; border-radius: 6px; font-size: 12px; }
+  .gate-card ol { font-size: 13px; color: var(--text-secondary); line-height: 1.7; padding-left: 20px; }
+  .gate-card a { color: var(--accent); }
 
-  .footnote {
-    text-align: center;
-    font-size: 11px;
-    color: var(--footnote);
-    margin-top: 24px;
+  /* Editor */
+  .ed-section { background: var(--card); border-radius: 18px; box-shadow: var(--shadow-2); padding: 22px 24px; margin-bottom: 20px; }
+  .ed-section h3 { margin: 0 0 4px; font-size: 16px; letter-spacing: -0.01em; }
+  .ed-section .ed-sub { font-size: 12px; color: var(--text-tertiary); margin-bottom: 14px; }
+  .ed-rows { display: flex; flex-direction: column; gap: 10px; }
+  .ed-row {
+    display: grid; gap: 8px; align-items: center;
+    background: var(--chip-bg); border-radius: 12px; padding: 10px 12px;
   }
+  .ed-row.h-grid { grid-template-columns: 1.1fr 0.9fr 0.9fr 1.1fr 1.1fr 1.3fr 68px; }
+  .ed-row .row-btns { display: flex; gap: 2px; justify-content: flex-end; }
+  .ed-buy { background: none; border: none; color: var(--accent); font-size: 14px; font-weight: 700; cursor: pointer; padding: 4px; }
+  .ed-buyform { background: var(--accent-soft); border-radius: 12px; padding: 12px; display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
+  .ed-buyform .ed-field label { color: var(--accent); }
+  @media (max-width: 900px) { .ed-buyform { grid-template-columns: 1fr; } }
+  .ed-row.p-grid { grid-template-columns: 1.6fr 0.7fr 1fr 1fr 1fr 34px; }
+  .ed-row.head { background: none; padding: 0 12px; }
+  .ed-row.head span { font-size: 10px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.03em; }
+  @media (max-width: 900px) {
+    .ed-row.h-grid, .ed-row.p-grid { grid-template-columns: 1fr 1fr; }
+    .ed-row.head { display: none; }
+    .ed-row input, .ed-row select { min-width: 0; }
+  }
+  .ed-row input, .ed-row select, .ed-field input, .ed-field select {
+    width: 100%; padding: 8px 10px; border-radius: 9px; border: 1px solid var(--border);
+    background: var(--card); color: var(--text); font-size: 13px;
+  }
+  .ed-del { background: none; border: none; color: var(--neg); font-size: 15px; cursor: pointer; padding: 4px; }
+  .ed-add { margin-top: 12px; }
+  .ed-fields { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 900px) { .ed-fields { grid-template-columns: 1fr; } }
+  .ed-field label { display: block; font-size: 11px; font-weight: 600; color: var(--text-tertiary); margin-bottom: 4px; }
+  .save-bar {
+    position: sticky; bottom: 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 12px 16px; box-shadow: var(--shadow-1); margin-top: 8px;
+  }
+  .save-bar .status { font-size: 12px; color: var(--text-secondary); flex: 1; min-width: 160px; }
+  .save-bar .nw { font-size: 13px; font-weight: 700; }
+  .ed-warn { color: var(--warn-text); font-size: 12px; margin-top: 8px; }
+
+  .footnote { text-align: center; font-size: 11px; color: var(--footnote); margin-top: 24px; line-height: 1.6; }
   .loading { text-align: center; padding: 80px 0; color: var(--text-tertiary); font-size: 14px; }
   .errbox { background: var(--card); border-radius: 18px; padding: 24px; color: var(--neg); font-size: 13px; line-height: 1.6; }
   .errbox b { color: var(--text); }
-  .errbox code { background: var(--chip-bg); padding: 2px 6px; border-radius: 6px; font-size: 12px; }
 
   @media (max-width: 640px) {
     body { padding: 20px 14px 48px; }
@@ -379,7 +288,7 @@
     .hero-left .value { font-size: 34px; }
     .grid4 { grid-template-columns: 1fr 1fr; gap: 12px; }
     thead th, tbody td { padding-left: 14px; padding-right: 14px; }
-    .setup-card { margin: 16px auto; }
+    .gate-card { margin: 16px auto; }
   }
 </style>
 </head>
@@ -388,18 +297,19 @@
   <div class="top">
     <div class="top-left">
       <h1>Portfolio Analysis Dashboard</h1>
-      <div class="sub" id="updatedAt">Loading live data…</div>
+      <div class="sub" id="updatedAt">Loading…</div>
     </div>
     <div class="top-right">
       <button class="refresh-btn" id="refreshBtn">⟳ Refresh</button>
-      <button class="refresh-btn" id="settingsBtn" aria-label="Data source settings" title="Data source settings">⚙</button>
+      <button class="refresh-btn" id="editBtn" style="display:none">✎ Edit</button>
+      <button class="refresh-btn" id="lockBtn" style="display:none" aria-label="Lock dashboard" title="Lock dashboard">🔒 Lock</button>
       <div class="theme-toggle" id="themeToggle" role="group" aria-label="Colour theme">
         <button class="opt" data-mode="light" aria-label="Light mode">☀️</button>
         <button class="opt" data-mode="dark" aria-label="Dark mode">🌙</button>
       </div>
     </div>
   </div>
-  <div id="app"><div class="loading">Fetching live holdings, property and profile data…</div></div>
+  <div id="app"><div class="loading">Loading…</div></div>
 </div>
 
 <script>
@@ -412,227 +322,228 @@
 <script>
 "use strict";
 
-/* ================= Data source config =================
-   The sheet URL is stored ONLY in this browser (localStorage),
-   never in the repository. Accepts either:
-   - a Google Sheets tab URL (link-sharing must be on), or
-   - an Apps Script proxy URL (keeps the sheet private — see README). */
-const CFG_KEY = "pad-config";
-const CACHE_KEY = "pad-cache";
-const HIST_KEY = "pad-history";
-const REFRESH_MS = 5 * 60 * 1000;
+/* =====================================================================
+   Self-contained architecture — no Google Sheets.
+   - data.enc.json (in this repo) holds ALL financial data, encrypted in
+     the browser with AES-256-GCM; the passphrase never leaves the page.
+   - prices.json + AUD/INR are refreshed by .github/workflows/prices.yml.
+   - Edits happen in the built-in editor and are committed back to the
+     repo via the GitHub API using a fine-grained token you provide once
+     per device. Every save is a commit = full history + rollback.
+   ===================================================================== */
 
-function getConfig(){
-  try { return JSON.parse(localStorage.getItem(CFG_KEY) || "null"); } catch(e) { return null; }
-}
-function saveConfig(c){ localStorage.setItem(CFG_KEY, JSON.stringify(c)); }
+const DATA_FILE = "data.enc.json";
+const TICKERS_FILE = "tickers.json";
+const PRICES_FILE = "prices.json";
+const KDF_ITER = 310000;
+const LS = {
+  theme: "pad-theme",
+  keyLocal: "pad-key",         // remembered unlock key (optional)
+  encCache: "pad-enc-cache",   // last known envelope (covers Pages deploy lag)
+  token: "pad-token",          // GitHub fine-grained token
+  repo: "pad-repo",            // {owner, repo}
+  histEnc: "pad-history-enc",  // encrypted net-worth history
+  // legacy keys from the Google-Sheets era, removed on boot:
+  legacy: ["pad-config", "pad-cache", "pad-history"]
+};
 
-function csvUrlFromInput(input){
-  input = (input || "").trim();
-  const m = input.match(/docs\.google\.com\/spreadsheets\/d\/([A-Za-z0-9_-]+)/);
-  if (m) {
-    const gid = (input.match(/[#?&]gid=(\d+)/) || [])[1] || "0";
-    // headers=0 so Google does not infer the title row as headers and blank string columns such as Ticker
-    return "https://docs.google.com/spreadsheets/d/" + m[1] + "/gviz/tq?tqx=out:csv&headers=0&gid=" + gid;
-  }
-  if (/^https:\/\//i.test(input)) return input; // Apps Script proxy or any raw CSV endpoint
-  if (/^[A-Za-z0-9_-]{25,}$/.test(input)) {
-    return "https://docs.google.com/spreadsheets/d/" + input + "/gviz/tq?tqx=out:csv&headers=0&gid=0";
-  }
-  return null;
-}
+let DATA = null;       // decrypted data object
+let PRICES = null;     // {updated, fx:{AUDINR}, prices:{TICKER:n}}
+let CRYPTO = null;     // {key: CryptoKey, saltB64, iter}
+let WORKING = null;    // editor working copy
+let HISTORY = [];      // decrypted snapshots
+let EDITOR_UI = { buyIdx: null }; // which holding has the buy form open
 
-/* ================= Utilities ================= */
-function clean(s){ return (s || "").replace(/\\/g, "").trim(); }
+/* ================= Small utilities ================= */
 function esc(s){
   return String(s == null ? "" : s)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
-function parseCurrency(s){
-  s = clean(String(s == null ? "" : s));
-  if (!s || s === "-" || s === "–") return 0;
-  const neg = /^\(.*\)$/.test(s);
-  s = s.replace(/[()$,₹]/g, "");
-  const n = parseFloat(s.replace(/[^0-9.\-]/g, "")) || 0;
-  return neg ? -Math.abs(n) : n;
-}
-function parsePercent(s){
-  s = clean(String(s == null ? "" : s)).replace("%", "").replace(/,/g, "");
-  return parseFloat(s) || 0;
-}
+function num(v){ const n = parseFloat(String(v == null ? "" : v).replace(/[$,%₹\s]/g, "").replace(/,/g, "")); return isFinite(n) ? n : 0; }
 function fmtCurrency(n){
   const neg = n < 0;
   const v = Math.abs(Math.round(n)).toLocaleString("en-AU");
   return (neg ? "-$" : "$") + v;
 }
 function fmtSigned(n){ return (n >= 0 ? "+" : "") + fmtCurrency(n); }
-function fmtPrice(raw){
-  const n = parseCurrency(raw);
-  if (!n) return esc(clean(String(raw || ""))) || "—";
-  return "$" + n.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
+function fmtPrice(n){ return n > 0 ? "$" + n.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—"; }
 function fmtPct(n, digits){ return (isFinite(n) ? n : 0).toFixed(digits == null ? 1 : digits) + "%"; }
 function fmtInrCr(inr){ return "₹" + (inr / 1e7).toFixed(2) + " Cr"; }
 function localDateStr(){
   const d = new Date();
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function lsGetJson(k){ try { return JSON.parse(localStorage.getItem(k) || "null"); } catch(e) { return null; } }
+function lsSetJson(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
+function b64(bytes){ let s = ""; for (const b of bytes) s += String.fromCharCode(b); return btoa(s); }
+function ub64(str){ return Uint8Array.from(atob(str), c => c.charCodeAt(0)); }
+function b64utf8(str){ return b64(new TextEncoder().encode(str)); }
 
-// Minimal RFC4180 CSV parser (handles quoted fields, embedded commas/quotes/newlines)
-function parseCSV(text){
-  const rows = [];
-  let row = [], field = "", inQuotes = false;
-  for (let i = 0; i < text.length; i++){
-    const c = text[i];
-    if (inQuotes){
-      if (c === '"'){
-        if (text[i+1] === '"'){ field += '"'; i++; }
-        else { inQuotes = false; }
-      } else field += c;
-    } else {
-      if (c === '"') inQuotes = true;
-      else if (c === ','){ row.push(field); field = ""; }
-      else if (c === '\n'){ row.push(field); rows.push(row); row = []; field = ""; }
-      else if (c === '\r'){ /* skip */ }
-      else field += c;
+/* ================= Crypto (WebCrypto, AES-256-GCM) ================= */
+async function deriveKey(pass, saltBytes, iter){
+  const km = await crypto.subtle.importKey("raw", new TextEncoder().encode(pass), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt: saltBytes, iterations: iter || KDF_ITER, hash: "SHA-256" },
+    km, { name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
+}
+async function encryptWithKey(key, obj){
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(JSON.stringify(obj)));
+  return { iv: b64(iv), ct: b64(new Uint8Array(ct)) };
+}
+async function decryptWithKey(key, blob){
+  const pt = await crypto.subtle.decrypt({ name: "AES-GCM", iv: ub64(blob.iv) }, key, ub64(blob.ct));
+  return JSON.parse(new TextDecoder().decode(pt));
+}
+async function makeEnvelope(obj){
+  const enc = await encryptWithKey(CRYPTO.key, obj);
+  return { v: 1, kdf: "pbkdf2-sha256", iter: CRYPTO.iter, salt: CRYPTO.saltB64, iv: enc.iv, ct: enc.ct, savedAt: Date.now() };
+}
+async function setPassphrase(pass){
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const key = await deriveKey(pass, salt, KDF_ITER);
+  CRYPTO = { key, saltB64: b64(salt), iter: KDF_ITER };
+}
+async function rememberKey(persistent){
+  const raw = new Uint8Array(await crypto.subtle.exportKey("raw", CRYPTO.key));
+  const rec = JSON.stringify({ k: b64(raw), salt: CRYPTO.saltB64, iter: CRYPTO.iter });
+  sessionStorage.setItem(LS.keyLocal, rec);
+  if (persistent) localStorage.setItem(LS.keyLocal, rec);
+}
+async function restoreKey(env){
+  const rec = JSON.parse(sessionStorage.getItem(LS.keyLocal) || localStorage.getItem(LS.keyLocal) || "null");
+  if (!rec || rec.salt !== env.salt) return false; // salt mismatch = passphrase changed elsewhere
+  try {
+    const key = await crypto.subtle.importKey("raw", ub64(rec.k), "AES-GCM", true, ["encrypt", "decrypt"]);
+    DATA = await decryptWithKey(key, env);
+    CRYPTO = { key, saltB64: rec.salt, iter: rec.iter || env.iter };
+    return true;
+  } catch(e) { return false; }
+}
+
+/* ================= GitHub API ================= */
+function repoConfig(){
+  let cfg = lsGetJson(LS.repo);
+  if (cfg && cfg.owner && cfg.repo) return cfg;
+  const m = location.hostname.match(/^([^.]+)\.github\.io$/);
+  const seg = location.pathname.split("/").filter(Boolean)[0];
+  if (m && seg){ cfg = { owner: m[1], repo: seg }; lsSetJson(LS.repo, cfg); return cfg; }
+  return null;
+}
+function getToken(){ return localStorage.getItem(LS.token) || ""; }
+async function ghApi(path, opts){
+  const token = getToken();
+  if (!token) throw new Error("NO_TOKEN");
+  const cfg = repoConfig();
+  if (!cfg) throw new Error("NO_REPO");
+  const res = await fetch("https://api.github.com/repos/" + cfg.owner + "/" + cfg.repo + path, Object.assign({
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
     }
+  }, opts || {}));
+  return res;
+}
+async function ghPutFile(path, contentStr, message){
+  let sha;
+  const g = await ghApi("/contents/" + path + "?ref=main");
+  if (g.status === 401 || g.status === 403) throw new Error("TOKEN_REJECTED");
+  if (g.ok) sha = (await g.json()).sha;
+  const body = { message, content: b64utf8(contentStr), branch: "main" };
+  if (sha) body.sha = sha;
+  const put = await ghApi("/contents/" + path, {
+    method: "PUT",
+    body: JSON.stringify(body)
+  });
+  if (!put.ok){
+    const t = await put.text();
+    throw new Error("Commit failed (" + put.status + "): " + t.slice(0, 180));
   }
-  if (field.length || row.length){ row.push(field); rows.push(row); }
-  return rows.map(r => r.map(c => clean(c)));
+}
+async function ghDispatchPrices(){
+  try { await ghApi("/actions/workflows/prices.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: "main" }) }); }
+  catch(e) { /* token may lack Actions permission — prices update on schedule instead */ }
 }
 
-/* ================= Sheet classification =================
-   Rows are detected by shape, not by hardcoded names, so adding an owner,
-   holding or property in the sheet just works. If a header row exists
-   ("Ticker" for holdings, "Net Equity" for properties), columns are mapped
-   by name; otherwise the original positional layout is assumed. */
-const TICKER_RE = /^[A-Z0-9]{2,6}(\.[A-Z]{1,3})?$/;
-const DEFAULT_H = { owner: 0, ticker: 1, shares: 3, price: 5, mv: 6, cb: 7, gainPct: 9, sector: -1 };
-const DEFAULT_P = { name: 0, low: 3, value: 4, high: 5, loan: 6, offset: 7, netDebt: 8, equity: 9, updated: 10, source: 11 };
-
-function findIn(low, names){
-  for (const n of names){ const i = low.findIndex(c => c === n); if (i >= 0) return i; }
-  for (const n of names){ const i = low.findIndex(c => c.includes(n)); if (i >= 0) return i; }
-  return -1;
+/* ================= Boot & data loading ================= */
+async function fetchJsonFile(name){
+  try {
+    const res = await fetch(name + "?t=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch(e) { return null; }
 }
-// A header row is text-only — a row carrying real figures (e.g. a
-// "Total Property Net Equity | $920,000" summary line) must never be
-// mistaken for one, or the column remap reads data from the wrong cells.
-function isTextOnlyRow(r){
-  return !r.some(c => Math.abs(parseCurrency(c)) > 999);
+async function loadEnvelope(){
+  const fetched = await fetchJsonFile(DATA_FILE);
+  const cached = lsGetJson(LS.encCache);
+  // a save commits + caches instantly, but Pages redeploys take a minute —
+  // prefer whichever copy is newer
+  if (fetched && cached) return (cached.savedAt || 0) > (fetched.savedAt || 0) ? cached : fetched;
+  return fetched || cached;
 }
-const HOLD_HEADER_NAMES = ["shares", "units", "qty", "quantity", "price", "market value", "cost basis", "cost base", "gain"];
-const PROP_HEADER_NAMES = ["net equity", "net debt", "loan", "offset", "cma", "est. value", "est value", "high", "low", "source", "updated"];
+async function boot(){
+  LS.legacy.forEach(k => localStorage.removeItem(k));
+  PRICES = await fetchJsonFile(PRICES_FILE);
+  const env = await loadEnvelope();
+  if (!env || !env.ct){ renderOnboarding(); return; }
+  if (await restoreKey(env)){ await afterUnlock(); return; }
+  renderUnlock(env);
+}
+async function afterUnlock(){
+  document.getElementById("editBtn").style.display = "";
+  document.getElementById("lockBtn").style.display = "";
+  HISTORY = await loadHistory();
+  await renderDashboard();
+}
+function lockNow(){
+  sessionStorage.removeItem(LS.keyLocal);
+  localStorage.removeItem(LS.keyLocal);
+  CRYPTO = null; DATA = null; WORKING = null; HISTORY = [];
+  if (historyChartInstance){ historyChartInstance.destroy(); historyChartInstance = null; }
+  document.getElementById("editBtn").style.display = "none";
+  document.getElementById("lockBtn").style.display = "none";
+  boot();
+}
 
-function findColumnMaps(rows){
-  const H = Object.assign({}, DEFAULT_H), P = Object.assign({}, DEFAULT_P);
-  const headerRows = new Set();
-  let foundH = false, foundP = false;
-  rows.forEach((r, i) => {
-    const low = r.map(c => (c || "").toLowerCase());
-    if (!foundH && low.some(c => c === "ticker") && isTextOnlyRow(r) &&
-        low.filter(c => c && HOLD_HEADER_NAMES.some(n => c.includes(n))).length >= 2){
-      foundH = true; headerRows.add(i);
-      const set = (key, names) => { const idx = findIn(low, names); if (idx >= 0) H[key] = idx; };
-      set("ticker", ["ticker"]);
-      set("shares", ["shares", "units", "qty", "quantity"]);
-      set("price", ["price"]);
-      set("mv", ["market value", "mkt value", "current value"]);
-      set("cb", ["cost basis", "cost base", "total cost"]);
-      set("gainPct", ["gain %", "gain%", "gain / loss %", "gain/loss %", "return %"]);
-      const si = findIn(low, ["sector"]); if (si >= 0) H.sector = si;
-      return;
+/* ================= Unlock screen ================= */
+function renderUnlock(env, notice){
+  document.getElementById("updatedAt").textContent = "Locked";
+  document.getElementById("app").innerHTML = `
+  <div class="card gate-card">
+    <div class="big-emoji">🔐</div>
+    <h2>Unlock your dashboard</h2>
+    ${notice ? `<div class="gate-note">${esc(notice)}</div>` : ""}
+    <p>All data is encrypted. Enter your passphrase to decrypt it in this browser — it is never sent anywhere.</p>
+    <input type="password" id="passInput" placeholder="Passphrase" autocomplete="current-password" autofocus>
+    <label class="check"><input type="checkbox" id="rememberChk"> Keep me unlocked on this device</label>
+    <div class="gate-actions">
+      <button class="refresh-btn primary" id="unlockBtn">Unlock</button>
+    </div>
+    <p class="gate-hint">Forgot the passphrase? There is no reset — restore from an exported backup, or delete <code>data.enc.json</code> from the repository and set up again.</p>
+  </div>`;
+  const doUnlock = async () => {
+    const btn = document.getElementById("unlockBtn");
+    btn.disabled = true; btn.textContent = "Unlocking…";
+    try {
+      const pass = document.getElementById("passInput").value;
+      const key = await deriveKey(pass, ub64(env.salt), env.iter || KDF_ITER);
+      DATA = await decryptWithKey(key, env);
+      CRYPTO = { key, saltB64: env.salt, iter: env.iter || KDF_ITER };
+      await rememberKey(document.getElementById("rememberChk").checked);
+      await afterUnlock();
+    } catch(e) {
+      btn.disabled = false; btn.textContent = "Unlock";
+      renderUnlock(env, "That passphrase didn't work — please try again.");
     }
-    if (!foundP && low.some(c => c.includes("net equity")) && isTextOnlyRow(r) &&
-        low.filter(c => c && PROP_HEADER_NAMES.some(n => c.includes(n))).length >= 4){
-      foundP = true; headerRows.add(i);
-      const set = (key, names) => { const idx = findIn(low, names); if (idx >= 0) P[key] = idx; };
-      set("low", ["cma low", "low"]);
-      set("value", ["est. value", "est value", "mid"]);
-      set("high", ["cma high", "high"]);
-      set("loan", ["loan"]);
-      set("offset", ["offset"]);
-      set("netDebt", ["net debt"]);
-      set("equity", ["net equity"]);
-      set("updated", ["updated"]);
-      set("source", ["source"]);
-    }
-  });
-  return { H, P, headerRows };
+  };
+  document.getElementById("unlockBtn").addEventListener("click", doUnlock);
+  document.getElementById("passInput").addEventListener("keydown", e => { if (e.key === "Enter") doUnlock(); });
 }
 
-function classifyAll(rows){
-  const { H, P, headerRows } = findColumnMaps(rows);
-  const holdingsByOwner = {};
-  const owners = [];
-  const properties = [];
-  const map = {};
-  const holdingsTotal = { mv: 0, cb: 0 };
-  const re = { value: 0, loan: 0, offset: 0, equity: 0 };
-  let lastOwner = "";
-
-  rows.forEach((r, ri) => {
-    const low0 = (r[0] || "").toLowerCase();
-    if (headerRows.has(ri)) return;
-
-    // Holdings row: ticker-shaped symbol with positive shares and market value
-    const tick = r[H.ticker] || "";
-    const mv = parseCurrency(r[H.mv]);
-    const sh = parseCurrency(r[H.shares]);
-    if (TICKER_RE.test(tick) && mv > 0 && sh > 0){
-      const owner = r[H.owner] || lastOwner;
-      if (!owner) return;
-      lastOwner = owner;
-      if (!holdingsByOwner[owner]){ holdingsByOwner[owner] = []; owners.push(owner); }
-      const item = {
-        owner, ticker: tick, shares: r[H.shares], sharesNum: sh, price: r[H.price],
-        mv, cb: parseCurrency(r[H.cb]), gainPct: parsePercent(r[H.gainPct]),
-        sheetSector: H.sector >= 0 ? (r[H.sector] || "") : ""
-      };
-      holdingsByOwner[owner].push(item);
-      holdingsTotal.mv += item.mv;
-      holdingsTotal.cb += item.cb;
-      return;
-    }
-
-    // Property row: has a name, a substantial estimated value, and at least
-    // one other property-shaped figure. Summary rows (any name containing
-    // total/subtotal/combined/sum) are excluded so they can't double-count.
-    const name = r[P.name] || "";
-    if (name && !/\b(total|subtotal|combined|sum)\b/i.test(name)){
-      const val = parseCurrency(r[P.value]);
-      const lowV = parseCurrency(r[P.low]);
-      const highV = parseCurrency(r[P.high]);
-      const sheetEq = parseCurrency(r[P.equity]);
-      const loan = parseCurrency(r[P.loan]);
-      const offset = parseCurrency(r[P.offset]);
-      const propShaped = lowV > 0 || highV > 0 || loan > 0 || offset > 0 || sheetEq !== 0;
-      if (val > 50000 && propShaped){
-        // Equity is computed here, not read from the sheet: value less net
-        // debt, where offset cash cancels loan dollar-for-dollar. A fully
-        // offset loan therefore means 100% equity in the property.
-        const netDebt = Math.max(loan - offset, 0);
-        const equity = val - loan + offset;
-        const p = {
-          name, low: lowV, value: val, high: highV,
-          loan, offset, netDebt, equity,
-          updated: r[P.updated] || "", source: r[P.source] || ""
-        };
-        properties.push(p);
-        re.value += p.value; re.loan += p.loan; re.offset += p.offset; re.equity += p.equity;
-        return;
-      }
-    }
-
-    // Everything else with a label + value is profile/summary data
-    if (r[0] && r[1] !== undefined && r[1] !== "" && low0 !== "owner") map[r[0]] = r[1];
-  });
-
-  return { holdingsByOwner, owners, properties, map, holdingsTotal, re };
-}
-
-/* ================= Sectors ================= */
+/* ================= Compute model ================= */
 const SECTOR_MAP = {
   BHP: "Resources & Energy", RIO: "Resources & Energy", FMG: "Resources & Energy",
   WDS: "Resources & Energy", S32: "Resources & Energy", MIN: "Resources & Energy", STO: "Resources & Energy",
@@ -645,555 +556,109 @@ const SECTOR_MAP = {
   NDIA: "Diversified ETFs", GOLD: "Commodities"
 };
 const SECTOR_COLORS = {
-  "Resources & Energy": "#d70015",
-  "Healthcare": "#8e44ec",
-  "Financials": "#b26a00",
-  "Consumer": "#0d9488",
-  "Diversified ETFs": "#0071e3",
-  "Commodities": "#c9a227",
-  "Other": "#86868b"
+  "Resources & Energy": "#d70015", "Healthcare": "#8e44ec", "Financials": "#b26a00",
+  "Consumer": "#0d9488", "Diversified ETFs": "#0071e3", "Commodities": "#c9a227", "Other": "#86868b"
 };
+const SECTOR_NAMES = Object.keys(SECTOR_COLORS).filter(s => s !== "Other");
 const PROPERTY_COLORS = ["#1a9d4b", "#2fbf71", "#7bd4a3"];
 const DIVERSIFIED = "Diversified ETFs";
 
-function sectorOf(h){
-  if (h.sheetSector) return h.sheetSector;
-  return SECTOR_MAP[h.ticker] || "Other";
-}
+function computeModel(data, prices){
+  const px = (prices && prices.prices) || {};
+  const fx = num(prices && prices.fx && prices.fx.AUDINR);
+  const owners = [];
+  const holdingsByOwner = {};
+  const missingPrices = [];
+  const holdingsTotal = { mv: 0, cb: 0 };
 
-/* ================= Load & cache ================= */
-let loading = false;
-let lastLoadAt = 0;
-
-function cacheCsv(text){
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ text, at: Date.now() })); } catch(e) {}
-}
-function getCache(){
-  try { return JSON.parse(localStorage.getItem(CACHE_KEY) || "null"); } catch(e) { return null; }
-}
-
-async function load(){
-  if (loading) return;
-  const cfg = getConfig();
-  if (!cfg || !cfg.csvUrl){ renderSetup(); return; }
-  loading = true;
-  const btn = document.getElementById("refreshBtn");
-  btn.disabled = true; btn.textContent = "⟳ Refreshing…";
-  document.getElementById("updatedAt").textContent = "Refreshing…";
-  try {
-    const res = await fetch(cfg.csvUrl, { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const text = await res.text();
-    if (/^\s*<|accounts\.google\.com|Sign in/i.test(text)) throw new Error("SHARING");
-    const data = classifyAll(parseCSV(text));
-    if (!data.owners.length) throw new Error("The sheet loaded, but no holdings rows with ticker + market value were found.");
-    cacheCsv(text);
-    lastLoadAt = Date.now();
-    render(data);
-    document.getElementById("updatedAt").textContent =
-      "Live · updated " + new Date().toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" });
-  } catch (e) {
-    handleLoadError(e);
-  } finally {
-    loading = false;
-    btn.disabled = false; btn.textContent = "⟳ Refresh";
-  }
-}
-
-function handleLoadError(e){
-  const sharing = e && e.message === "SHARING";
-  const reason = sharing ? "the data source needs link-sharing (or the URL changed)" : (e && e.message ? e.message : "unknown error");
-
-  // Keep showing the last good data instead of wiping the dashboard
-  const cache = getCache();
-  if (cache && cache.text){
-    try {
-      const data = classifyAll(parseCSV(cache.text));
-      if (data.owners.length){
-        render(data, { stale: { at: cache.at, reason } });
-        document.getElementById("updatedAt").textContent = "Showing cached data";
-        return;
-      }
-    } catch(_) {}
-  }
-
-  document.getElementById("app").innerHTML =
-    '<div class="errbox"><b>Could not load live data.</b><br><br>' +
-    (sharing
-      ? 'This usually means the Sheet\'s link-sharing isn\'t turned on yet. In the Sheet, click <b>Share</b> → under "General access" choose <b>Anyone with the link</b> → <b>Viewer</b> → Done. Then hit Refresh here. (Or use the Apps Script proxy from the README to keep the sheet private.)'
-      : 'Details: ' + esc(reason) + '. Check your internet connection and try Refresh.') +
-    '<br><br><button class="refresh-btn" id="errSettings">Change data source</button></div>';
-  document.getElementById("updatedAt").textContent = "Load failed";
-  const b = document.getElementById("errSettings");
-  if (b) b.addEventListener("click", () => renderSetup());
-}
-
-/* ================= Setup screen ================= */
-function renderSetup(notice){
-  const cfg = getConfig();
-  document.getElementById("updatedAt").textContent = "Not connected";
-  document.getElementById("app").innerHTML = `
-  <div class="card setup-card">
-    <h2>Connect your data source</h2>
-    ${notice ? `<div class="setup-note">${esc(notice)}</div>` : ""}
-    <p>Paste the URL of your Google Sheet tab — copy it from the browser address bar so it includes <code>gid=…</code> — or the URL of your Apps Script proxy if you've set one up (recommended; keeps the sheet private — see the README).</p>
-    <input id="srcInput" type="url" spellcheck="false" placeholder="https://docs.google.com/spreadsheets/d/…/edit#gid=0" value="${esc(cfg && cfg.input || "")}">
-    <div class="setup-actions">
-      <button class="refresh-btn" id="srcSave">Save &amp; load</button>
-      ${cfg && cfg.csvUrl ? '<button class="refresh-btn" id="srcCancel">Cancel</button>' : ""}
-    </div>
-    <p class="setup-hint">The URL is stored only in this browser (localStorage) — it is never committed to the repository or sent anywhere except Google. Direct sheet URLs require link-sharing (Share → Anyone with the link → Viewer); the Apps Script proxy does not.</p>
-  </div>`;
-  document.getElementById("srcSave").addEventListener("click", () => {
-    const input = document.getElementById("srcInput").value;
-    const url = csvUrlFromInput(input);
-    if (!url){ renderSetup("That doesn't look like a Google Sheets URL, sheet ID, or https endpoint — please check and try again."); return; }
-    saveConfig({ input: input.trim(), csvUrl: url });
-    load();
+  (data.holdings || []).forEach(h => {
+    const live = num(px[h.ticker]);
+    const manual = num(h.manualPrice);
+    const price = live > 0 ? live : manual;
+    const mv = price * num(h.shares);
+    const cb = num(h.costBasis);
+    const item = {
+      owner: h.owner, ticker: h.ticker, sharesNum: num(h.shares), price, mv, cb,
+      gainPct: cb ? ((mv - cb) / cb) * 100 : 0,
+      sector: h.sector || SECTOR_MAP[h.ticker] || "Other",
+      priceSource: live > 0 ? "live" : (manual > 0 ? "manual" : "none")
+    };
+    if (item.priceSource === "none" && !missingPrices.includes(h.ticker)) missingPrices.push(h.ticker);
+    if (!holdingsByOwner[h.owner]){ holdingsByOwner[h.owner] = []; owners.push(h.owner); }
+    holdingsByOwner[h.owner].push(item);
+    holdingsTotal.mv += mv; holdingsTotal.cb += cb;
   });
-  const c = document.getElementById("srcCancel");
-  if (c) c.addEventListener("click", load);
-}
 
-/* ================= Render ================= */
-function render(data, opts){
-  opts = opts || {};
-  const { holdingsByOwner, owners, properties, map, holdingsTotal, re } = data;
+  const re = { value: 0, loan: 0, offset: 0, equity: 0 };
+  const properties = (data.properties || []).map(p => {
+    const value = num(p.value), loan = num(p.loan), offset = num(p.offset);
+    const netDebt = Math.max(loan - offset, 0);
+    const equity = value - loan + offset;
+    re.value += value; re.loan += loan; re.offset += offset; re.equity += equity;
+    return { name: p.name, ppor: !!p.ppor, value, low: num(p.low), high: num(p.high),
+             loan, offset, netDebt, equity, updated: p.updated || "", source: p.source || "" };
+  });
 
   const netWorth = holdingsTotal.mv + re.equity;
-  const eqPct = netWorth ? (holdingsTotal.mv / netWorth) * 100 : 0;
-  const propPct = 100 - eqPct;
-  const totalGain = holdingsTotal.mv - holdingsTotal.cb;
-  const totalGainPct = holdingsTotal.cb ? (totalGain / holdingsTotal.cb) * 100 : 0;
+  const fire = data.fire || {};
+  const swr = num(fire.swrPct) / 100;
+  const corpusInr = swr > 0 ? (num(fire.monthlyIncomeINR) * 12) / swr + num(fire.homeCostINR) : 0;
+  const corpusAud = fx > 0 && corpusInr > 0 ? corpusInr / fx : 0;
+  const progressPct = corpusAud > 0 ? (netWorth / corpusAud) * 100 : 0;
 
-  const fireCorpusTodayAUD = parseCurrency(map["FIRE Corpus Required Today (AUD, no inflation)"]);
-  const fireProgressPct = parsePercent(map["FIRE Progress %"]);
-  const fxRate = parseCurrency(map["AUD/INR Exchange Rate (Live)"]) || 0;
-  const fireProjection = projectYearsToFire(netWorth, map, fxRate);
-
-  const ringCirc = 2 * Math.PI * 52;
-  const eqLen = (eqPct / 100) * ringCirc;
-
-  // Only log history snapshots for live data, never cached fallbacks
-  const history = opts.stale ? getHistory() : logSnapshot(netWorth, holdingsTotal.mv, re.equity);
-
-  let html = "";
-
-  if (opts.stale){
-    html += `<div class="stale-banner">⚠︎ Couldn't refresh — ${esc(opts.stale.reason)}. Showing data cached ${esc(new Date(opts.stale.at).toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" }))}. It will retry automatically.</div>`;
-  }
-
-  // Hero
-  html += `
-  <div class="hero">
-    <div class="hero-left">
-      <div class="label">Total Household Net Worth</div>
-      <div class="value">${fmtCurrency(netWorth)}</div>
-      <div class="delta">Excludes superannuation · AUD${fxRate ? " · ≈ " + fmtInrCr(netWorth * fxRate) + " @ " + fxRate.toFixed(2) : ""}</div>
-    </div>
-    <div class="ring-wrap">
-      <div class="ring">
-        <svg viewBox="0 0 120 120" aria-hidden="true">
-          <circle cx="60" cy="60" r="52" fill="none" stroke="var(--ring-track)" stroke-width="12"/>
-          <circle cx="60" cy="60" r="52" fill="none" stroke="var(--accent)" stroke-width="12"
-            stroke-dasharray="${eqLen} ${ringCirc - eqLen}" stroke-linecap="round"/>
-        </svg>
-        <div class="ring-center">
-          <div class="pct">${fmtPct(eqPct, 0)}</div>
-          <div class="lbl">Equities</div>
-        </div>
-      </div>
-      <div class="legend">
-        <div class="legend-item"><span class="dot" style="background:var(--accent)"></span>Equities · ${fmtPct(eqPct)}</div>
-        <div class="legend-item"><span class="dot" style="background:var(--ring-track);border:1px solid var(--border)"></span>Property equity · ${fmtPct(propPct)}</div>
-      </div>
-    </div>
-  </div>`;
-
-  // Stat cards
-  html += `
-  <div class="grid4">
-    <div class="stat-card">
-      <div class="label">Equities (Stocks & ETFs)</div>
-      <div class="value">${fmtCurrency(holdingsTotal.mv)}</div>
-      <div class="sub">Cost ${fmtCurrency(holdingsTotal.cb)} · <span class="${totalGain >= 0 ? "gain-pos" : "gain-neg"}">${totalGain >= 0 ? "▲" : "▼"} ${fmtSigned(totalGain)} (${fmtPct(totalGainPct)})</span></div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Property Net Equity</div>
-      <div class="value">${fmtCurrency(re.equity)}</div>
-      <div class="sub">of ${fmtCurrency(re.value)} value${re.value ? " · net LVR " + fmtPct(Math.max(re.loan - re.offset, 0) / re.value * 100, 0) : ""}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Total Mortgage Debt</div>
-      <div class="value">${fmtCurrency(re.loan)}</div>
-      <div class="sub">${fmtCurrency(re.offset)} in offsets</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Annual Savings Rate</div>
-      <div class="value">${esc(map["Annual Savings Rate"] || "—")}</div>
-      <div class="sub">${esc(map["Savings Rate pct of income"] || "")}${map["Savings Rate pct of income"] ? " of combined income" : ""}</div>
-    </div>
-  </div>`;
-
-  // FIRE goal progress + net worth history
-  const showFire = fireCorpusTodayAUD > 0 || fireProgressPct > 0;
-  html += `<div class="section"><div class="grid-fire"${showFire ? "" : ' style="grid-template-columns:1fr"'}>`;
-  if (showFire){
-    html += `
-    <div class="goal-card">
-      <div class="row"><span class="t">FIRE Goal — India Relocation</span><span class="p">${fmtPct(Math.min(fireProgressPct, 100), 0)}</span></div>
-      <div class="progress-track"><div class="progress-fill" style="width:${Math.min(fireProgressPct, 100)}%"></div></div>
-      <div class="goal-meta">
-        <div>Target corpus today: <b>${fmtCurrency(fireCorpusTodayAUD)}</b></div>
-        <div>Current net worth: <b>${fmtCurrency(netWorth)}</b></div>
-        <div>AUD/INR: <b>${fxRate ? fxRate.toFixed(2) : "—"}</b></div>
-        <div>${fireProjection && fireProjection.futureCorpusAUD !== null ? `Est. <b>${fireProjection.years} yr${fireProjection.years === 1 ? "" : "s"}</b> to goal — target inflates to <b>${fmtCurrency(fireProjection.futureCorpusAUD)}</b> by then` : fireProjection ? `Beyond 60-yr projection at current savings/growth — revisit assumptions in the sheet` : "Add savings/growth assumptions in the sheet to project a timeline"}</div>
-      </div>
-    </div>`;
-  }
-  html += `
-    <div class="chart-card">
-      <div class="chart-head">
-        <div class="label">Net Worth History</div>
-        <div class="chart-actions">
-          <button class="mini-btn" id="histExport">Export</button>
-          <button class="mini-btn" id="histImport">Import</button>
-          <input type="file" id="histFile" accept="application/json" style="display:none">
-        </div>
-      </div>
-      <div class="chart-wrap">
-        ${history.length > 1 ? '<canvas id="historyChart"></canvas>' : '<div class="chart-empty">Come back after a few refreshes to see the trend build up.<br>History is stored per-browser — use Import to restore an export.</div>'}
-      </div>
-    </div>
-  </div></div>`;
-
-  // Holdings tables
-  html += `<div class="section"><h2 class="section-title">Holdings</h2><div class="card">`;
-  owners.forEach(owner => {
-    const items = holdingsByOwner[owner];
-    if (!items.length) return;
-    const oMv = items.reduce((s, it) => s + it.mv, 0);
-    const oCb = items.reduce((s, it) => s + it.cb, 0);
-    const oGain = oMv - oCb;
-    const oGainPct = oCb ? (oGain / oCb) * 100 : 0;
-    html += `<div class="owner-header">${esc(owner)}</div>
-    <div class="table-scroll"><table>
-      <thead><tr>
-        <th>Ticker</th><th class="num">Shares</th><th class="num">Price</th>
-        <th class="num">Market Value</th><th class="num">Cost Basis</th><th class="num">Gain $</th><th class="num">Gain %</th>
-      </tr></thead>
-      <tbody>`;
-    items.forEach(it => {
-      const g = it.mv - it.cb;
-      const cls = it.gainPct >= 0 ? "gain-pos" : "gain-neg";
-      html += `<tr>
-        <td class="ticker">${esc(it.ticker)}</td>
-        <td class="num">${esc(it.shares)}</td>
-        <td class="num">${fmtPrice(it.price)}</td>
-        <td class="num">${fmtCurrency(it.mv)}</td>
-        <td class="num">${fmtCurrency(it.cb)}</td>
-        <td class="num ${g >= 0 ? "gain-pos" : "gain-neg"}">${fmtSigned(g)}</td>
-        <td class="num ${cls}">${it.gainPct >= 0 ? "▲ +" : "▼ "}${fmtPct(it.gainPct)}</td>
-      </tr>`;
-    });
-    html += `<tr class="subtotal">
-        <td>Total</td><td></td><td></td>
-        <td class="num">${fmtCurrency(oMv)}</td>
-        <td class="num">${fmtCurrency(oCb)}</td>
-        <td class="num ${oGain >= 0 ? "gain-pos" : "gain-neg"}">${fmtSigned(oGain)}</td>
-        <td class="num ${oGain >= 0 ? "gain-pos" : "gain-neg"}">${oGain >= 0 ? "+" : ""}${fmtPct(oGainPct)}</td>
-      </tr></tbody></table></div>`;
-  });
-  html += `</div></div>`;
-
-  // Real estate cards
-  if (properties.length){
-    html += `<div class="section"><h2 class="section-title">Real Estate</h2><div class="re-grid">`;
-    properties.forEach(p => {
-      const isPpor = /ppor|owner occ/i.test(p.name);
-      const netLvr = p.value ? (p.netDebt / p.value) * 100 : 0;
-      const netLvrColor = netLvr > 80 ? "var(--neg)" : netLvr > 60 ? "var(--warn-text)" : "var(--pos)";
-      html += `
-      <div class="re-card">
-        <div class="name">${esc(p.name)}</div>
-        <span class="tag ${isPpor ? "ppor" : "inv"}">${isPpor ? "PPOR — Owner Occupied" : "Investment"}</span>
-        <div class="re-row" style="border-top:none;padding-top:0"><span>CMA estimate</span><span class="v">${fmtCurrency(p.value)}</span></div>
-        ${p.low > 0 && p.high > 0 ? `<div class="re-range">Range ${fmtCurrency(p.low)} – ${fmtCurrency(p.high)}</div>` : ""}
-        <div class="re-row"><span>Loan balance</span><span class="v">${fmtCurrency(p.loan)}</span></div>
-        <div class="re-row"><span>Offset balance</span><span class="v">${fmtCurrency(p.offset)}</span></div>
-        <div class="re-row"><span>Net debt (loan − offset)</span><span class="v">${fmtCurrency(p.netDebt)}</span></div>
-        <div class="re-row"><span>Net LVR (after offset)</span><span class="v" style="color:${netLvrColor}">${p.netDebt <= 0 ? "0% — fully offset" : fmtPct(netLvr, 0)}</span></div>
-        <div class="re-equity"><span class="lbl">Net Equity</span><span class="val">${fmtCurrency(p.equity)}</span></div>
-        <div class="re-source">${esc(p.source)}${p.updated ? " · updated " + esc(p.updated) : ""}</div>
-      </div>`;
-    });
-    html += `</div><div class="section-note">Net equity is computed as value − loan + offset, so a fully offset loan counts as 100% ownership. Figures come straight from the sheet's value, loan and offset columns.</div></div>`;
-  }
-
-  // Concentration analytics
-  const allHoldings = owners.flatMap(o => holdingsByOwner[o]);
-  const risk = computeConcentrationRisk(allHoldings, holdingsTotal.mv);
-  const largestAsset = computeLargestAsset(risk.byTicker, properties, netWorth);
-  const breakdown = computeNetWorthBreakdown(risk.sectorMv, properties, netWorth);
-
-  html += `
-  <div class="section">
-    <h2 class="section-title">Portfolio Concentration</h2>
-    <div class="risk-grid">
-      <div class="risk-card">
-        <div class="label">Largest Single Equity Position</div>
-        <div class="value">${esc(risk.topTicker)} · ${fmtPct(risk.topPct, 0)}</div>
-        <span class="badge ${risk.topBadge}">${risk.topLabel}</span>
-        <div class="sub">Share of the combined equity book</div>
-      </div>
-      <div class="risk-card">
-        <div class="label">Portfolio Concentration (HHI)</div>
-        <div class="value">${risk.hhi.toLocaleString("en-AU")}</div>
-        <span class="badge ${risk.hhiBadge}">${risk.hhiLabel}</span>
-        <div class="sub">&lt;1,500 diversified · &gt;2,500 concentrated · 10,000 = one stock</div>
-      </div>
-      <div class="risk-card">
-        <div class="label">Top Sector Exposure</div>
-        <div class="value">${esc(risk.topSector)} · ${fmtPct(risk.topSectorPct, 0)}</div>
-        <span class="badge ${risk.topSectorBadge}">${risk.topSectorLabel}</span>
-        <div class="sub">Largest non-diversified sector, share of equities</div>
-      </div>
-      <div class="risk-card">
-        <div class="label">Largest Single Asset (of net worth)</div>
-        <div class="value">${esc(largestAsset.name)} · ${fmtPct(largestAsset.pct, 0)}</div>
-        <span class="badge ${largestAsset.badge}">${largestAsset.label}</span>
-        <div class="sub">Individual holdings and properties compared like-for-like</div>
-      </div>
-    </div>
-    <div class="chart-card" style="margin-top:16px;">
-      <div class="label" style="font-size:12px;color:var(--text-tertiary);font-weight:500;margin-bottom:14px;">Net Worth Allocation — Equities & Real Estate</div>
-      ${breakdown.map(s => `
-        <div style="margin-bottom:12px;">
-          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
-            <span>${esc(s.name)} <span style="color:var(--text-tertiary);font-size:11px;">${esc(s.group)}</span></span><span style="font-weight:600;">${fmtPct(s.pct, 0)}</span>
-          </div>
-          <div class="progress-track" style="height:8px;">
-            <div class="progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.color};"></div>
-          </div>
-        </div>`).join("")}
-      <div style="font-size:11px;color:var(--text-tertiary);margin-top:6px;">Every bar is sized against total net worth (${fmtCurrency(netWorth)}), so equity sectors and individual properties are directly comparable.</div>
-    </div>
-  </div>`;
-
-  // Investor profile — rendered only from sheet data
-  const chips = [
-    ["Risk Tolerance", map["Risk Tolerance"]],
-    ["Time Horizon", map["Time Horizon"]],
-    ["Combined Income", map["Combined Annual Income"]],
-    ["Monthly Savings", map["Monthly Savings Rate"]]
-  ].filter(c => c[1]);
-  const goals = [["Goal 1", map["Primary Goal 1"]], ["Goal 2", map["Primary Goal 2"]]].filter(g => g[1]);
-  if (chips.length || goals.length){
-    html += `
-    <div class="section">
-      <h2 class="section-title">Investor Profile</h2>
-      <div class="card">
-        <div class="chips">${chips.map(c => `<div class="chip"><div class="k">${esc(c[0])}</div><div class="v">${esc(c[1])}</div></div>`).join("")}</div>
-        ${goals.length ? `<div class="goal-block">${goals.map(g => `<div style="margin-bottom:6px"><b>${esc(g[0])}.</b> ${esc(g[1])}</div>`).join("")}</div>` : '<div style="height:14px"></div>'}
-      </div>
-    </div>`;
-  }
-
-  // Rule-based signals
-  const recs = buildRecommendations({ risk, holdingsTotal, re, map, fxRate, fireCorpusTodayAUD });
-  if (recs.length){
-    html += `<div class="section"><h2 class="section-title">Insights &amp; Signals</h2><div class="advice-grid">`;
-    recs.forEach(r => {
-      html += `
-      <div class="advice-card sev-${r.sev}">
-        <div class="icon">${r.emoji}</div>
-        <div class="title">${r.title}</div>
-        <div class="body">${r.body}</div>
-      </div>`;
-    });
-    html += `</div><div class="section-note">Signals are generated live from the sheet data by fixed threshold rules (position &gt;15%, sector &gt;25%, loss &lt;−30%, etc.) — informational only, not financial advice.</div></div>`;
-  }
-
-  const allCount = owners.reduce((s, o) => s + holdingsByOwner[o].length, 0);
-  html += `<div class="footnote">Stock & ETF prices refresh live from Google Sheets (GOOGLEFINANCE) via CSV — auto-refreshes every 5 minutes while the tab is visible. Property values, loan balances and profile figures are updated manually in the sheet. Data source is configured per-browser (⚙).<br>Parsed from the sheet: ${allCount} holdings across ${owners.length} owner${owners.length === 1 ? "" : "s"} · ${properties.length} propert${properties.length === 1 ? "y" : "ies"} · ${Object.keys(map).length} profile fields.</div>`;
-
-  document.getElementById("app").innerHTML = html;
-
-  // Post-render wiring
-  if (history.length > 1) drawHistoryChart(history);
-  const ex = document.getElementById("histExport");
-  if (ex) ex.addEventListener("click", exportHistory);
-  const im = document.getElementById("histImport");
-  const fileInput = document.getElementById("histFile");
-  if (im && fileInput){
-    im.addEventListener("click", () => fileInput.click());
-    fileInput.addEventListener("change", (e) => importHistory(e.target.files[0]));
-  }
-}
-
-/* ================= Net worth history =================
-   One snapshot per local calendar day, stored in localStorage.
-   Export/Import lets you move history between browsers/devices. */
-function getHistory(){
-  try { return JSON.parse(localStorage.getItem(HIST_KEY) || "[]"); } catch(e) { return []; }
-}
-function logSnapshot(netWorth, eqMv, reEquity){
-  let hist = getHistory();
-  const today = localDateStr();
-  const entry = { date: today, netWorth, eq: eqMv, re: reEquity };
-  const idx = hist.findIndex(h => h.date === today);
-  if (idx >= 0) hist[idx] = entry; else hist.push(entry);
-  hist.sort((a, b) => a.date.localeCompare(b.date));
-  if (hist.length > 730) hist = hist.slice(hist.length - 730);
-  try { localStorage.setItem(HIST_KEY, JSON.stringify(hist)); } catch(e) {}
-  return hist;
-}
-function exportHistory(){
-  const blob = new Blob([JSON.stringify(getHistory(), null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "networth-history-" + localDateStr() + ".json";
-  a.click();
-  URL.revokeObjectURL(a.href);
-}
-function importHistory(file){
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const imported = JSON.parse(reader.result);
-      if (!Array.isArray(imported)) throw new Error("not an array");
-      const byDate = {};
-      imported.forEach(h => { if (h && h.date && typeof h.netWorth === "number") byDate[h.date] = h; });
-      getHistory().forEach(h => { byDate[h.date] = h; }); // existing entries win on conflicts
-      let merged = Object.values(byDate).sort((a, b) => a.date.localeCompare(b.date));
-      if (merged.length > 730) merged = merged.slice(merged.length - 730);
-      localStorage.setItem(HIST_KEY, JSON.stringify(merged));
-      lastHistory = merged;
-      load();
-    } catch(e) {
-      alert("Could not import that file — expected a JSON export from this dashboard.");
-    }
+  return {
+    owners, holdingsByOwner, holdingsTotal, properties, re, netWorth,
+    profile: data.profile || {}, fire, fx, missingPrices,
+    fireCorpusAud: corpusAud, fireProgressPct: progressPct,
+    pricesUpdated: prices && prices.updated ? new Date(prices.updated) : null
   };
-  reader.readAsText(file);
 }
 
-let historyChartInstance = null;
-let lastHistory = null;
-function drawHistoryChart(history){
-  lastHistory = history;
-  const canvas = document.getElementById("historyChart");
-  if (!canvas || typeof Chart === "undefined") return;
-  if (historyChartInstance) { historyChartInstance.destroy(); historyChartInstance = null; }
-  const styles = getComputedStyle(document.documentElement);
-  const accent = styles.getPropertyValue("--accent").trim() || "#0071e3";
-  const pos = styles.getPropertyValue("--pos").trim() || "#1a9d4b";
-  const gridColor = styles.getPropertyValue("--border-soft").trim() || "#f2f2f4";
-  const textColor = styles.getPropertyValue("--text-tertiary").trim() || "#86868b";
-  // Older snapshots stored eqPct instead of eq — derive so the equities line spans them too
-  const eqSeries = history.map(h => h.eq != null ? h.eq : (h.eqPct != null ? h.netWorth * h.eqPct / 100 : null));
-  historyChartInstance = new Chart(canvas.getContext("2d"), {
-    type: "line",
-    data: {
-      labels: history.map(h => h.date),
-      datasets: [{
-        label: "Net Worth",
-        data: history.map(h => h.netWorth),
-        borderColor: accent,
-        backgroundColor: accent + "22",
-        fill: true,
-        tension: 0.35,
-        pointRadius: 0,
-        borderWidth: 2.5
-      }, {
-        label: "Equities",
-        data: eqSeries,
-        borderColor: pos,
-        fill: false,
-        tension: 0.35,
-        pointRadius: 0,
-        borderWidth: 1.5,
-        borderDash: [5, 4],
-        spanGaps: true
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: true, labels: { color: textColor, boxWidth: 10, boxHeight: 2, font: { size: 10 } } },
-        tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ": " + fmtCurrency(ctx.parsed.y) } }
-      },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 }, maxTicksLimit: 6 } },
-        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 },
-              callback: (v) => "$" + (v / 1000).toFixed(0) + "k" } }
-      }
-    }
-  });
-}
-
-/* ================= FIRE timeline projection =================
-   The target itself grows every year (income need + home cost inflate in INR),
-   while the portfolio grows via assumed returns + ongoing savings. Find the
-   first year the (FX-converted) inflated target is met. */
-function projectYearsToFire(currentNetWorth, map, fxRate){
-  const monthlyIncomeToday = parseCurrency(map["Desired Monthly Passive Income Today (INR)"]);
-  const homeCostToday = parseCurrency(map["Target India Home Cost Today (INR)"]);
-  const swr = parsePercent(map["Safe Withdrawal Rate"]) / 100;
-  const inflation = parsePercent(map["Assumed India Inflation Rate"]) / 100;
-  const growthRate = parsePercent(map["Assumed Annual Portfolio Growth Rate"]) / 100;
-  const annualSavings = parseCurrency(map["Annual Savings Rate"]);
-  if (!fxRate || !swr || (monthlyIncomeToday === 0 && homeCostToday === 0)) return null;
-
-  const annualIncomeToday = monthlyIncomeToday * 12;
-  const corpusTodayInr = (annualIncomeToday / swr) + homeCostToday;
-  const corpusTodayAud = corpusTodayInr / fxRate;
-  if (currentNetWorth >= corpusTodayAud) return { years: 0, futureCorpusAUD: corpusTodayAud };
-
-  let balance = currentNetWorth;
-  for (let year = 1; year <= 60; year++) {
+/* ================= FIRE projection ================= */
+function projectYearsToFire(netWorth, fire, annualSavings, fx){
+  const swr = num(fire.swrPct) / 100;
+  const inflation = num(fire.inflationPct) / 100;
+  const growthRate = num(fire.growthPct) / 100;
+  const annualIncomeToday = num(fire.monthlyIncomeINR) * 12;
+  const homeCostToday = num(fire.homeCostINR);
+  if (!fx || !swr || (annualIncomeToday === 0 && homeCostToday === 0)) return null;
+  const corpusTodayAud = ((annualIncomeToday / swr) + homeCostToday) / fx;
+  if (netWorth >= corpusTodayAud) return { years: 0, futureCorpusAUD: corpusTodayAud };
+  let balance = netWorth;
+  for (let year = 1; year <= 60; year++){
     balance = balance * (1 + growthRate) + annualSavings;
-    const inflatedIncome = annualIncomeToday * Math.pow(1 + inflation, year);
-    const inflatedHome = homeCostToday * Math.pow(1 + inflation, year);
-    const targetInrYear = (inflatedIncome / swr) + inflatedHome;
-    const targetAudYear = targetInrYear / fxRate; // FX rate held constant as a simplifying assumption
-    if (balance >= targetAudYear) return { years: year, futureCorpusAUD: targetAudYear };
+    const targetInr = (annualIncomeToday * Math.pow(1 + inflation, year) / swr) + homeCostToday * Math.pow(1 + inflation, year);
+    const targetAud = targetInr / fx; // FX held constant as a simplifying assumption
+    if (balance >= targetAud) return { years: year, futureCorpusAUD: targetAud };
   }
   return { years: "60+", futureCorpusAUD: null };
 }
 
-/* ================= Concentration analytics =================
-   All figures aggregate the same ticker across owners first, so a stock
-   both partners hold is measured as one position. */
+/* ================= Concentration analytics ================= */
 function computeConcentrationRisk(allHoldings, totalMv){
   const byTicker = {};
   allHoldings.forEach(h => {
-    if (!byTicker[h.ticker]) byTicker[h.ticker] = { ticker: h.ticker, mv: 0, cb: 0, shares: 0, owners: [], sector: sectorOf(h) };
+    if (!byTicker[h.ticker]) byTicker[h.ticker] = { ticker: h.ticker, mv: 0, cb: 0, shares: 0, owners: [], sector: h.sector };
     const t = byTicker[h.ticker];
     t.mv += h.mv; t.cb += h.cb; t.shares += h.sharesNum || 0;
     if (!t.owners.includes(h.owner)) t.owners.push(h.owner);
   });
-
   let topTicker = "—", topMv = 0, hhi = 0;
   const sectorMv = {};
   Object.values(byTicker).forEach(t => {
-    if (t.mv > topMv) { topMv = t.mv; topTicker = t.ticker; }
-    const weight = totalMv ? t.mv / totalMv : 0;
-    hhi += weight * weight * 10000;
+    if (t.mv > topMv){ topMv = t.mv; topTicker = t.ticker; }
+    const w = totalMv ? t.mv / totalMv : 0;
+    hhi += w * w * 10000;
     sectorMv[t.sector] = (sectorMv[t.sector] || 0) + t.mv;
   });
   const topPct = totalMv ? (topMv / totalMv) * 100 : 0;
-
   let topSector = "—", topSectorMv = 0;
   Object.entries(sectorMv).forEach(([name, mv]) => {
-    if (name !== DIVERSIFIED && mv > topSectorMv) { topSectorMv = mv; topSector = name; }
+    if (name !== DIVERSIFIED && mv > topSectorMv){ topSectorMv = mv; topSector = name; }
   });
   const topSectorPct = totalMv ? (topSectorMv / totalMv) * 100 : 0;
-
   return {
-    byTicker, sectorMv, totalMv,
-    topTicker, topPct,
+    byTicker, sectorMv, totalMv, topTicker, topPct,
     topBadge: topPct > 25 ? "risk-hi" : topPct > 12 ? "risk-mid" : "risk-lo",
     topLabel: topPct > 25 ? "Very concentrated" : topPct > 12 ? "Elevated" : "Reasonable",
     hhi: Math.round(hhi),
@@ -1204,8 +669,6 @@ function computeConcentrationRisk(allHoldings, totalMv){
     topSectorLabel: topSectorPct > 40 ? "Single-sector bet" : topSectorPct > 20 ? "Overweight" : "Balanced"
   };
 }
-
-// The single biggest individual asset — one ticker or one property, never an aggregate
 function computeLargestAsset(byTicker, properties, netWorth){
   if (!netWorth) return { name: "—", pct: 0, badge: "risk-lo", label: "—" };
   const candidates = [
@@ -1215,12 +678,12 @@ function computeLargestAsset(byTicker, properties, netWorth){
   if (!candidates.length) return { name: "—", pct: 0, badge: "risk-lo", label: "—" };
   const top = candidates.reduce((a, b) => (b.value > a.value ? b : a));
   const pct = (top.value / netWorth) * 100;
-  const badge = pct > 40 ? "risk-hi" : pct > 25 ? "risk-mid" : "risk-lo";
-  const label = pct > 40 ? "Dominant asset" : pct > 25 ? "Concentrated" : "Balanced";
-  return { name: top.name, pct, badge, label };
+  return {
+    name: top.name, pct,
+    badge: pct > 40 ? "risk-hi" : pct > 25 ? "risk-mid" : "risk-lo",
+    label: pct > 40 ? "Dominant asset" : pct > 25 ? "Concentrated" : "Balanced"
+  };
 }
-
-// One breakdown: equity sectors + each property's net equity, all sized against total net worth
 function computeNetWorthBreakdown(sectorMv, properties, netWorth){
   if (!netWorth) return [];
   const rows = Object.entries(sectorMv).map(([name, mv]) => ({
@@ -1232,15 +695,12 @@ function computeNetWorthBreakdown(sectorMv, properties, netWorth){
   return rows.sort((a, b) => b.pct - a.pct);
 }
 
-/* ================= Rule-based signals =================
-   Every card below is generated from thresholds applied to live data.
-   Nothing is hardcoded to a specific ticker, owner or dollar figure. */
-function buildRecommendations({ risk, holdingsTotal, re, map, fxRate, fireCorpusTodayAUD }){
+/* ================= Rule-based signals ================= */
+function buildRecommendations(m, risk){
   const recs = [];
-  const T = holdingsTotal.mv;
+  const T = m.holdingsTotal.mv;
   const tickers = Object.values(risk.byTicker);
 
-  // 1. Oversized single-stock positions (diversified ETFs exempt), worst two
   if (T > 0){
     tickers
       .filter(t => t.sector !== DIVERSIFIED && (t.mv / T) * 100 > 15)
@@ -1264,21 +724,18 @@ function buildRecommendations({ risk, holdingsTotal, re, map, fxRate, fireCorpus
       });
   }
 
-  // 2. Sector concentration (largest non-diversified sector > 25% of equities)
   if (T > 0 && risk.topSectorPct > 25){
-    const sectorTickers = tickers.filter(t => t.sector === risk.topSector).map(t => t.ticker).join(", ");
+    const sectorTickers = tickers.filter(t => t.sector === risk.topSector);
     const sectorMv = risk.sectorMv[risk.topSector] || 0;
-    const trimAmount = Math.max(sectorMv - 0.20 * T, 0);
     recs.push({
       sev: "high", emoji: "⚖️",
       title: `${esc(risk.topSector)} is ${fmtPct(risk.topSectorPct, 0)} of your shares — one macro driver, one outcome`,
-      body: `${esc(sectorTickers)} total ${fmtCurrency(sectorMv)} and are driven by the same cycle, so this isn't ${tickers.filter(t => t.sector === risk.topSector).length} separate bets — it's one. Trimming ${fmtCurrency(trimAmount)} across the basket gets the sector to ~20% of the share portfolio. Set a standing rule: no single sector above 20% of equities, rebalanced every 6 months.`
+      body: `${sectorTickers.map(t => esc(t.ticker)).join(", ")} total ${fmtCurrency(sectorMv)} and are driven by the same cycle, so this isn't ${sectorTickers.length} separate bets — it's one. Trimming ${fmtCurrency(Math.max(sectorMv - 0.20 * T, 0))} across the basket gets the sector to ~20% of the share portfolio. Set a standing rule: no single sector above 20% of equities, rebalanced every 6 months.`
     });
   }
 
-  // 3. Unusually large losses — verify the cost base, then consider harvesting
   tickers
-    .filter(t => t.cb > 0 && ((t.mv - t.cb) / t.cb) * 100 < -30)
+    .filter(t => t.cb > 0 && t.mv > 0 && ((t.mv - t.cb) / t.cb) * 100 < -30)
     .sort((a, b) => (a.mv - a.cb) / a.cb - (b.mv - b.cb) / b.cb)
     .slice(0, 2)
     .forEach(t => {
@@ -1290,7 +747,6 @@ function buildRecommendations({ risk, holdingsTotal, re, map, fxRate, fireCorpus
       });
     });
 
-  // 4. Same ticker held by multiple owners — admin overhead, not diversification
   const dupes = tickers.filter(t => t.owners.length > 1);
   if (dupes.length){
     recs.push({
@@ -1300,68 +756,935 @@ function buildRecommendations({ risk, holdingsTotal, re, map, fxRate, fireCorpus
     });
   }
 
-  // 5. Put monthly surplus on autopilot
-  const monthly = parseCurrency(map["Monthly Savings Rate"]);
-  const hasIndiaGoal = parseCurrency(map["Target India Home Cost Today (INR)"]) > 0 || parseCurrency(map["Desired Monthly Passive Income Today (INR)"]) > 0;
+  const monthly = num(m.profile.monthlySavings);
+  const hasIndiaGoal = num(m.fire.monthlyIncomeINR) > 0 || num(m.fire.homeCostINR) > 0;
   if (monthly > 0){
     const toEquities = Math.round(monthly * 0.7 / 100) * 100;
     const toOther = monthly - toEquities;
     recs.push({
       sev: "info", emoji: "💵",
       title: `Put the ${fmtCurrency(monthly)}/month surplus on autopilot`,
-      body: `Set up two standing transfers on payday: ${fmtCurrency(toEquities)}/month (70%) into your diversified ETFs${T > 0 && risk.topPct > 15 ? " until the oversized positions above are back under their caps" : ""}, and ${fmtCurrency(toOther)}/month (30%) ${hasIndiaGoal ? "earmarked for the relocation fund (next card)" : re.loan > 0 ? "into the offset against your highest-rate loan" : "into a cash buffer"}. Automating this removes the temptation to let surplus cash drift.`
+      body: `Set up two standing transfers on payday: ${fmtCurrency(toEquities)}/month (70%) into your diversified ETFs${T > 0 && risk.topPct > 15 ? " until the oversized positions above are back under their caps" : ""}, and ${fmtCurrency(toOther)}/month (30%) ${hasIndiaGoal ? "earmarked for the relocation fund (next card)" : m.re.loan > 0 ? "into the offset against your highest-rate loan" : "into a cash buffer"}. Automating this removes the temptation to let surplus cash drift.`
     });
   }
 
-  // 6. Currency mismatch vs the India goal
   if (hasIndiaGoal && monthly > 0){
     const fxAmount = Math.round(monthly * 0.3 / 100) * 100;
     recs.push({
       sev: "info", emoji: "🌏",
       title: "Start building the India fund now, not at move time",
-      body: `Your assets are AUD-denominated while the goal${fireCorpusTodayAUD ? ` (${fmtCurrency(fireCorpusTodayAUD)} target corpus)` : ""} is INR-denominated — converting one lump sum at relocation is a currency-timing bet you don't need to take. Direct the ${fmtCurrency(fxAmount)}/month earmarked above into an ASX-listed India ETF (e.g. NDIA) or recurring AUD→INR transfers into an NRE deposit/mutual fund. Review the rate${fxRate ? ` (currently ${fxRate.toFixed(2)})` : ""} quarterly and accelerate when it's favourable.`
+      body: `Your assets are AUD-denominated while the goal${m.fireCorpusAud ? ` (${fmtCurrency(m.fireCorpusAud)} target corpus)` : ""} is INR-denominated — converting one lump sum at relocation is a currency-timing bet you don't need to take. Direct the ${fmtCurrency(fxAmount)}/month earmarked above into an ASX-listed India ETF (e.g. NDIA) or recurring AUD→INR transfers into an NRE deposit/mutual fund. Review the rate${m.fx ? ` (currently ${m.fx.toFixed(2)})` : ""} quarterly and accelerate when it's favourable.`
     });
   }
 
-  // 7. All clear
-  if (!recs.some(r => r.sev === "high" || r.sev === "med")){
+  if (!recs.some(r => r.sev === "high" || r.sev === "med") && T > 0){
     recs.unshift({
       sev: "good", emoji: "✅",
       title: "No concentration flags right now",
       body: `Largest single position ${esc(risk.topTicker)} at ${fmtPct(risk.topPct, 0)} of equities and top sector ${esc(risk.topSector)} at ${fmtPct(risk.topSectorPct, 0)} are both inside the 15% / 25% lines. Keep rebalancing against those thresholds every 6 months.`
     });
   }
-
   const order = { high: 0, med: 1, info: 2, good: 3 };
   return recs.sort((a, b) => order[a.sev] - order[b.sev]);
 }
 
-/* ================= Theme & boot ================= */
+/* ================= Dashboard render ================= */
+async function renderDashboard(){
+  const m = computeModel(DATA, PRICES);
+  const eqPct = m.netWorth ? (m.holdingsTotal.mv / m.netWorth) * 100 : 0;
+  const propPct = 100 - eqPct;
+  const totalGain = m.holdingsTotal.mv - m.holdingsTotal.cb;
+  const totalGainPct = m.holdingsTotal.cb ? (totalGain / m.holdingsTotal.cb) * 100 : 0;
+  const ringCirc = 2 * Math.PI * 52;
+  const eqLen = (eqPct / 100) * ringCirc;
+  const annualSavings = num(m.profile.annualSavings);
+  const fireProjection = projectYearsToFire(m.netWorth, m.fire, annualSavings, m.fx);
+  const pricesAge = m.pricesUpdated ? (Date.now() - m.pricesUpdated.getTime()) / 36e5 : null;
+
+  HISTORY = await logSnapshot(m.netWorth, m.holdingsTotal.mv, m.re.equity);
+
+  document.getElementById("updatedAt").textContent = m.pricesUpdated
+    ? "Prices updated " + m.pricesUpdated.toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" })
+    : "No price feed yet";
+
+  let html = "";
+
+  if (m.missingPrices.length){
+    html += `<div class="banner warn">⚠︎ No price yet for ${m.missingPrices.map(esc).join(", ")} — the price workflow runs on a schedule (or set a fallback price in the editor). Their market value shows as $0 until then.</div>`;
+  }
+  if (pricesAge !== null && pricesAge > 72){
+    html += `<div class="banner warn">⚠︎ Prices are ${Math.round(pricesAge / 24)} days old. GitHub pauses scheduled workflows on inactive repos — open the repo's Actions tab and re-run "Update prices".</div>`;
+  }
+  if (!getToken()){
+    html += `<div class="banner info">ℹ︎ No GitHub token saved on this device — the dashboard is read-only here. Add one in ✎ Edit → Settings to save changes.</div>`;
+  }
+
+  html += `
+  <div class="hero">
+    <div class="hero-left">
+      <div class="label">Total Household Net Worth</div>
+      <div class="value">${fmtCurrency(m.netWorth)}</div>
+      <div class="delta">Excludes superannuation · AUD${m.fx ? " · ≈ " + fmtInrCr(m.netWorth * m.fx) + " @ " + m.fx.toFixed(2) : ""}</div>
+    </div>
+    <div class="ring-wrap">
+      <div class="ring">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="var(--ring-track)" stroke-width="12"/>
+          <circle cx="60" cy="60" r="52" fill="none" stroke="var(--accent)" stroke-width="12"
+            stroke-dasharray="${eqLen} ${ringCirc - eqLen}" stroke-linecap="round"/>
+        </svg>
+        <div class="ring-center">
+          <div class="pct">${fmtPct(eqPct, 0)}</div>
+          <div class="lbl">Equities</div>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="dot" style="background:var(--accent)"></span>Equities · ${fmtPct(eqPct)}</div>
+        <div class="legend-item"><span class="dot" style="background:var(--ring-track);border:1px solid var(--border)"></span>Property equity · ${fmtPct(propPct)}</div>
+      </div>
+    </div>
+  </div>`;
+
+  html += `
+  <div class="grid4">
+    <div class="stat-card">
+      <div class="label">Equities (Stocks & ETFs)</div>
+      <div class="value">${fmtCurrency(m.holdingsTotal.mv)}</div>
+      <div class="sub">Cost ${fmtCurrency(m.holdingsTotal.cb)} · <span class="${totalGain >= 0 ? "gain-pos" : "gain-neg"}">${totalGain >= 0 ? "▲" : "▼"} ${fmtSigned(totalGain)} (${fmtPct(totalGainPct)})</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Property Net Equity</div>
+      <div class="value">${fmtCurrency(m.re.equity)}</div>
+      <div class="sub">of ${fmtCurrency(m.re.value)} value${m.re.value ? " · net LVR " + fmtPct(Math.max(m.re.loan - m.re.offset, 0) / m.re.value * 100, 0) : ""}</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Total Mortgage Debt</div>
+      <div class="value">${fmtCurrency(m.re.loan)}</div>
+      <div class="sub">${fmtCurrency(m.re.offset)} in offsets</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Annual Savings Rate</div>
+      <div class="value">${annualSavings ? fmtCurrency(annualSavings) : "—"}</div>
+      <div class="sub">${esc(m.profile.savingsRatePct || "")}${m.profile.savingsRatePct ? " of combined income" : ""}</div>
+    </div>
+  </div>`;
+
+  const showFire = m.fireCorpusAud > 0;
+  html += `<div class="section"><div class="grid-fire"${showFire ? "" : ' style="grid-template-columns:1fr"'}>`;
+  if (showFire){
+    html += `
+    <div class="goal-card">
+      <div class="row"><span class="t">FIRE Goal — India Relocation</span><span class="p">${fmtPct(Math.min(m.fireProgressPct, 100), 0)}</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${Math.min(m.fireProgressPct, 100)}%"></div></div>
+      <div class="goal-meta">
+        <div>Target corpus today: <b>${fmtCurrency(m.fireCorpusAud)}</b></div>
+        <div>Current net worth: <b>${fmtCurrency(m.netWorth)}</b></div>
+        <div>AUD/INR: <b>${m.fx ? m.fx.toFixed(2) : "—"}</b></div>
+        <div>${fireProjection && fireProjection.futureCorpusAUD !== null ? `Est. <b>${fireProjection.years} yr${fireProjection.years === 1 ? "" : "s"}</b> to goal — target inflates to <b>${fmtCurrency(fireProjection.futureCorpusAUD)}</b> by then` : fireProjection ? `Beyond 60-yr projection at current savings/growth — revisit assumptions in the editor` : "Add savings/growth assumptions in the editor to project a timeline"}</div>
+      </div>
+    </div>`;
+  }
+  html += `
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="label">Net Worth History</div>
+        <div class="chart-actions">
+          <button class="mini-btn" id="histExport">Export</button>
+          <button class="mini-btn" id="histImport">Import</button>
+          <input type="file" id="histFile" accept="application/json" style="display:none">
+        </div>
+      </div>
+      <div class="chart-wrap">
+        ${HISTORY.length > 1 ? '<canvas id="historyChart"></canvas>' : '<div class="chart-empty">Come back after a few visits to see the trend build up.<br>History is stored (encrypted) per-browser — use Import to restore an export.</div>'}
+      </div>
+    </div>
+  </div></div>`;
+
+  // Holdings
+  html += `<div class="section"><h2 class="section-title">Holdings</h2><div class="card">`;
+  if (!m.owners.length) html += `<div class="goal-block">No holdings yet — add some via ✎ Edit.</div>`;
+  m.owners.forEach(owner => {
+    const items = m.holdingsByOwner[owner];
+    const oMv = items.reduce((s, it) => s + it.mv, 0);
+    const oCb = items.reduce((s, it) => s + it.cb, 0);
+    const oGain = oMv - oCb;
+    const oGainPct = oCb ? (oGain / oCb) * 100 : 0;
+    html += `<div class="owner-header">${esc(owner)}</div>
+    <div class="table-scroll"><table>
+      <thead><tr>
+        <th>Ticker</th><th class="num">Shares</th><th class="num">Price</th>
+        <th class="num">Market Value</th><th class="num">Cost Basis</th><th class="num">Gain $</th><th class="num">Gain %</th>
+      </tr></thead>
+      <tbody>`;
+    items.forEach(it => {
+      const g = it.mv - it.cb;
+      html += `<tr>
+        <td class="ticker">${esc(it.ticker)}${it.priceSource === "manual" ? ' <span title="Using fallback price from the editor" style="color:var(--warn-text)">*</span>' : ""}</td>
+        <td class="num">${it.sharesNum.toLocaleString("en-AU")}</td>
+        <td class="num">${fmtPrice(it.price)}</td>
+        <td class="num">${fmtCurrency(it.mv)}</td>
+        <td class="num">${fmtCurrency(it.cb)}</td>
+        <td class="num ${g >= 0 ? "gain-pos" : "gain-neg"}">${fmtSigned(g)}</td>
+        <td class="num ${it.gainPct >= 0 ? "gain-pos" : "gain-neg"}">${it.gainPct >= 0 ? "▲ +" : "▼ "}${fmtPct(it.gainPct)}</td>
+      </tr>`;
+    });
+    html += `<tr class="subtotal">
+        <td>Total</td><td></td><td></td>
+        <td class="num">${fmtCurrency(oMv)}</td>
+        <td class="num">${fmtCurrency(oCb)}</td>
+        <td class="num ${oGain >= 0 ? "gain-pos" : "gain-neg"}">${fmtSigned(oGain)}</td>
+        <td class="num ${oGain >= 0 ? "gain-pos" : "gain-neg"}">${oGain >= 0 ? "+" : ""}${fmtPct(oGainPct)}</td>
+      </tr></tbody></table></div>`;
+  });
+  html += `</div>${m.owners.length ? '<div class="section-note">* fallback price set in the editor (no live feed for that ticker yet).</div>' : ""}</div>`;
+
+  // Real estate
+  if (m.properties.length){
+    html += `<div class="section"><h2 class="section-title">Real Estate</h2><div class="re-grid">`;
+    m.properties.forEach(p => {
+      const netLvr = p.value ? (p.netDebt / p.value) * 100 : 0;
+      const netLvrColor = netLvr > 80 ? "var(--neg)" : netLvr > 60 ? "var(--warn-text)" : "var(--pos)";
+      html += `
+      <div class="re-card">
+        <div class="name">${esc(p.name)}</div>
+        <span class="tag ${p.ppor ? "ppor" : "inv"}">${p.ppor ? "PPOR — Owner Occupied" : "Investment"}</span>
+        <div class="re-row" style="border-top:none;padding-top:0"><span>Estimated value</span><span class="v">${fmtCurrency(p.value)}</span></div>
+        ${p.low > 0 && p.high > 0 ? `<div class="re-range">Range ${fmtCurrency(p.low)} – ${fmtCurrency(p.high)}</div>` : ""}
+        <div class="re-row"><span>Loan balance</span><span class="v">${fmtCurrency(p.loan)}</span></div>
+        <div class="re-row"><span>Offset balance</span><span class="v">${fmtCurrency(p.offset)}</span></div>
+        <div class="re-row"><span>Net debt (loan − offset)</span><span class="v">${fmtCurrency(p.netDebt)}</span></div>
+        <div class="re-row"><span>Net LVR (after offset)</span><span class="v" style="color:${netLvrColor}">${p.netDebt <= 0 ? "0% — fully offset" : fmtPct(netLvr, 0)}</span></div>
+        <div class="re-equity"><span class="lbl">Net Equity</span><span class="val">${fmtCurrency(p.equity)}</span></div>
+        <div class="re-source">${esc(p.source)}${p.updated ? " · updated " + esc(p.updated) : ""}</div>
+      </div>`;
+    });
+    html += `</div><div class="section-note">Net equity is computed as value − loan + offset, so a fully offset loan counts as 100% ownership.</div></div>`;
+  }
+
+  // Concentration
+  const allHoldings = m.owners.flatMap(o => m.holdingsByOwner[o]);
+  const risk = computeConcentrationRisk(allHoldings, m.holdingsTotal.mv);
+  const largestAsset = computeLargestAsset(risk.byTicker, m.properties, m.netWorth);
+  const breakdown = computeNetWorthBreakdown(risk.sectorMv, m.properties, m.netWorth);
+
+  if (allHoldings.length || m.properties.length){
+    html += `
+    <div class="section">
+      <h2 class="section-title">Portfolio Concentration</h2>
+      <div class="risk-grid">
+        <div class="risk-card">
+          <div class="label">Largest Single Equity Position</div>
+          <div class="value">${esc(risk.topTicker)} · ${fmtPct(risk.topPct, 0)}</div>
+          <span class="badge ${risk.topBadge}">${risk.topLabel}</span>
+          <div class="sub">Share of the combined equity book</div>
+        </div>
+        <div class="risk-card">
+          <div class="label">Portfolio Concentration (HHI)</div>
+          <div class="value">${risk.hhi.toLocaleString("en-AU")}</div>
+          <span class="badge ${risk.hhiBadge}">${risk.hhiLabel}</span>
+          <div class="sub">&lt;1,500 diversified · &gt;2,500 concentrated · 10,000 = one stock</div>
+        </div>
+        <div class="risk-card">
+          <div class="label">Top Sector Exposure</div>
+          <div class="value">${esc(risk.topSector)} · ${fmtPct(risk.topSectorPct, 0)}</div>
+          <span class="badge ${risk.topSectorBadge}">${risk.topSectorLabel}</span>
+          <div class="sub">Largest non-diversified sector, share of equities</div>
+        </div>
+        <div class="risk-card">
+          <div class="label">Largest Single Asset (of net worth)</div>
+          <div class="value">${esc(largestAsset.name)} · ${fmtPct(largestAsset.pct, 0)}</div>
+          <span class="badge ${largestAsset.badge}">${largestAsset.label}</span>
+          <div class="sub">Individual holdings and properties compared like-for-like</div>
+        </div>
+      </div>
+      <div class="chart-card" style="margin-top:16px;">
+        <div class="label" style="font-size:12px;color:var(--text-tertiary);font-weight:500;margin-bottom:14px;">Net Worth Allocation — Equities & Real Estate</div>
+        ${breakdown.map(s => `
+          <div style="margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+              <span>${esc(s.name)} <span style="color:var(--text-tertiary);font-size:11px;">${esc(s.group)}</span></span><span style="font-weight:600;">${fmtPct(s.pct, 0)}</span>
+            </div>
+            <div class="progress-track" style="height:8px;">
+              <div class="progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.color};"></div>
+            </div>
+          </div>`).join("")}
+        <div style="font-size:11px;color:var(--text-tertiary);margin-top:6px;">Every bar is sized against total net worth (${fmtCurrency(m.netWorth)}), so equity sectors and individual properties are directly comparable.</div>
+      </div>
+    </div>`;
+  }
+
+  // Profile
+  const chips = [
+    ["Risk Tolerance", m.profile.riskTolerance],
+    ["Time Horizon", m.profile.timeHorizon],
+    ["Combined Income", m.profile.combinedIncome],
+    ["Monthly Savings", num(m.profile.monthlySavings) ? fmtCurrency(num(m.profile.monthlySavings)) : ""]
+  ].filter(c => c[1]);
+  const goals = [["Goal 1", m.profile.goal1], ["Goal 2", m.profile.goal2]].filter(g => g[1]);
+  if (chips.length || goals.length){
+    html += `
+    <div class="section">
+      <h2 class="section-title">Investor Profile</h2>
+      <div class="card">
+        <div class="chips">${chips.map(c => `<div class="chip"><div class="k">${esc(c[0])}</div><div class="v">${esc(c[1])}</div></div>`).join("")}</div>
+        ${goals.length ? `<div class="goal-block">${goals.map(g => `<div style="margin-bottom:6px"><b>${esc(g[0])}.</b> ${esc(g[1])}</div>`).join("")}</div>` : '<div style="height:14px"></div>'}
+      </div>
+    </div>`;
+  }
+
+  // Signals
+  const recs = buildRecommendations(m, risk);
+  if (recs.length){
+    html += `<div class="section"><h2 class="section-title">Insights &amp; Signals</h2><div class="advice-grid">`;
+    recs.forEach(r => {
+      html += `
+      <div class="advice-card sev-${r.sev}">
+        <div class="icon">${r.emoji}</div>
+        <div class="title">${r.title}</div>
+        <div class="body">${r.body}</div>
+      </div>`;
+    });
+    html += `</div><div class="section-note">Signals are generated live from your data by fixed threshold rules (position &gt;15%, sector &gt;25%, loss &lt;−30%, etc.) — informational only, not financial advice.</div></div>`;
+  }
+
+  html += `<div class="footnote">All data lives encrypted in this repository (data.enc.json) — nothing is stored on any third-party service. Prices &amp; AUD/INR update on a schedule via GitHub Actions. Edits are committed with your GitHub token, giving a full version history.</div>`;
+
+  document.getElementById("app").innerHTML = html;
+
+  if (HISTORY.length > 1) drawHistoryChart(HISTORY);
+  const ex = document.getElementById("histExport");
+  if (ex) ex.addEventListener("click", exportHistory);
+  const im = document.getElementById("histImport");
+  const fileInput = document.getElementById("histFile");
+  if (im && fileInput){
+    im.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", (e) => importHistory(e.target.files[0]));
+  }
+}
+
+/* ================= History (encrypted, per-browser) ================= */
+async function loadHistory(){
+  const blob = lsGetJson(LS.histEnc);
+  if (!blob) return [];
+  try { return await decryptWithKey(CRYPTO.key, blob); } catch(e) { return []; }
+}
+async function persistHistory(hist){
+  try { lsSetJson(LS.histEnc, await encryptWithKey(CRYPTO.key, hist)); } catch(e) {}
+}
+async function logSnapshot(netWorth, eqMv, reEquity){
+  let hist = HISTORY.length ? HISTORY : await loadHistory();
+  const today = localDateStr();
+  const entry = { date: today, netWorth, eq: eqMv, re: reEquity };
+  const idx = hist.findIndex(h => h.date === today);
+  if (idx >= 0) hist[idx] = entry; else hist.push(entry);
+  hist.sort((a, b) => a.date.localeCompare(b.date));
+  if (hist.length > 730) hist = hist.slice(hist.length - 730);
+  await persistHistory(hist);
+  return hist;
+}
+function exportHistory(){
+  const blob = new Blob([JSON.stringify(HISTORY, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "networth-history-" + localDateStr() + ".json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importHistory(file){
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async () => {
+    try {
+      const imported = JSON.parse(reader.result);
+      if (!Array.isArray(imported)) throw new Error("not an array");
+      const byDate = {};
+      imported.forEach(h => { if (h && h.date && typeof h.netWorth === "number") byDate[h.date] = h; });
+      HISTORY.forEach(h => { byDate[h.date] = h; });
+      let merged = Object.values(byDate).sort((a, b) => a.date.localeCompare(b.date));
+      if (merged.length > 730) merged = merged.slice(merged.length - 730);
+      HISTORY = merged;
+      await persistHistory(merged);
+      await renderDashboard();
+    } catch(e) {
+      alert("Could not import that file — expected a JSON export from this dashboard.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+let historyChartInstance = null;
+function drawHistoryChart(history){
+  const canvas = document.getElementById("historyChart");
+  if (!canvas || typeof Chart === "undefined") return;
+  if (historyChartInstance){ historyChartInstance.destroy(); historyChartInstance = null; }
+  const styles = getComputedStyle(document.documentElement);
+  const accent = styles.getPropertyValue("--accent").trim() || "#0071e3";
+  const pos = styles.getPropertyValue("--pos").trim() || "#1a9d4b";
+  const gridColor = styles.getPropertyValue("--border-soft").trim() || "#f2f2f4";
+  const textColor = styles.getPropertyValue("--text-tertiary").trim() || "#86868b";
+  const eqSeries = history.map(h => h.eq != null ? h.eq : (h.eqPct != null ? h.netWorth * h.eqPct / 100 : null));
+  historyChartInstance = new Chart(canvas.getContext("2d"), {
+    type: "line",
+    data: {
+      labels: history.map(h => h.date),
+      datasets: [{
+        label: "Net Worth", data: history.map(h => h.netWorth),
+        borderColor: accent, backgroundColor: accent + "22",
+        fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2.5
+      }, {
+        label: "Equities", data: eqSeries,
+        borderColor: pos, fill: false, tension: 0.35, pointRadius: 0,
+        borderWidth: 1.5, borderDash: [5, 4], spanGaps: true
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: true, labels: { color: textColor, boxWidth: 10, boxHeight: 2, font: { size: 10 } } },
+        tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ": " + fmtCurrency(ctx.parsed.y) } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 }, maxTicksLimit: 6 } },
+        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 }, callback: (v) => "$" + (v / 1000).toFixed(0) + "k" } }
+      }
+    }
+  });
+}
+
+/* ================= Editor ================= */
+function emptyData(){
+  return {
+    version: 1,
+    holdings: [],
+    properties: [],
+    profile: { riskTolerance: "", timeHorizon: "", combinedIncome: "", monthlySavings: 0, annualSavings: 0, savingsRatePct: "", goal1: "", goal2: "" },
+    fire: { monthlyIncomeINR: 0, homeCostINR: 0, swrPct: 3.5, inflationPct: 6, growthPct: 7 }
+  };
+}
+function tickersOf(data){
+  return Array.from(new Set((data.holdings || []).map(h => h.ticker).filter(Boolean))).sort();
+}
+
+function renderEditor(status){
+  if (!WORKING) WORKING = clone(DATA);
+  const W = WORKING;
+  const m = computeModel(W, PRICES);
+  const sectorOpts = (sel) => ['<option value="">Auto</option>']
+    .concat(SECTOR_NAMES.map(s => `<option value="${esc(s)}"${sel === s ? " selected" : ""}>${esc(s)}</option>`)).join("");
+  const ownersList = Array.from(new Set(W.holdings.map(h => h.owner).filter(Boolean)));
+
+  let html = `<div class="banner info">Editing mode — changes apply to the preview immediately and are only stored once you hit <b>Save to GitHub</b>.</div>`;
+
+  // Holdings
+  html += `<div class="ed-section">
+    <h3>Holdings</h3>
+    <div class="ed-sub">Shares &amp; ETFs. Market value = shares × live price (from the price feed) with the fallback price used until the feed covers a new ticker.</div>
+    <div class="ed-rows">
+      <div class="ed-row h-grid head"><span>Owner</span><span>Ticker</span><span>Shares</span><span>Total cost basis $</span><span>Fallback price $</span><span>Sector</span><span></span></div>
+      ${W.holdings.map((h, i) => `
+      <div class="ed-row h-grid">
+        <input list="ownerOpts" data-bind data-sec="holdings" data-idx="${i}" data-field="owner" value="${esc(h.owner)}" placeholder="Owner" aria-label="Owner">
+        <input data-bind data-sec="holdings" data-idx="${i}" data-field="ticker" data-kind="ticker" value="${esc(h.ticker)}" placeholder="VGS" aria-label="Ticker">
+        <input type="number" min="0" step="any" data-bind data-sec="holdings" data-idx="${i}" data-field="shares" data-kind="num" value="${esc(h.shares)}" aria-label="Shares">
+        <input type="number" min="0" step="any" data-bind data-sec="holdings" data-idx="${i}" data-field="costBasis" data-kind="num" value="${esc(h.costBasis)}" aria-label="Cost basis">
+        <input type="number" min="0" step="any" data-bind data-sec="holdings" data-idx="${i}" data-field="manualPrice" data-kind="num" value="${esc(h.manualPrice || "")}" placeholder="auto" aria-label="Fallback price">
+        <select data-bind data-sec="holdings" data-idx="${i}" data-field="sector">${sectorOpts(h.sector || "")}</select>
+        <div class="row-btns">
+          <button class="ed-buy" data-act="buy-open" data-idx="${i}" aria-label="Record a purchase" title="Record a purchase (updates shares + cost basis together)">＋</button>
+          <button class="ed-del" data-act="del-holding" data-idx="${i}" aria-label="Delete holding">✕</button>
+        </div>
+      </div>
+      ${EDITOR_UI.buyIdx === i ? `
+      <div class="ed-buyform">
+        <div class="ed-field"><label>New TOTAL shares of ${esc(h.ticker) || "this holding"} (currently ${esc(h.shares)})</label><input type="number" min="0" step="any" id="buyTotal" placeholder="e.g. ${num(h.shares) + 100}"></div>
+        <div class="ed-field"><label>Amount paid for the top-up $ (from your contract note)</label><input type="number" min="0" step="any" id="buyPaid" placeholder="e.g. 5000"></div>
+        <div class="gate-actions" style="margin:0">
+          <button class="refresh-btn primary" data-act="buy-apply" data-idx="${i}">Apply</button>
+          <button class="refresh-btn" data-act="buy-cancel">Cancel</button>
+        </div>
+        <div style="grid-column:1/-1;font-size:11px;color:var(--text-secondary)">Enter the new total — shares bought and the cost-basis increase are worked out automatically. If the new total is <i>lower</i> (you sold), the cost basis is reduced proportionally and the paid field is ignored.</div>
+      </div>` : ""}`).join("")}
+    </div>
+    <datalist id="ownerOpts">${ownersList.map(o => `<option value="${esc(o)}">`).join("")}</datalist>
+    <button class="refresh-btn ed-add" data-act="add-holding">+ Add holding</button>
+  </div>`;
+
+  // Properties
+  html += `<div class="ed-section">
+    <h3>Properties</h3>
+    <div class="ed-sub">Net equity is computed as value − loan + offset. Tick PPOR for your owner-occupied home.</div>
+    <div class="ed-rows">
+      <div class="ed-row p-grid head"><span>Name</span><span>PPOR</span><span>Value $</span><span>Loan $</span><span>Offset $</span><span></span></div>
+      ${W.properties.map((p, i) => `
+      <div class="ed-row p-grid">
+        <input data-bind data-sec="properties" data-idx="${i}" data-field="name" value="${esc(p.name)}" placeholder="Property name" aria-label="Property name">
+        <input type="checkbox" data-bind data-sec="properties" data-idx="${i}" data-field="ppor" data-kind="bool" ${p.ppor ? "checked" : ""} aria-label="PPOR" style="width:auto;justify-self:start">
+        <input type="number" min="0" step="any" data-bind data-sec="properties" data-idx="${i}" data-field="value" data-kind="num" value="${esc(p.value)}" aria-label="Value">
+        <input type="number" min="0" step="any" data-bind data-sec="properties" data-idx="${i}" data-field="loan" data-kind="num" value="${esc(p.loan)}" aria-label="Loan">
+        <input type="number" min="0" step="any" data-bind data-sec="properties" data-idx="${i}" data-field="offset" data-kind="num" value="${esc(p.offset)}" aria-label="Offset">
+        <button class="ed-del" data-act="del-prop" data-idx="${i}" aria-label="Delete property">✕</button>
+      </div>
+      <div class="ed-row" style="grid-template-columns:repeat(4,1fr);margin-top:-4px;background:none;padding-top:0;">
+        <input type="number" min="0" step="any" data-bind data-sec="properties" data-idx="${i}" data-field="low" data-kind="num" value="${esc(p.low || "")}" placeholder="Range low $ (optional)" aria-label="Range low">
+        <input type="number" min="0" step="any" data-bind data-sec="properties" data-idx="${i}" data-field="high" data-kind="num" value="${esc(p.high || "")}" placeholder="Range high $ (optional)" aria-label="Range high">
+        <input data-bind data-sec="properties" data-idx="${i}" data-field="updated" value="${esc(p.updated || "")}" placeholder="Valued when? e.g. Jul 2026" aria-label="Updated">
+        <input data-bind data-sec="properties" data-idx="${i}" data-field="source" value="${esc(p.source || "")}" placeholder="Source e.g. CoreLogic" aria-label="Source">
+      </div>`).join("")}
+    </div>
+    <button class="refresh-btn ed-add" data-act="add-prop">+ Add property</button>
+  </div>`;
+
+  // Profile & FIRE
+  html += `<div class="ed-section">
+    <h3>Profile, Savings &amp; FIRE Assumptions</h3>
+    <div class="ed-sub">These drive the savings signals and the FIRE projection.</div>
+    <div class="ed-fields">
+      <div class="ed-field"><label>Risk tolerance</label><input data-bind data-sec="profile" data-field="riskTolerance" value="${esc(W.profile.riskTolerance)}"></div>
+      <div class="ed-field"><label>Time horizon</label><input data-bind data-sec="profile" data-field="timeHorizon" value="${esc(W.profile.timeHorizon)}"></div>
+      <div class="ed-field"><label>Combined income (display text)</label><input data-bind data-sec="profile" data-field="combinedIncome" value="${esc(W.profile.combinedIncome)}"></div>
+      <div class="ed-field"><label>Monthly savings $</label><input type="number" min="0" step="any" data-bind data-sec="profile" data-field="monthlySavings" data-kind="num" value="${esc(W.profile.monthlySavings)}"></div>
+      <div class="ed-field"><label>Annual savings $</label><input type="number" min="0" step="any" data-bind data-sec="profile" data-field="annualSavings" data-kind="num" value="${esc(W.profile.annualSavings)}"></div>
+      <div class="ed-field"><label>Savings rate (display text, e.g. 38%)</label><input data-bind data-sec="profile" data-field="savingsRatePct" value="${esc(W.profile.savingsRatePct)}"></div>
+      <div class="ed-field"><label>Goal 1</label><input data-bind data-sec="profile" data-field="goal1" value="${esc(W.profile.goal1)}"></div>
+      <div class="ed-field"><label>Goal 2</label><input data-bind data-sec="profile" data-field="goal2" value="${esc(W.profile.goal2)}"></div>
+    </div>
+    <div style="height:14px"></div>
+    <div class="ed-fields">
+      <div class="ed-field"><label>Desired monthly passive income (INR)</label><input type="number" min="0" step="any" data-bind data-sec="fire" data-field="monthlyIncomeINR" data-kind="num" value="${esc(W.fire.monthlyIncomeINR)}"></div>
+      <div class="ed-field"><label>Target India home cost (INR)</label><input type="number" min="0" step="any" data-bind data-sec="fire" data-field="homeCostINR" data-kind="num" value="${esc(W.fire.homeCostINR)}"></div>
+      <div class="ed-field"><label>Safe withdrawal rate %</label><input type="number" min="0" step="0.1" data-bind data-sec="fire" data-field="swrPct" data-kind="num" value="${esc(W.fire.swrPct)}"></div>
+      <div class="ed-field"><label>India inflation %</label><input type="number" min="0" step="0.1" data-bind data-sec="fire" data-field="inflationPct" data-kind="num" value="${esc(W.fire.inflationPct)}"></div>
+      <div class="ed-field"><label>Portfolio growth %</label><input type="number" min="0" step="0.1" data-bind data-sec="fire" data-field="growthPct" data-kind="num" value="${esc(W.fire.growthPct)}"></div>
+    </div>
+  </div>`;
+
+  // Settings
+  const cfg = repoConfig();
+  html += `<div class="ed-section">
+    <h3>Settings</h3>
+    <div class="ed-sub">Device &amp; security options. The GitHub token needs <b>Contents: Read and write</b> on this repository (fine-grained token); add <b>Actions: Read and write</b> too if you want new tickers priced immediately.</div>
+    <div class="ed-fields">
+      <div class="ed-field"><label>GitHub token (stored on this device only)</label><input type="password" id="tokenInput" value="${esc(getToken())}" placeholder="github_pat_…"></div>
+      <div class="ed-field"><label>Repository (owner/name)</label><input id="repoInput" value="${cfg ? esc(cfg.owner + "/" + cfg.repo) : ""}" placeholder="you/your-repo"></div>
+      <div class="ed-field"><label>Change passphrase (leave blank to keep)</label><input type="password" id="newPassInput" placeholder="New passphrase" autocomplete="new-password"></div>
+    </div>
+    <div class="gate-actions" style="margin-top:14px">
+      <button class="refresh-btn" data-act="export-data">⬇ Export data backup (unencrypted JSON)</button>
+      <button class="refresh-btn" data-act="import-data">⬆ Import data backup</button>
+      <input type="file" id="dataFile" accept="application/json" style="display:none">
+    </div>
+    <div class="ed-warn">Keep an exported backup somewhere safe — if you forget the passphrase there is no reset.</div>
+  </div>`;
+
+  html += `<div class="save-bar">
+    <span class="nw">Preview net worth: ${fmtCurrency(m.netWorth)}</span>
+    <span class="status" id="edStatus">${esc(status || (getToken() ? "Ready." : "Add a GitHub token in Settings to be able to save."))}</span>
+    <button class="refresh-btn" data-act="discard">Discard</button>
+    <button class="refresh-btn primary" data-act="save">Save to GitHub</button>
+  </div>`;
+
+  document.getElementById("app").innerHTML = html;
+  document.getElementById("updatedAt").textContent = "Editing…";
+
+  const fileInput = document.getElementById("dataFile");
+  fileInput.addEventListener("change", (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const obj = JSON.parse(reader.result);
+        if (!obj || !Array.isArray(obj.holdings) || !Array.isArray(obj.properties)) throw new Error("bad shape");
+        WORKING = Object.assign(emptyData(), obj);
+        renderEditor("Backup imported into the editor — review and Save to GitHub.");
+      } catch(err) { renderEditor("That file doesn't look like a data backup export."); }
+    };
+    reader.readAsText(f);
+  });
+}
+
+function editorUpdatePreview(){
+  const m = computeModel(WORKING, PRICES);
+  const el = document.querySelector(".save-bar .nw");
+  if (el) el.textContent = "Preview net worth: " + fmtCurrency(m.netWorth);
+}
+function validateWorking(W){
+  for (const h of W.holdings){
+    if (!h.owner) return "Every holding needs an owner.";
+    if (!/^[A-Z0-9]{1,6}(\.[A-Z]{1,3})?$/.test(h.ticker || "")) return `"${h.ticker || ""}" doesn't look like a ticker (use e.g. VGS).`;
+    if (!(num(h.shares) > 0)) return `${h.ticker}: shares must be greater than 0.`;
+  }
+  for (const p of W.properties){
+    if (!p.name) return "Every property needs a name.";
+    if (!(num(p.value) > 0)) return `${p.name}: value must be greater than 0.`;
+  }
+  return null;
+}
+async function saveWorking(){
+  const statusEl = document.getElementById("edStatus");
+  const setStatus = (t) => { if (statusEl) statusEl.textContent = t; };
+
+  // settings first, so a token pasted just now is used for this save
+  const tokenVal = (document.getElementById("tokenInput").value || "").trim();
+  if (tokenVal) localStorage.setItem(LS.token, tokenVal); else localStorage.removeItem(LS.token);
+  const repoVal = (document.getElementById("repoInput").value || "").trim();
+  if (/^[^/\s]+\/[^/\s]+$/.test(repoVal)){
+    const [owner, repo] = repoVal.split("/");
+    lsSetJson(LS.repo, { owner, repo });
+  }
+
+  const err = validateWorking(WORKING);
+  if (err){ setStatus("⚠ " + err); return; }
+  if (!getToken()){ setStatus("⚠ Add a GitHub token in Settings first — the save is a git commit."); return; }
+
+  const newPass = document.getElementById("newPassInput").value;
+  try {
+    setStatus("Encrypting…");
+    if (newPass){
+      if (newPass.length < 8){ setStatus("⚠ New passphrase must be at least 8 characters."); return; }
+      await setPassphrase(newPass);
+      await rememberKey(!!localStorage.getItem(LS.keyLocal));
+      await persistHistory(HISTORY); // re-encrypt history under the new key
+    }
+    const oldTickers = JSON.stringify(tickersOf(DATA));
+    const env = await makeEnvelope(WORKING);
+    setStatus("Committing to GitHub…");
+    await ghPutFile(DATA_FILE, JSON.stringify(env), "Update portfolio data");
+    const newTickers = tickersOf(WORKING);
+    if (JSON.stringify(newTickers) !== oldTickers){
+      await ghPutFile(TICKERS_FILE, JSON.stringify({ tickers: newTickers }, null, 2) + "\n", "Update ticker list");
+      const px = (PRICES && PRICES.prices) || {};
+      if (newTickers.some(t => !(num(px[t]) > 0))) await ghDispatchPrices();
+    }
+    lsSetJson(LS.encCache, env);
+    DATA = WORKING; WORKING = null;
+    await renderDashboard();
+  } catch(e) {
+    if (e.message === "NO_TOKEN") setStatus("⚠ Add a GitHub token in Settings first.");
+    else if (e.message === "NO_REPO") setStatus("⚠ Set the repository (owner/name) in Settings.");
+    else if (e.message === "TOKEN_REJECTED") setStatus("⚠ GitHub rejected the token — check it has Contents read/write on this repository.");
+    else setStatus("⚠ " + e.message);
+  }
+}
+function exportDataBackup(){
+  const blob = new Blob([JSON.stringify(WORKING || DATA, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "portfolio-data-" + localDateStr() + ".json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ================= Onboarding ================= */
+function renderOnboarding(step, state){
+  step = step || "welcome";
+  state = state || {};
+  document.getElementById("updatedAt").textContent = "Setup";
+  const app = document.getElementById("app");
+
+  if (step === "welcome"){
+    app.innerHTML = `
+    <div class="card gate-card">
+      <div class="big-emoji">👋</div>
+      <h2>Set up your dashboard</h2>
+      <p>All your data will live <b>encrypted inside this repository</b> — no Google Sheets, no third-party services. You'll choose a passphrase (needed to view anything) and connect a GitHub token (needed to save changes).</p>
+      <div class="gate-actions">
+        <button class="refresh-btn primary" id="obImport">Import from my Google Sheet</button>
+        <button class="refresh-btn" id="obFresh">Start fresh</button>
+      </div>
+    </div>`;
+    document.getElementById("obImport").addEventListener("click", () => renderOnboarding("import"));
+    document.getElementById("obFresh").addEventListener("click", () => renderOnboarding("pass", { data: emptyData() }));
+    return;
+  }
+
+  if (step === "import"){
+    app.innerHTML = `
+    <div class="card gate-card">
+      <h2>Import from Google Sheets</h2>
+      ${state.notice ? `<div class="gate-note">${esc(state.notice)}</div>` : ""}
+      <p>Paste your sheet tab URL (from the address bar, including <code>gid=…</code>). Link-sharing must be on for this one-time read — you can turn it off right after.</p>
+      <input type="url" id="obUrl" placeholder="https://docs.google.com/spreadsheets/d/…/edit#gid=0" value="${esc(state.url || "")}">
+      <div class="gate-actions">
+        <button class="refresh-btn primary" id="obFetch">Import</button>
+        <button class="refresh-btn" id="obBack">Back</button>
+      </div>
+    </div>`;
+    document.getElementById("obBack").addEventListener("click", () => renderOnboarding("welcome"));
+    document.getElementById("obFetch").addEventListener("click", async () => {
+      const url = document.getElementById("obUrl").value;
+      const csvUrl = sheetCsvUrl(url);
+      if (!csvUrl){ renderOnboarding("import", { url, notice: "That doesn't look like a Google Sheets URL." }); return; }
+      const btn = document.getElementById("obFetch");
+      btn.disabled = true; btn.textContent = "Importing…";
+      try {
+        const res = await fetch(csvUrl, { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const text = await res.text();
+        if (/^\s*<|accounts\.google\.com|Sign in/i.test(text)) throw new Error("The sheet isn't link-shared — turn on link sharing (Viewer) and retry.");
+        const data = importSheet(text);
+        if (!data.holdings.length && !data.properties.length) throw new Error("No holdings or properties were recognised in that sheet.");
+        renderOnboarding("pass", { data, importedNote: `Imported ${data.holdings.length} holdings and ${data.properties.length} properties.` });
+      } catch(e) {
+        renderOnboarding("import", { url, notice: e.message });
+      }
+    });
+    return;
+  }
+
+  if (step === "pass"){
+    app.innerHTML = `
+    <div class="card gate-card">
+      <h2>Choose your passphrase</h2>
+      ${state.importedNote ? `<div class="banner info">✓ ${esc(state.importedNote)}</div>` : ""}
+      ${state.notice ? `<div class="gate-note">${esc(state.notice)}</div>` : ""}
+      <p>This encrypts everything (AES-256). It is required to view the dashboard on any device, and it <b>cannot be reset</b> — only restored from a backup you export.</p>
+      <input type="password" id="obPass1" placeholder="Passphrase (min 8 characters)" autocomplete="new-password">
+      <input type="password" id="obPass2" placeholder="Repeat passphrase" autocomplete="new-password">
+      <div class="gate-actions">
+        <button class="refresh-btn primary" id="obPassNext">Continue</button>
+      </div>
+    </div>`;
+    document.getElementById("obPassNext").addEventListener("click", async () => {
+      const p1 = document.getElementById("obPass1").value;
+      const p2 = document.getElementById("obPass2").value;
+      if (p1.length < 8){ renderOnboarding("pass", Object.assign(state, { notice: "Use at least 8 characters." })); return; }
+      if (p1 !== p2){ renderOnboarding("pass", Object.assign(state, { notice: "The passphrases don't match." })); return; }
+      await setPassphrase(p1);
+      renderOnboarding("token", state);
+    });
+    return;
+  }
+
+  if (step === "token"){
+    const cfg = repoConfig();
+    app.innerHTML = `
+    <div class="card gate-card">
+      <h2>Connect GitHub (to save)</h2>
+      ${state.notice ? `<div class="gate-note">${esc(state.notice)}</div>` : ""}
+      <p>Saving commits your encrypted data to <code>${cfg ? esc(cfg.owner + "/" + cfg.repo) : "your repository"}</code>. Create a token once:</p>
+      <ol>
+        <li>GitHub → Settings → Developer settings → <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Fine-grained tokens → Generate new token</a></li>
+        <li>Repository access: <b>Only select repositories</b> → this repo</li>
+        <li>Permissions → Repository: <b>Contents — Read and write</b> (and optionally <b>Actions — Read and write</b> for instant price updates)</li>
+        <li>Generate, copy, paste below</li>
+      </ol>
+      <input type="password" id="obToken" placeholder="github_pat_…">
+      ${cfg ? "" : `<input type="text" id="obRepo" placeholder="Repository as owner/name">`}
+      <div class="gate-actions">
+        <button class="refresh-btn primary" id="obFinish">Save &amp; finish</button>
+        <button class="refresh-btn" id="obSkip">Skip for now (this browser only)</button>
+      </div>
+      <p class="gate-hint">The token stays in this browser's storage and is sent only to api.github.com. "Skip" keeps everything locally until you add a token later in ✎ Edit → Settings.</p>
+    </div>`;
+    const finish = async (withToken) => {
+      const btn = document.getElementById("obFinish");
+      btn.disabled = true;
+      try {
+        if (withToken){
+          const tok = (document.getElementById("obToken").value || "").trim();
+          if (!tok){ renderOnboarding("token", Object.assign(state, { notice: "Paste the token, or use Skip." })); return; }
+          localStorage.setItem(LS.token, tok);
+          const repoEl = document.getElementById("obRepo");
+          if (repoEl){
+            const v = (repoEl.value || "").trim();
+            if (!/^[^/\s]+\/[^/\s]+$/.test(v)){ renderOnboarding("token", Object.assign(state, { notice: "Enter the repository as owner/name." })); return; }
+            const [owner, repo] = v.split("/");
+            lsSetJson(LS.repo, { owner, repo });
+          }
+        }
+        DATA = state.data;
+        const env = await makeEnvelope(DATA);
+        if (withToken){
+          await ghPutFile(DATA_FILE, JSON.stringify(env), "Initialise encrypted portfolio data");
+          await ghPutFile(TICKERS_FILE, JSON.stringify({ tickers: tickersOf(DATA) }, null, 2) + "\n", "Update ticker list");
+          await ghDispatchPrices();
+        }
+        lsSetJson(LS.encCache, env);
+        await rememberKey(false);
+        await afterUnlock();
+      } catch(e) {
+        btn.disabled = false;
+        const msg = e.message === "TOKEN_REJECTED"
+          ? "GitHub rejected the token — check it has Contents read/write on this repository."
+          : e.message;
+        renderOnboarding("token", Object.assign(state, { notice: msg }));
+      }
+    };
+    document.getElementById("obFinish").addEventListener("click", () => finish(true));
+    document.getElementById("obSkip").addEventListener("click", () => finish(false));
+    return;
+  }
+}
+
+/* ================= One-time Google Sheet import =================
+   Reuses the row-shape classifier from the previous architecture. */
+function sheetCsvUrl(input){
+  input = (input || "").trim();
+  const m = input.match(/docs\.google\.com\/spreadsheets\/d\/([A-Za-z0-9_-]+)/);
+  if (!m) return null;
+  const gid = (input.match(/[#?&]gid=(\d+)/) || [])[1] || "0";
+  return "https://docs.google.com/spreadsheets/d/" + m[1] + "/gviz/tq?tqx=out:csv&headers=0&gid=" + gid;
+}
+function parseCSV(text){
+  const rows = [];
+  let row = [], field = "", inQuotes = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (inQuotes){
+      if (c === '"'){ if (text[i+1] === '"'){ field += '"'; i++; } else inQuotes = false; }
+      else field += c;
+    } else {
+      if (c === '"') inQuotes = true;
+      else if (c === ','){ row.push(field); field = ""; }
+      else if (c === '\n'){ row.push(field); rows.push(row); row = []; field = ""; }
+      else if (c === '\r'){ /* skip */ }
+      else field += c;
+    }
+  }
+  if (field.length || row.length){ row.push(field); rows.push(row); }
+  return rows.map(r => r.map(c => (c || "").replace(/\\/g, "").trim()));
+}
+function importSheet(csvText){
+  const rows = parseCSV(csvText);
+  const TICKER_RE = /^[A-Z0-9]{2,6}(\.[A-Z]{1,3})?$/;
+  const H = { owner: 0, ticker: 1, shares: 3, price: 5, mv: 6, cb: 7 };
+  const P = { name: 0, low: 3, value: 4, high: 5, loan: 6, offset: 7, updated: 10, source: 11 };
+  const data = emptyData();
+  const map = {};
+  let lastOwner = "";
+  const textOnly = (r) => !r.some(c => Math.abs(num(c)) > 999);
+
+  rows.forEach(r => {
+    const isHeader = textOnly(r) && (r.some(c => (c || "").toLowerCase() === "ticker") || r.some(c => (c || "").toLowerCase().includes("net equity")));
+    if (isHeader) return;
+    const tick = r[H.ticker] || "";
+    const mv = num(r[H.mv]), sh = num(r[H.shares]);
+    if (TICKER_RE.test(tick) && mv > 0 && sh > 0){
+      const owner = r[H.owner] || lastOwner;
+      if (!owner) return;
+      lastOwner = owner;
+      data.holdings.push({
+        owner, ticker: tick, shares: sh, costBasis: num(r[H.cb]),
+        sector: "", manualPrice: num(r[H.price]) || null // sheet price seeds the fallback until the feed covers it
+      });
+      return;
+    }
+    const name = r[P.name] || "";
+    if (name && !/\b(total|subtotal|combined|sum)\b/i.test(name)){
+      const val = num(r[P.value]);
+      const lowV = num(r[P.low]), highV = num(r[P.high]);
+      const loan = num(r[P.loan]), offset = num(r[P.offset]);
+      if (val > 50000 && (lowV > 0 || highV > 0 || loan > 0 || offset > 0)){
+        data.properties.push({
+          name, ppor: /ppor|owner occ/i.test(name), value: val, low: lowV, high: highV,
+          loan, offset, updated: r[P.updated] || "", source: r[P.source] || ""
+        });
+        return;
+      }
+    }
+    if (r[0] && r[1]) map[r[0]] = r[1];
+  });
+
+  data.profile = {
+    riskTolerance: map["Risk Tolerance"] || "",
+    timeHorizon: map["Time Horizon"] || "",
+    combinedIncome: map["Combined Annual Income"] || "",
+    monthlySavings: num(map["Monthly Savings Rate"]),
+    annualSavings: num(map["Annual Savings Rate"]),
+    savingsRatePct: map["Savings Rate pct of income"] || "",
+    goal1: map["Primary Goal 1"] || "",
+    goal2: map["Primary Goal 2"] || ""
+  };
+  data.fire = {
+    monthlyIncomeINR: num(map["Desired Monthly Passive Income Today (INR)"]),
+    homeCostINR: num(map["Target India Home Cost Today (INR)"]),
+    swrPct: num(map["Safe Withdrawal Rate"]) || 3.5,
+    inflationPct: num(map["Assumed India Inflation Rate"]) || 6,
+    growthPct: num(map["Assumed Annual Portfolio Growth Rate"]) || 7
+  };
+  return data;
+}
+
+/* ================= Theme & boot wiring ================= */
 function setTheme(mode){
   document.documentElement.setAttribute("data-theme", mode);
-  localStorage.setItem("pad-theme", mode);
+  localStorage.setItem(LS.theme, mode);
   document.querySelectorAll(".theme-toggle .opt").forEach(el => {
     el.classList.toggle("active", el.dataset.mode === mode);
   });
-  // Redraw the chart so gridlines/labels pick up the new theme immediately
-  if (historyChartInstance && lastHistory) drawHistoryChart(lastHistory);
+  if (historyChartInstance && HISTORY.length > 1 && document.getElementById("historyChart")) drawHistoryChart(HISTORY);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setTheme(localStorage.getItem("pad-theme") || "light");
+  setTheme(localStorage.getItem(LS.theme) || "light");
   document.getElementById("themeToggle").addEventListener("click", (e) => {
     const opt = e.target.closest(".opt");
     const cur = document.documentElement.getAttribute("data-theme") || "light";
     setTheme(opt ? opt.dataset.mode : (cur === "light" ? "dark" : "light"));
   });
-  document.getElementById("refreshBtn").addEventListener("click", load);
-  document.getElementById("settingsBtn").addEventListener("click", () => renderSetup());
-  load();
-  // Auto-refresh every 5 minutes, but only while the tab is visible
-  setInterval(() => { if (!document.hidden) load(); }, REFRESH_MS);
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden && Date.now() - lastLoadAt > REFRESH_MS) load();
+  document.getElementById("refreshBtn").addEventListener("click", async () => {
+    const btn = document.getElementById("refreshBtn");
+    btn.disabled = true; btn.textContent = "⟳ Refreshing…";
+    PRICES = await fetchJsonFile(PRICES_FILE) || PRICES;
+    if (DATA && !WORKING) await renderDashboard();
+    btn.disabled = false; btn.textContent = "⟳ Refresh";
   });
+  document.getElementById("editBtn").addEventListener("click", () => { if (DATA){ EDITOR_UI.buyIdx = null; renderEditor(); } });
+  document.getElementById("lockBtn").addEventListener("click", lockNow);
+
+  // Delegated editor events
+  document.getElementById("app").addEventListener("input", (e) => {
+    const el = e.target;
+    if (!el.matches("[data-bind]") || !WORKING) return;
+    const sec = el.dataset.sec, field = el.dataset.field, idx = el.dataset.idx;
+    let v = el.value;
+    if (el.dataset.kind === "num") v = num(v);
+    if (el.dataset.kind === "bool") v = el.checked;
+    if (el.dataset.kind === "ticker"){ v = v.toUpperCase().trim(); el.value = v; }
+    if (idx != null && idx !== "") WORKING[sec][+idx][field] = v;
+    else WORKING[sec][field] = v;
+    editorUpdatePreview();
+  });
+  document.getElementById("app").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-act]");
+    if (!btn) return;
+    const act = btn.dataset.act;
+    if (act === "add-holding"){ EDITOR_UI.buyIdx = null; WORKING.holdings.push({ owner: WORKING.holdings[0] ? WORKING.holdings[WORKING.holdings.length-1].owner : "", ticker: "", shares: 0, costBasis: 0, sector: "", manualPrice: null }); renderEditor(); }
+    else if (act === "del-holding"){ EDITOR_UI.buyIdx = null; WORKING.holdings.splice(+btn.dataset.idx, 1); renderEditor(); }
+    else if (act === "buy-open"){ EDITOR_UI.buyIdx = +btn.dataset.idx; renderEditor(); }
+    else if (act === "buy-cancel"){ EDITOR_UI.buyIdx = null; renderEditor(); }
+    else if (act === "buy-apply"){
+      const h = WORKING.holdings[+btn.dataset.idx];
+      const newTotal = num(document.getElementById("buyTotal").value);
+      const paid = num(document.getElementById("buyPaid").value);
+      const cur = num(h.shares);
+      if (!(newTotal > 0) || newTotal === cur){ renderEditor("⚠ Enter the new total number of shares (different from the current total)."); return; }
+      if (newTotal > cur){
+        if (!(paid > 0)){ renderEditor("⚠ Enter what you paid for the extra " + (newTotal - cur).toLocaleString("en-AU") + " shares so the cost basis stays right."); return; }
+        h.costBasis = num(h.costBasis) + paid;
+      } else {
+        h.costBasis = cur > 0 ? num(h.costBasis) * (newTotal / cur) : num(h.costBasis); // proportional for sells
+      }
+      h.shares = newTotal;
+      EDITOR_UI.buyIdx = null;
+      renderEditor((newTotal > cur ? "Purchase" : "Sale") + " recorded for " + h.ticker + " — remember to Save to GitHub.");
+    }
+    else if (act === "add-prop"){ WORKING.properties.push({ name: "", ppor: false, value: 0, low: 0, high: 0, loan: 0, offset: 0, updated: "", source: "" }); renderEditor(); }
+    else if (act === "del-prop"){ WORKING.properties.splice(+btn.dataset.idx, 1); renderEditor(); }
+    else if (act === "discard"){ WORKING = null; renderDashboard(); }
+    else if (act === "save"){ saveWorking(); }
+    else if (act === "export-data"){ exportDataBackup(); }
+    else if (act === "import-data"){ document.getElementById("dataFile").click(); }
+  });
+
+  boot();
+  // periodic price refresh while visible
+  setInterval(async () => {
+    if (document.hidden || !DATA || WORKING) return;
+    const fresh = await fetchJsonFile(PRICES_FILE);
+    if (fresh && (!PRICES || fresh.updated !== PRICES.updated)){ PRICES = fresh; await renderDashboard(); }
+  }, 5 * 60 * 1000);
 });
 </script>
 </body>
