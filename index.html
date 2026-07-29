@@ -1,7 +1,10 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Portfolio Analysis Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>" />
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
 <style>
   :root {
@@ -65,6 +68,8 @@
     transition: background 0.25s ease, color 0.25s ease;
   }
   .wrap { max-width: 1080px; margin: 0 auto; }
+  button { font-family: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   .top {
     display: flex;
@@ -98,6 +103,7 @@
     box-shadow: var(--shadow-2);
   }
   .refresh-btn:active { transform: scale(0.97); }
+  .refresh-btn:disabled { opacity: 0.6; cursor: default; }
 
   .theme-toggle {
     display: flex;
@@ -107,7 +113,6 @@
     border-radius: 100px;
     padding: 4px;
     box-shadow: var(--shadow-2);
-    cursor: pointer;
     user-select: none;
     border: 1px solid var(--border);
   }
@@ -115,9 +120,20 @@
     display: flex; align-items: center; justify-content: center;
     width: 30px; height: 26px; border-radius: 100px;
     font-size: 13px; color: var(--text-tertiary);
+    background: none; border: none; padding: 0; cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease;
   }
   .theme-toggle .opt.active { background: var(--accent); color: #fff; }
+
+  .stale-banner {
+    background: var(--warn-soft);
+    color: var(--warn-text);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
 
   .hero {
     background: linear-gradient(180deg, var(--hero-grad-1) 0%, var(--hero-grad-2) 100%);
@@ -173,6 +189,9 @@
   }
   @media (max-width: 900px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
 
+  .grid-fire { display: grid; grid-template-columns: 1.3fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .grid-fire { grid-template-columns: 1fr; } }
+
   .stat-card {
     background: var(--card);
     border-radius: 18px;
@@ -207,6 +226,8 @@
     letter-spacing: 0.03em;
   }
 
+  .table-scroll { overflow-x: auto; }
+  .table-scroll table { min-width: 640px; }
   table { width: 100%; border-collapse: collapse; }
   thead th {
     text-align: left;
@@ -224,6 +245,7 @@
     border-bottom: 1px solid var(--border-soft);
   }
   tbody tr:last-child td { border-bottom: none; }
+  tr.subtotal td { font-weight: 600; border-top: 1px solid var(--border); border-bottom: none; background: var(--chip-bg); font-size: 13px; }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
   .ticker { font-weight: 600; }
   .gain-pos { color: var(--pos); font-weight: 600; }
@@ -288,6 +310,7 @@
   .sev-med .icon { background: var(--warn-soft); }
   .sev-good .icon { background: var(--pos-soft); }
   .sev-info .icon { background: var(--accent-soft); }
+  .section-note { font-size: 11px; color: var(--footnote); margin: 12px 2px 0; }
 
   .goal-card { background: var(--card); border-radius: 18px; padding: 24px 26px; box-shadow: var(--shadow-2); }
   .goal-card .row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
@@ -307,13 +330,36 @@
     display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 600;
     padding: 3px 10px; border-radius: 100px;
   }
+  .risk-card .sub { font-size: 11px; color: var(--text-tertiary); margin-top: 8px; }
   .badge.risk-hi { background: var(--neg-soft); color: var(--neg); }
   .badge.risk-mid { background: var(--warn-soft); color: var(--warn-text); }
   .badge.risk-lo { background: var(--pos-soft); color: var(--pos); }
 
   .chart-card { background: var(--card); border-radius: 18px; padding: 22px 24px; box-shadow: var(--shadow-2); }
+  .chart-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .chart-head .label { font-size: 12px; color: var(--text-tertiary); font-weight: 500; }
+  .chart-actions { display: flex; gap: 12px; }
+  .mini-btn { background: none; border: none; color: var(--accent); font-size: 11px; font-weight: 600; cursor: pointer; padding: 0; }
   .chart-wrap { position: relative; height: 220px; }
   .chart-empty { text-align: center; color: var(--text-tertiary); font-size: 12px; padding: 70px 0; }
+
+  .setup-card { padding: 28px 30px; max-width: 640px; margin: 40px auto; }
+  .setup-card h2 { margin: 0 0 10px; font-size: 19px; letter-spacing: -0.01em; }
+  .setup-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .setup-card code { background: var(--chip-bg); padding: 2px 6px; border-radius: 6px; font-size: 12px; }
+  .setup-card input {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    margin: 8px 0 14px;
+  }
+  .setup-actions { display: flex; gap: 10px; }
+  .setup-note { background: var(--warn-soft); color: var(--warn-text); border-radius: 10px; padding: 9px 14px; font-size: 12px; margin-bottom: 12px; }
+  .setup-hint { font-size: 11px !important; color: var(--text-tertiary) !important; margin-top: 16px; }
 
   .footnote {
     text-align: center;
@@ -325,6 +371,16 @@
   .errbox { background: var(--card); border-radius: 18px; padding: 24px; color: var(--neg); font-size: 13px; line-height: 1.6; }
   .errbox b { color: var(--text); }
   .errbox code { background: var(--chip-bg); padding: 2px 6px; border-radius: 6px; font-size: 12px; }
+
+  @media (max-width: 640px) {
+    body { padding: 20px 14px 48px; }
+    .top h1 { font-size: 22px; }
+    .hero { padding: 26px 22px; gap: 24px; }
+    .hero-left .value { font-size: 34px; }
+    .grid4 { grid-template-columns: 1fr 1fr; gap: 12px; }
+    thead th, tbody td { padding-left: 14px; padding-right: 14px; }
+    .setup-card { margin: 16px auto; }
+  }
 </style>
 </head>
 <body>
@@ -335,10 +391,11 @@
       <div class="sub" id="updatedAt">Loading live data…</div>
     </div>
     <div class="top-right">
-      <div class="refresh-btn" id="refreshBtn">⟳ Refresh</div>
-      <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle light/dark mode">
-        <div class="opt" data-mode="light">☀️</div>
-        <div class="opt" data-mode="dark">🌙</div>
+      <button class="refresh-btn" id="refreshBtn">⟳ Refresh</button>
+      <button class="refresh-btn" id="settingsBtn" aria-label="Data source settings" title="Data source settings">⚙</button>
+      <div class="theme-toggle" id="themeToggle" role="group" aria-label="Colour theme">
+        <button class="opt" data-mode="light" aria-label="Light mode">☀️</button>
+        <button class="opt" data-mode="dark" aria-label="Dark mode">🌙</button>
       </div>
     </div>
   </div>
@@ -353,49 +410,55 @@
 </script>
 
 <script>
-const FILE_ID = "1vrkMfl0idRqAcTDHkYWc7PqOFgSe2wsDMq245eGiOmM";
-const SHEET_GID = "904344185"; 
-// Keep headers=0 so Google does not infer the title row as headers and blank string columns such as Ticker.
-const CSV_URL = "https://docs.google.com/spreadsheets/d/" + FILE_ID + "/gviz/tq?tqx=out:csv&headers=0&gid=" + SHEET_GID;
+"use strict";
 
-function setTheme(mode){
-  document.documentElement.setAttribute("data-theme", mode);
-  localStorage.setItem("pad-theme", mode);
-  document.querySelectorAll(".theme-toggle .opt").forEach(el => {
-    el.classList.toggle("active", el.dataset.mode === mode);
-  });
+/* ================= Data source config =================
+   The sheet URL is stored ONLY in this browser (localStorage),
+   never in the repository. Accepts either:
+   - a Google Sheets tab URL (link-sharing must be on), or
+   - an Apps Script proxy URL (keeps the sheet private — see README). */
+const CFG_KEY = "pad-config";
+const CACHE_KEY = "pad-cache";
+const HIST_KEY = "pad-history";
+const REFRESH_MS = 5 * 60 * 1000;
+
+function getConfig(){
+  try { return JSON.parse(localStorage.getItem(CFG_KEY) || "null"); } catch(e) { return null; }
 }
-document.addEventListener("DOMContentLoaded", () => {
-  const current = localStorage.getItem("pad-theme") || "light";
-  setTheme(current);
-  document.getElementById("themeToggle").addEventListener("click", (e) => {
-    const opt = e.target.closest(".opt");
-    const mode = opt ? opt.dataset.mode : (current === "light" ? "dark" : "light");
-    setTheme(mode);
-  });
-  document.getElementById("refreshBtn").addEventListener("click", load);
-  load();
-  // Auto-refresh every 5 minutes while the tab stays open
-  setInterval(load, 5 * 60 * 1000);
-});
+function saveConfig(c){ localStorage.setItem(CFG_KEY, JSON.stringify(c)); }
 
-const PROPERTY_META = {
-  "1 Percy Road (PPOR)": { tag: "PPOR — Owner Occupied", cls: "ppor" },
-  "382 Lilley Ave": { tag: "Investment — Interest Only", cls: "inv" },
-  "26 Bimble Ave": { tag: "Investment — Interest Only", cls: "inv" },
-};
+function csvUrlFromInput(input){
+  input = (input || "").trim();
+  const m = input.match(/docs\.google\.com\/spreadsheets\/d\/([A-Za-z0-9_-]+)/);
+  if (m) {
+    const gid = (input.match(/[#?&]gid=(\d+)/) || [])[1] || "0";
+    // headers=0 so Google does not infer the title row as headers and blank string columns such as Ticker
+    return "https://docs.google.com/spreadsheets/d/" + m[1] + "/gviz/tq?tqx=out:csv&headers=0&gid=" + gid;
+  }
+  if (/^https:\/\//i.test(input)) return input; // Apps Script proxy or any raw CSV endpoint
+  if (/^[A-Za-z0-9_-]{25,}$/.test(input)) {
+    return "https://docs.google.com/spreadsheets/d/" + input + "/gviz/tq?tqx=out:csv&headers=0&gid=0";
+  }
+  return null;
+}
 
-function clean(s){ return (s||"").replace(/\\\\/g,"").trim(); }
+/* ================= Utilities ================= */
+function clean(s){ return (s || "").replace(/\\/g, "").trim(); }
+function esc(s){
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
 function parseCurrency(s){
-  s = clean(s);
+  s = clean(String(s == null ? "" : s));
   if (!s || s === "-" || s === "–") return 0;
-  let neg = /^\(.*\)$/.test(s);
-  s = s.replace(/[()$,]/g,"");
-  let n = parseFloat(s.replace(/[^0-9.\-]/g,"")) || 0;
+  const neg = /^\(.*\)$/.test(s);
+  s = s.replace(/[()$,₹]/g, "");
+  const n = parseFloat(s.replace(/[^0-9.\-]/g, "")) || 0;
   return neg ? -Math.abs(n) : n;
 }
 function parsePercent(s){
-  s = clean(s).replace("%","");
+  s = clean(String(s == null ? "" : s)).replace("%", "").replace(/,/g, "");
   return parseFloat(s) || 0;
 }
 function fmtCurrency(n){
@@ -403,7 +466,18 @@ function fmtCurrency(n){
   const v = Math.abs(Math.round(n)).toLocaleString("en-AU");
   return (neg ? "-$" : "$") + v;
 }
-function fmtPct(n, digits=1){ return n.toFixed(digits) + "%"; }
+function fmtSigned(n){ return (n >= 0 ? "+" : "") + fmtCurrency(n); }
+function fmtPrice(raw){
+  const n = parseCurrency(raw);
+  if (!n) return esc(clean(String(raw || ""))) || "—";
+  return "$" + n.toLocaleString("en-AU", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtPct(n, digits){ return (isFinite(n) ? n : 0).toFixed(digits == null ? 1 : digits) + "%"; }
+function fmtInrCr(inr){ return "₹" + (inr / 1e7).toFixed(2) + " Cr"; }
+function localDateStr(){
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
 
 // Minimal RFC4180 CSV parser (handles quoted fields, embedded commas/quotes/newlines)
 function parseCSV(text){
@@ -428,93 +502,268 @@ function parseCSV(text){
   return rows.map(r => r.map(c => clean(c)));
 }
 
-function hasUsableHoldings(rows){
-  return rows.some(r =>
-    (r[0] === "Sankalp" || r[0] === "Adwaita") &&
-    r.length >= 10 &&
-    r[1] &&
-    parseCurrency(r[6]) > 0
-  );
+/* ================= Sheet classification =================
+   Rows are detected by shape, not by hardcoded names, so adding an owner,
+   holding or property in the sheet just works. If a header row exists
+   ("Ticker" for holdings, "Net Equity" for properties), columns are mapped
+   by name; otherwise the original positional layout is assumed. */
+const TICKER_RE = /^[A-Z0-9]{2,6}(\.[A-Z]{1,3})?$/;
+const DEFAULT_H = { owner: 0, ticker: 1, shares: 3, price: 5, mv: 6, cb: 7, gainPct: 9, sector: -1 };
+const DEFAULT_P = { name: 0, low: 3, value: 4, high: 5, loan: 6, offset: 7, netDebt: 8, equity: 9, updated: 10, source: 11 };
+
+function findIn(low, names){
+  for (const n of names){ const i = low.findIndex(c => c === n); if (i >= 0) return i; }
+  for (const n of names){ const i = low.findIndex(c => c.includes(n)); if (i >= 0) return i; }
+  return -1;
+}
+function findColumnMaps(rows){
+  const H = Object.assign({}, DEFAULT_H), P = Object.assign({}, DEFAULT_P);
+  for (const r of rows){
+    const low = r.map(c => (c || "").toLowerCase());
+    if (low.some(c => c === "ticker")){
+      const set = (key, names) => { const i = findIn(low, names); if (i >= 0) H[key] = i; };
+      set("ticker", ["ticker"]);
+      set("shares", ["shares", "units", "qty", "quantity"]);
+      set("price", ["price"]);
+      set("mv", ["market value", "mkt value", "current value"]);
+      set("cb", ["cost basis", "cost base", "total cost"]);
+      set("gainPct", ["gain %", "gain%", "gain / loss %", "gain/loss %", "return %"]);
+      const si = findIn(low, ["sector"]); if (si >= 0) H.sector = si;
+      break;
+    }
+  }
+  for (const r of rows){
+    const low = r.map(c => (c || "").toLowerCase());
+    if (low.some(c => c.includes("net equity"))){
+      const set = (key, names) => { const i = findIn(low, names); if (i >= 0) P[key] = i; };
+      set("low", ["cma low", "low"]);
+      set("value", ["est. value", "est value", "mid"]);
+      set("high", ["cma high", "high"]);
+      set("loan", ["loan"]);
+      set("offset", ["offset"]);
+      set("netDebt", ["net debt"]);
+      set("equity", ["net equity"]);
+      set("updated", ["updated"]);
+      set("source", ["source"]);
+      break;
+    }
+  }
+  return { H, P };
+}
+
+function classifyAll(rows){
+  const { H, P } = findColumnMaps(rows);
+  const holdingsByOwner = {};
+  const owners = [];
+  const properties = [];
+  const map = {};
+  const holdingsTotal = { mv: 0, cb: 0 };
+  const re = { value: 0, loan: 0, offset: 0, equity: 0 };
+  let lastOwner = "";
+
+  rows.forEach(r => {
+    const low0 = (r[0] || "").toLowerCase();
+    const isHeader = r.some(c => (c || "").toLowerCase() === "ticker") ||
+                     r.some(c => (c || "").toLowerCase().includes("net equity"));
+    if (isHeader) return;
+
+    // Holdings row: ticker-shaped symbol with positive shares and market value
+    const tick = r[H.ticker] || "";
+    const mv = parseCurrency(r[H.mv]);
+    const sh = parseCurrency(r[H.shares]);
+    if (TICKER_RE.test(tick) && mv > 0 && sh > 0){
+      const owner = r[H.owner] || lastOwner;
+      if (!owner) return;
+      lastOwner = owner;
+      if (!holdingsByOwner[owner]){ holdingsByOwner[owner] = []; owners.push(owner); }
+      const item = {
+        owner, ticker: tick, shares: r[H.shares], sharesNum: sh, price: r[H.price],
+        mv, cb: parseCurrency(r[H.cb]), gainPct: parsePercent(r[H.gainPct]),
+        sheetSector: H.sector >= 0 ? (r[H.sector] || "") : ""
+      };
+      holdingsByOwner[owner].push(item);
+      holdingsTotal.mv += item.mv;
+      holdingsTotal.cb += item.cb;
+      return;
+    }
+
+    // Property row: has a name plus CMA low/mid/high and non-zero net equity
+    const name = r[P.name] || "";
+    if (name && !/^(total|combined|grand)/i.test(name)){
+      const val = parseCurrency(r[P.value]);
+      const lowV = parseCurrency(r[P.low]);
+      const highV = parseCurrency(r[P.high]);
+      const eq = parseCurrency(r[P.equity]);
+      if (val > 50000 && lowV > 0 && highV >= val && eq !== 0){
+        const p = {
+          name, low: lowV, value: val, high: highV,
+          loan: parseCurrency(r[P.loan]), offset: parseCurrency(r[P.offset]),
+          netDebt: parseCurrency(r[P.netDebt]), equity: eq,
+          updated: r[P.updated] || "", source: r[P.source] || ""
+        };
+        properties.push(p);
+        re.value += p.value; re.loan += p.loan; re.offset += p.offset; re.equity += p.equity;
+        return;
+      }
+    }
+
+    // Everything else with a label + value is profile/summary data
+    if (r[0] && r[1] !== undefined && r[1] !== "" && low0 !== "owner") map[r[0]] = r[1];
+  });
+
+  return { holdingsByOwner, owners, properties, map, holdingsTotal, re };
+}
+
+/* ================= Sectors ================= */
+const SECTOR_MAP = {
+  BHP: "Resources & Energy", RIO: "Resources & Energy", FMG: "Resources & Energy",
+  WDS: "Resources & Energy", S32: "Resources & Energy", MIN: "Resources & Energy", STO: "Resources & Energy",
+  CSL: "Healthcare", COH: "Healthcare", RMD: "Healthcare", SHL: "Healthcare",
+  CBA: "Financials", NAB: "Financials", WBC: "Financials", ANZ: "Financials", MQG: "Financials",
+  WES: "Consumer", WOW: "Consumer", COL: "Consumer",
+  IVV: "Diversified ETFs", VGS: "Diversified ETFs", NDQ: "Diversified ETFs", BGBL: "Diversified ETFs",
+  VAE: "Diversified ETFs", VAS: "Diversified ETFs", A200: "Diversified ETFs", IOZ: "Diversified ETFs",
+  VTS: "Diversified ETFs", VEU: "Diversified ETFs", VDHG: "Diversified ETFs", DHHF: "Diversified ETFs",
+  NDIA: "Diversified ETFs", GOLD: "Commodities"
+};
+const SECTOR_COLORS = {
+  "Resources & Energy": "#d70015",
+  "Healthcare": "#8e44ec",
+  "Financials": "#b26a00",
+  "Consumer": "#0d9488",
+  "Diversified ETFs": "#0071e3",
+  "Commodities": "#c9a227",
+  "Other": "#86868b"
+};
+const PROPERTY_COLORS = ["#1a9d4b", "#2fbf71", "#7bd4a3"];
+const DIVERSIFIED = "Diversified ETFs";
+
+function sectorOf(h){
+  if (h.sheetSector) return h.sheetSector;
+  return SECTOR_MAP[h.ticker] || "Other";
+}
+
+/* ================= Load & cache ================= */
+let loading = false;
+let lastLoadAt = 0;
+
+function cacheCsv(text){
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ text, at: Date.now() })); } catch(e) {}
+}
+function getCache(){
+  try { return JSON.parse(localStorage.getItem(CACHE_KEY) || "null"); } catch(e) { return null; }
 }
 
 async function load(){
+  if (loading) return;
+  const cfg = getConfig();
+  if (!cfg || !cfg.csvUrl){ renderSetup(); return; }
+  loading = true;
+  const btn = document.getElementById("refreshBtn");
+  btn.disabled = true; btn.textContent = "⟳ Refreshing…";
   document.getElementById("updatedAt").textContent = "Refreshing…";
   try {
-    const res = await fetch(CSV_URL, { cache: "no-store" });
+    const res = await fetch(cfg.csvUrl, { cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
     const text = await res.text();
-    if (/^\s*<|accounts\.google\.com|Sign in/i.test(text)) {
-      throw new Error("SHARING");
-    }
-    const rows = parseCSV(text);
-    if (!hasUsableHoldings(rows)) {
-      throw new Error("The sheet loaded, but the holdings rows were missing ticker/value data.");
-    }
-    render(rows);
+    if (/^\s*<|accounts\.google\.com|Sign in/i.test(text)) throw new Error("SHARING");
+    const data = classifyAll(parseCSV(text));
+    if (!data.owners.length) throw new Error("The sheet loaded, but no holdings rows with ticker + market value were found.");
+    cacheCsv(text);
+    lastLoadAt = Date.now();
+    render(data);
+    document.getElementById("updatedAt").textContent =
+      "Live · updated " + new Date().toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" });
   } catch (e) {
-    const sharingIssue = e && e.message === "SHARING";
-    document.getElementById("app").innerHTML =
-      '<div class="errbox"><b>Could not load live data from the Google Sheet.</b><br><br>' +
-      (sharingIssue
-        ? 'This usually means the Sheet\'s link-sharing isn\'t turned on yet. In the Sheet, click <b>Share</b> → under "General access" choose <b>Anyone with the link</b> → <b>Viewer</b> → Done. Then hit Refresh here.'
-        : 'Details: ' + (e && e.message ? e.message : "unknown error") + '. Check your internet connection and try Refresh.') +
-      '</div>';
-    document.getElementById("updatedAt").textContent = "Load failed";
+    handleLoadError(e);
+  } finally {
+    loading = false;
+    btn.disabled = false; btn.textContent = "⟳ Refresh";
   }
 }
 
-function render(rows){
-  // Holdings
-  const holdingsByOwner = { Sankalp: [], Adwaita: [] };
-  let holdingsTotal = { mv: 0, cb: 0 };
-  rows.forEach(r => {
-    if ((r[0] === "Sankalp" || r[0] === "Adwaita") && r.length >= 10) {
-      const item = {
-        ticker: r[1], shares: r[3], price: r[5],
-        mv: parseCurrency(r[6]), cb: parseCurrency(r[7]),
-        gainPct: parsePercent(r[9])
-      };
-      holdingsByOwner[r[0]].push(item);
-      holdingsTotal.mv += item.mv;
-      holdingsTotal.cb += item.cb;
-    }
-  });
+function handleLoadError(e){
+  const sharing = e && e.message === "SHARING";
+  const reason = sharing ? "the data source needs link-sharing (or the URL changed)" : (e && e.message ? e.message : "unknown error");
 
-  // Real estate — CMA Low / Mid (Est. Value) / High / Loan / Offset / Net Debt / Net Equity / Updated / Source
-  const properties = [];
-  let re = { value: 0, loan: 0, offset: 0, equity: 0 };
-  rows.forEach(r => {
-    if (PROPERTY_META[r[0]] && r.length >= 10) {
-      const p = {
-        name: r[0],
-        low: parseCurrency(r[3]), value: parseCurrency(r[4]), high: parseCurrency(r[5]),
-        loan: parseCurrency(r[6]), offset: parseCurrency(r[7]),
-        netDebt: parseCurrency(r[8]), equity: parseCurrency(r[9]),
-        updated: r[10] || "", source: r[11] || ""
-      };
-      properties.push(p);
-      re.value += p.value; re.loan += p.loan; re.offset += p.offset; re.equity += p.equity;
-    }
-  });
+  // Keep showing the last good data instead of wiping the dashboard
+  const cache = getCache();
+  if (cache && cache.text){
+    try {
+      const data = classifyAll(parseCSV(cache.text));
+      if (data.owners.length){
+        render(data, { stale: { at: cache.at, reason } });
+        document.getElementById("updatedAt").textContent = "Showing cached data";
+        return;
+      }
+    } catch(_) {}
+  }
 
-  // Profile + Summary — simple label -> value map
-  const map = {};
-  rows.forEach(r => { if (r.length >= 2 && r[0] && r[1] !== undefined) map[r[0]] = r[1]; });
+  document.getElementById("app").innerHTML =
+    '<div class="errbox"><b>Could not load live data.</b><br><br>' +
+    (sharing
+      ? 'This usually means the Sheet\'s link-sharing isn\'t turned on yet. In the Sheet, click <b>Share</b> → under "General access" choose <b>Anyone with the link</b> → <b>Viewer</b> → Done. Then hit Refresh here. (Or use the Apps Script proxy from the README to keep the sheet private.)'
+      : 'Details: ' + esc(reason) + '. Check your internet connection and try Refresh.') +
+    '<br><br><button class="refresh-btn" id="errSettings">Change data source</button></div>';
+  document.getElementById("updatedAt").textContent = "Load failed";
+  const b = document.getElementById("errSettings");
+  if (b) b.addEventListener("click", () => renderSetup());
+}
+
+/* ================= Setup screen ================= */
+function renderSetup(notice){
+  const cfg = getConfig();
+  document.getElementById("updatedAt").textContent = "Not connected";
+  document.getElementById("app").innerHTML = `
+  <div class="card setup-card">
+    <h2>Connect your data source</h2>
+    ${notice ? `<div class="setup-note">${esc(notice)}</div>` : ""}
+    <p>Paste the URL of your Google Sheet tab — copy it from the browser address bar so it includes <code>gid=…</code> — or the URL of your Apps Script proxy if you've set one up (recommended; keeps the sheet private — see the README).</p>
+    <input id="srcInput" type="url" spellcheck="false" placeholder="https://docs.google.com/spreadsheets/d/…/edit#gid=0" value="${esc(cfg && cfg.input || "")}">
+    <div class="setup-actions">
+      <button class="refresh-btn" id="srcSave">Save &amp; load</button>
+      ${cfg && cfg.csvUrl ? '<button class="refresh-btn" id="srcCancel">Cancel</button>' : ""}
+    </div>
+    <p class="setup-hint">The URL is stored only in this browser (localStorage) — it is never committed to the repository or sent anywhere except Google. Direct sheet URLs require link-sharing (Share → Anyone with the link → Viewer); the Apps Script proxy does not.</p>
+  </div>`;
+  document.getElementById("srcSave").addEventListener("click", () => {
+    const input = document.getElementById("srcInput").value;
+    const url = csvUrlFromInput(input);
+    if (!url){ renderSetup("That doesn't look like a Google Sheets URL, sheet ID, or https endpoint — please check and try again."); return; }
+    saveConfig({ input: input.trim(), csvUrl: url });
+    load();
+  });
+  const c = document.getElementById("srcCancel");
+  if (c) c.addEventListener("click", load);
+}
+
+/* ================= Render ================= */
+function render(data, opts){
+  opts = opts || {};
+  const { holdingsByOwner, owners, properties, map, holdingsTotal, re } = data;
 
   const netWorth = holdingsTotal.mv + re.equity;
   const eqPct = netWorth ? (holdingsTotal.mv / netWorth) * 100 : 0;
   const propPct = 100 - eqPct;
+  const totalGain = holdingsTotal.mv - holdingsTotal.cb;
+  const totalGainPct = holdingsTotal.cb ? (totalGain / holdingsTotal.cb) * 100 : 0;
 
-  document.getElementById("updatedAt").textContent =
-    "Live · updated " + new Date().toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" });
+  const fireCorpusTodayAUD = parseCurrency(map["FIRE Corpus Required Today (AUD, no inflation)"]);
+  const fireProgressPct = parsePercent(map["FIRE Progress %"]);
+  const fxRate = parseCurrency(map["AUD/INR Exchange Rate (Live)"]) || 0;
+  const fireProjection = projectYearsToFire(netWorth, map, fxRate);
 
   const ringCirc = 2 * Math.PI * 52;
-  const eqLen = (eqPct/100) * ringCirc;
+  const eqLen = (eqPct / 100) * ringCirc;
 
-  // Log today's snapshot for the history chart (one entry per calendar day)
-  const history = logSnapshot(netWorth, eqPct, propPct);
+  // Only log history snapshots for live data, never cached fallbacks
+  const history = opts.stale ? getHistory() : logSnapshot(netWorth, holdingsTotal.mv, re.equity);
 
   let html = "";
+
+  if (opts.stale){
+    html += `<div class="stale-banner">⚠︎ Couldn't refresh — ${esc(opts.stale.reason)}. Showing data cached ${esc(new Date(opts.stale.at).toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" }))}. It will retry automatically.</div>`;
+  }
 
   // Hero
   html += `
@@ -522,17 +771,17 @@ function render(rows){
     <div class="hero-left">
       <div class="label">Total Household Net Worth</div>
       <div class="value">${fmtCurrency(netWorth)}</div>
-      <div class="delta">Excludes superannuation · AUD</div>
+      <div class="delta">Excludes superannuation · AUD${fxRate ? " · ≈ " + fmtInrCr(netWorth * fxRate) + " @ " + fxRate.toFixed(2) : ""}</div>
     </div>
     <div class="ring-wrap">
       <div class="ring">
-        <svg viewBox="0 0 120 120">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
           <circle cx="60" cy="60" r="52" fill="none" stroke="var(--ring-track)" stroke-width="12"/>
           <circle cx="60" cy="60" r="52" fill="none" stroke="var(--accent)" stroke-width="12"
-            stroke-dasharray="${eqLen} ${ringCirc-eqLen}" stroke-linecap="round"/>
+            stroke-dasharray="${eqLen} ${ringCirc - eqLen}" stroke-linecap="round"/>
         </svg>
         <div class="ring-center">
-          <div class="pct">${fmtPct(eqPct,0)}</div>
+          <div class="pct">${fmtPct(eqPct, 0)}</div>
           <div class="lbl">Equities</div>
         </div>
       </div>
@@ -549,12 +798,12 @@ function render(rows){
     <div class="stat-card">
       <div class="label">Equities (Stocks & ETFs)</div>
       <div class="value">${fmtCurrency(holdingsTotal.mv)}</div>
-      <div class="sub">Cost basis ${fmtCurrency(holdingsTotal.cb)}</div>
+      <div class="sub">Cost ${fmtCurrency(holdingsTotal.cb)} · <span class="${totalGain >= 0 ? "gain-pos" : "gain-neg"}">${totalGain >= 0 ? "▲" : "▼"} ${fmtSigned(totalGain)} (${fmtPct(totalGainPct)})</span></div>
     </div>
     <div class="stat-card">
       <div class="label">Property Net Equity</div>
       <div class="value">${fmtCurrency(re.equity)}</div>
-      <div class="sub">of ${fmtCurrency(re.value)} value</div>
+      <div class="sub">of ${fmtCurrency(re.value)} value${re.value ? " · LVR " + fmtPct(re.loan / re.value * 100, 0) : ""}</div>
     </div>
     <div class="stat-card">
       <div class="label">Total Mortgage Debt</div>
@@ -563,89 +812,110 @@ function render(rows){
     </div>
     <div class="stat-card">
       <div class="label">Annual Savings Rate</div>
-      <div class="value">${map["Annual Savings Rate"] || "—"}</div>
-      <div class="sub">${map["Savings Rate pct of income"] || ""} of combined income</div>
+      <div class="value">${esc(map["Annual Savings Rate"] || "—")}</div>
+      <div class="sub">${esc(map["Savings Rate pct of income"] || "")}${map["Savings Rate pct of income"] ? " of combined income" : ""}</div>
     </div>
   </div>`;
 
   // FIRE goal progress + net worth history
-  const fireCorpusTodayAUD = parseCurrency(map["FIRE Corpus Required Today (AUD, no inflation)"]);
-  const fireProgressPct = parsePercent(map["FIRE Progress %"]);
-  const fxRate = parseFloat(map["AUD/INR Exchange Rate (Live)"]) || 0;
-  const fireProjection = projectYearsToFire(netWorth, map, fxRate);
-
-  html += `<div class="section"><div class="grid4" style="grid-template-columns: 1.3fr 1fr;">
+  const showFire = fireCorpusTodayAUD > 0 || fireProgressPct > 0;
+  html += `<div class="section"><div class="grid-fire"${showFire ? "" : ' style="grid-template-columns:1fr"'}>`;
+  if (showFire){
+    html += `
     <div class="goal-card">
-      <div class="row"><span class="t">FIRE Goal — India Relocation</span><span class="p">${fmtPct(Math.min(fireProgressPct,100),0)}</span></div>
-      <div class="progress-track"><div class="progress-fill" style="width:${Math.min(fireProgressPct,100)}%"></div></div>
+      <div class="row"><span class="t">FIRE Goal — India Relocation</span><span class="p">${fmtPct(Math.min(fireProgressPct, 100), 0)}</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${Math.min(fireProgressPct, 100)}%"></div></div>
       <div class="goal-meta">
         <div>Target corpus today: <b>${fmtCurrency(fireCorpusTodayAUD)}</b></div>
         <div>Current net worth: <b>${fmtCurrency(netWorth)}</b></div>
         <div>AUD/INR: <b>${fxRate ? fxRate.toFixed(2) : "—"}</b></div>
-        <div>${fireProjection && fireProjection.futureCorpusAUD !== null ? `Est. <b>${fireProjection.years} yrs</b> to goal — target inflates to <b>${fmtCurrency(fireProjection.futureCorpusAUD)}</b> by then` : fireProjection ? `Beyond 60-yr projection at current savings/growth — revisit assumptions in the sheet` : "Add savings/growth assumptions in the sheet to project a timeline"}</div>
+        <div>${fireProjection && fireProjection.futureCorpusAUD !== null ? `Est. <b>${fireProjection.years} yr${fireProjection.years === 1 ? "" : "s"}</b> to goal — target inflates to <b>${fmtCurrency(fireProjection.futureCorpusAUD)}</b> by then` : fireProjection ? `Beyond 60-yr projection at current savings/growth — revisit assumptions in the sheet` : "Add savings/growth assumptions in the sheet to project a timeline"}</div>
       </div>
-    </div>
+    </div>`;
+  }
+  html += `
     <div class="chart-card">
-      <div class="label" style="font-size:12px;color:var(--text-tertiary);font-weight:500;margin-bottom:10px;">Net Worth History</div>
+      <div class="chart-head">
+        <div class="label">Net Worth History</div>
+        <div class="chart-actions">
+          <button class="mini-btn" id="histExport">Export</button>
+          <button class="mini-btn" id="histImport">Import</button>
+          <input type="file" id="histFile" accept="application/json" style="display:none">
+        </div>
+      </div>
       <div class="chart-wrap">
-        ${history.length > 1 ? '<canvas id="historyChart"></canvas>' : '<div class="chart-empty">Come back after a few refreshes to see the trend build up.</div>'}
+        ${history.length > 1 ? '<canvas id="historyChart"></canvas>' : '<div class="chart-empty">Come back after a few refreshes to see the trend build up.<br>History is stored per-browser — use Import to restore an export.</div>'}
       </div>
     </div>
   </div></div>`;
 
-  // Holdings table
+  // Holdings tables
   html += `<div class="section"><h2 class="section-title">Holdings</h2><div class="card">`;
-  ["Sankalp","Adwaita"].forEach((owner,idx) => {
+  owners.forEach(owner => {
     const items = holdingsByOwner[owner];
     if (!items.length) return;
-    html += `<div class="owner-header">${owner}${idx===0 ? "" : ""}</div>
-    <table>
+    const oMv = items.reduce((s, it) => s + it.mv, 0);
+    const oCb = items.reduce((s, it) => s + it.cb, 0);
+    const oGain = oMv - oCb;
+    const oGainPct = oCb ? (oGain / oCb) * 100 : 0;
+    html += `<div class="owner-header">${esc(owner)}</div>
+    <div class="table-scroll"><table>
       <thead><tr>
         <th>Ticker</th><th class="num">Shares</th><th class="num">Price</th>
-        <th class="num">Market Value</th><th class="num">Cost Basis</th><th class="num">Gain / Loss</th>
+        <th class="num">Market Value</th><th class="num">Cost Basis</th><th class="num">Gain $</th><th class="num">Gain %</th>
       </tr></thead>
       <tbody>`;
     items.forEach(it => {
+      const g = it.mv - it.cb;
       const cls = it.gainPct >= 0 ? "gain-pos" : "gain-neg";
       html += `<tr>
-        <td class="ticker">${it.ticker}</td>
-        <td class="num">${it.shares}</td>
-        <td class="num">$${it.price}</td>
+        <td class="ticker">${esc(it.ticker)}</td>
+        <td class="num">${esc(it.shares)}</td>
+        <td class="num">${fmtPrice(it.price)}</td>
         <td class="num">${fmtCurrency(it.mv)}</td>
         <td class="num">${fmtCurrency(it.cb)}</td>
-        <td class="num ${cls}">${it.gainPct >= 0 ? "+" : ""}${fmtPct(it.gainPct)}</td>
+        <td class="num ${g >= 0 ? "gain-pos" : "gain-neg"}">${fmtSigned(g)}</td>
+        <td class="num ${cls}">${it.gainPct >= 0 ? "▲ +" : "▼ "}${fmtPct(it.gainPct)}</td>
       </tr>`;
     });
-    html += `</tbody></table>`;
+    html += `<tr class="subtotal">
+        <td>Total</td><td></td><td></td>
+        <td class="num">${fmtCurrency(oMv)}</td>
+        <td class="num">${fmtCurrency(oCb)}</td>
+        <td class="num ${oGain >= 0 ? "gain-pos" : "gain-neg"}">${fmtSigned(oGain)}</td>
+        <td class="num ${oGain >= 0 ? "gain-pos" : "gain-neg"}">${oGain >= 0 ? "+" : ""}${fmtPct(oGainPct)}</td>
+      </tr></tbody></table></div>`;
   });
   html += `</div></div>`;
 
   // Real estate cards
-  html += `<div class="section"><h2 class="section-title">Real Estate</h2><div class="re-grid">`;
-  properties.forEach(p => {
-    const meta = PROPERTY_META[p.name] || { tag: "Property", cls: "inv" };
-    html += `
-    <div class="re-card">
-      <div class="name">${p.name}</div>
-      <span class="tag ${meta.cls}">${meta.tag}</span>
-      <div class="re-row" style="border-top:none;padding-top:0"><span>CMA estimate</span><span class="v">${fmtCurrency(p.value)}</span></div>
-      <div class="re-range">Range ${fmtCurrency(p.low)} – ${fmtCurrency(p.high)}</div>
-      <div class="re-row"><span>Loan balance</span><span class="v">${fmtCurrency(p.loan)}</span></div>
-      <div class="re-row"><span>Offset balance</span><span class="v">${fmtCurrency(p.offset)}</span></div>
-      <div class="re-equity"><span class="lbl">Net Equity</span><span class="val">${fmtCurrency(p.equity)}</span></div>
-      <div class="re-source">${p.source}${p.updated ? " · updated " + p.updated : ""}</div>
-    </div>`;
-  });
-  html += `</div></div>`;
+  if (properties.length){
+    html += `<div class="section"><h2 class="section-title">Real Estate</h2><div class="re-grid">`;
+    properties.forEach(p => {
+      const isPpor = /ppor|owner occ/i.test(p.name);
+      const lvr = p.value ? (p.loan / p.value) * 100 : 0;
+      const lvrColor = lvr > 80 ? "var(--neg)" : lvr > 60 ? "var(--warn-text)" : "var(--pos)";
+      html += `
+      <div class="re-card">
+        <div class="name">${esc(p.name)}</div>
+        <span class="tag ${isPpor ? "ppor" : "inv"}">${isPpor ? "PPOR — Owner Occupied" : "Investment"}</span>
+        <div class="re-row" style="border-top:none;padding-top:0"><span>CMA estimate</span><span class="v">${fmtCurrency(p.value)}</span></div>
+        <div class="re-range">Range ${fmtCurrency(p.low)} – ${fmtCurrency(p.high)}</div>
+        <div class="re-row"><span>Loan balance</span><span class="v">${fmtCurrency(p.loan)}</span></div>
+        <div class="re-row"><span>Offset balance</span><span class="v">${fmtCurrency(p.offset)}</span></div>
+        <div class="re-row"><span>LVR</span><span class="v" style="color:${lvrColor}">${fmtPct(lvr, 0)}</span></div>
+        <div class="re-equity"><span class="lbl">Net Equity</span><span class="val">${fmtCurrency(p.equity)}</span></div>
+        <div class="re-source">${esc(p.source)}${p.updated ? " · updated " + esc(p.updated) : ""}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+  }
 
-  // Concentration risk score
-  const allHoldingsPre = [
-    ...holdingsByOwner.Sankalp.map(h => ({...h, owner:"Sankalp"})),
-    ...holdingsByOwner.Adwaita.map(h => ({...h, owner:"Adwaita"}))
-  ];
-  const risk = computeConcentrationRisk(allHoldingsPre, holdingsTotal.mv);
-  const largestAsset = computeLargestAsset(holdingsTotal.mv, properties, netWorth);
-  const breakdown = computeNetWorthBreakdown(allHoldingsPre, holdingsTotal.mv, properties, netWorth);
+  // Concentration analytics
+  const allHoldings = owners.flatMap(o => holdingsByOwner[o]);
+  const risk = computeConcentrationRisk(allHoldings, holdingsTotal.mv);
+  const largestAsset = computeLargestAsset(risk.byTicker, properties, netWorth);
+  const breakdown = computeNetWorthBreakdown(risk.sectorMv, properties, netWorth);
 
   html += `
   <div class="section">
@@ -653,13 +923,27 @@ function render(rows){
     <div class="risk-grid">
       <div class="risk-card">
         <div class="label">Largest Single Equity Position</div>
-        <div class="value">${risk.topTicker} · ${fmtPct(risk.topPct,0)}</div>
+        <div class="value">${esc(risk.topTicker)} · ${fmtPct(risk.topPct, 0)}</div>
         <span class="badge ${risk.topBadge}">${risk.topLabel}</span>
+        <div class="sub">Share of the combined equity book</div>
+      </div>
+      <div class="risk-card">
+        <div class="label">Portfolio Concentration (HHI)</div>
+        <div class="value">${risk.hhi.toLocaleString("en-AU")}</div>
+        <span class="badge ${risk.hhiBadge}">${risk.hhiLabel}</span>
+        <div class="sub">&lt;1,500 diversified · &gt;2,500 concentrated · 10,000 = one stock</div>
+      </div>
+      <div class="risk-card">
+        <div class="label">Top Sector Exposure</div>
+        <div class="value">${esc(risk.topSector)} · ${fmtPct(risk.topSectorPct, 0)}</div>
+        <span class="badge ${risk.topSectorBadge}">${risk.topSectorLabel}</span>
+        <div class="sub">Largest non-diversified sector, share of equities</div>
       </div>
       <div class="risk-card">
         <div class="label">Largest Single Asset (of net worth)</div>
-        <div class="value">${largestAsset.name} · ${fmtPct(largestAsset.pct,0)}</div>
+        <div class="value">${esc(largestAsset.name)} · ${fmtPct(largestAsset.pct, 0)}</div>
         <span class="badge ${largestAsset.badge}">${largestAsset.label}</span>
+        <div class="sub">Individual holdings and properties compared like-for-like</div>
       </div>
     </div>
     <div class="chart-card" style="margin-top:16px;">
@@ -667,78 +951,127 @@ function render(rows){
       ${breakdown.map(s => `
         <div style="margin-bottom:12px;">
           <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
-            <span>${s.name} <span style="color:var(--text-tertiary);font-size:11px;">${s.group}</span></span><span style="font-weight:600;">${fmtPct(s.pct,0)}</span>
+            <span>${esc(s.name)} <span style="color:var(--text-tertiary);font-size:11px;">${esc(s.group)}</span></span><span style="font-weight:600;">${fmtPct(s.pct, 0)}</span>
           </div>
           <div class="progress-track" style="height:8px;">
-            <div class="progress-fill" style="width:${s.pct}%;background:${s.color};"></div>
+            <div class="progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.color};"></div>
           </div>
         </div>`).join("")}
       <div style="font-size:11px;color:var(--text-tertiary);margin-top:6px;">Every bar is sized against total net worth (${fmtCurrency(netWorth)}), so equity sectors and individual properties are directly comparable.</div>
     </div>
   </div>`;
 
-  // Investor profile
-  html += `
-  <div class="section">
-    <h2 class="section-title">Investor Profile</h2>
-    <div class="card">
-      <div class="chips">
-        <div class="chip"><div class="k">Risk Tolerance</div><div class="v">${map["Risk Tolerance"]||"—"}</div></div>
-        <div class="chip"><div class="k">Time Horizon</div><div class="v">${map["Time Horizon"]||"—"}</div></div>
-        <div class="chip"><div class="k">Combined Income</div><div class="v">${map["Combined Annual Income"]||"—"}</div></div>
-        <div class="chip"><div class="k">Monthly Savings</div><div class="v">${map["Monthly Savings Rate"]||"—"}</div></div>
-      </div>
-      <div class="goal-block">
-        <div style="margin-bottom:6px"><b>Goal 1 — Retirement.</b> Standard long-term retirement funding across both partners.</div>
-        <div><b>Goal 2 — FIRE & India Relocation.</b> ${map["Primary Goal 2"] || ""}</div>
-      </div>
-    </div>
-  </div>`;
-
-  // Advisor recommendations — computed from live allocation
-  const recs = buildRecommendations({ eqPct, propPct, re, holdingsTotal, properties, allHoldings: allHoldingsPre, map });
-  html += `<div class="section"><h2 class="section-title">Advisor Recommendations</h2><div class="advice-grid">`;
-  recs.forEach(r => {
+  // Investor profile — rendered only from sheet data
+  const chips = [
+    ["Risk Tolerance", map["Risk Tolerance"]],
+    ["Time Horizon", map["Time Horizon"]],
+    ["Combined Income", map["Combined Annual Income"]],
+    ["Monthly Savings", map["Monthly Savings Rate"]]
+  ].filter(c => c[1]);
+  const goals = [["Goal 1", map["Primary Goal 1"]], ["Goal 2", map["Primary Goal 2"]]].filter(g => g[1]);
+  if (chips.length || goals.length){
     html += `
-    <div class="advice-card sev-${r.sev}">
-      <div class="icon">${r.emoji}</div>
-      <div class="title">${r.title}</div>
-      <div class="body">${r.body}</div>
+    <div class="section">
+      <h2 class="section-title">Investor Profile</h2>
+      <div class="card">
+        <div class="chips">${chips.map(c => `<div class="chip"><div class="k">${esc(c[0])}</div><div class="v">${esc(c[1])}</div></div>`).join("")}</div>
+        ${goals.length ? `<div class="goal-block">${goals.map(g => `<div style="margin-bottom:6px"><b>${esc(g[0])}.</b> ${esc(g[1])}</div>`).join("")}</div>` : '<div style="height:14px"></div>'}
+      </div>
     </div>`;
-  });
-  html += `</div></div>`;
+  }
 
-  html += `<div class="footnote">Stock & ETF prices refresh live from Google Sheets (GOOGLEFINANCE) via a direct CSV pull — hit Refresh or reload the page to re-fetch. Property values, loan balances and profile figures are updated manually in the sheet.</div>`;
+  // Rule-based signals
+  const recs = buildRecommendations({ risk, holdingsTotal, re, map, fxRate, fireCorpusTodayAUD });
+  if (recs.length){
+    html += `<div class="section"><h2 class="section-title">Insights &amp; Signals</h2><div class="advice-grid">`;
+    recs.forEach(r => {
+      html += `
+      <div class="advice-card sev-${r.sev}">
+        <div class="icon">${r.emoji}</div>
+        <div class="title">${r.title}</div>
+        <div class="body">${r.body}</div>
+      </div>`;
+    });
+    html += `</div><div class="section-note">Signals are generated live from the sheet data by fixed threshold rules (position &gt;15%, sector &gt;25%, loss &lt;−30%, etc.) — informational only, not financial advice.</div></div>`;
+  }
+
+  html += `<div class="footnote">Stock & ETF prices refresh live from Google Sheets (GOOGLEFINANCE) via CSV — auto-refreshes every 5 minutes while the tab is visible. Property values, loan balances and profile figures are updated manually in the sheet. Data source is configured per-browser (⚙).</div>`;
 
   document.getElementById("app").innerHTML = html;
 
+  // Post-render wiring
   if (history.length > 1) drawHistoryChart(history);
+  const ex = document.getElementById("histExport");
+  if (ex) ex.addEventListener("click", exportHistory);
+  const im = document.getElementById("histImport");
+  const fileInput = document.getElementById("histFile");
+  if (im && fileInput){
+    im.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", (e) => importHistory(e.target.files[0]));
+  }
 }
 
-// ---- Net worth history (localStorage, one snapshot per calendar day) ----
-function logSnapshot(netWorth, eqPct, propPct){
-  const key = "pad-history";
-  let hist = [];
-  try { hist = JSON.parse(localStorage.getItem(key) || "[]"); } catch(e) { hist = []; }
-  const today = new Date().toISOString().slice(0,10);
-  const entry = { date: today, netWorth, eqPct, propPct };
+/* ================= Net worth history =================
+   One snapshot per local calendar day, stored in localStorage.
+   Export/Import lets you move history between browsers/devices. */
+function getHistory(){
+  try { return JSON.parse(localStorage.getItem(HIST_KEY) || "[]"); } catch(e) { return []; }
+}
+function logSnapshot(netWorth, eqMv, reEquity){
+  let hist = getHistory();
+  const today = localDateStr();
+  const entry = { date: today, netWorth, eq: eqMv, re: reEquity };
   const idx = hist.findIndex(h => h.date === today);
   if (idx >= 0) hist[idx] = entry; else hist.push(entry);
-  hist.sort((a,b) => a.date.localeCompare(b.date));
-  if (hist.length > 365) hist = hist.slice(hist.length - 365);
-  localStorage.setItem(key, JSON.stringify(hist));
+  hist.sort((a, b) => a.date.localeCompare(b.date));
+  if (hist.length > 730) hist = hist.slice(hist.length - 730);
+  try { localStorage.setItem(HIST_KEY, JSON.stringify(hist)); } catch(e) {}
   return hist;
+}
+function exportHistory(){
+  const blob = new Blob([JSON.stringify(getHistory(), null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "networth-history-" + localDateStr() + ".json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importHistory(file){
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const imported = JSON.parse(reader.result);
+      if (!Array.isArray(imported)) throw new Error("not an array");
+      const byDate = {};
+      imported.forEach(h => { if (h && h.date && typeof h.netWorth === "number") byDate[h.date] = h; });
+      getHistory().forEach(h => { byDate[h.date] = h; }); // existing entries win on conflicts
+      let merged = Object.values(byDate).sort((a, b) => a.date.localeCompare(b.date));
+      if (merged.length > 730) merged = merged.slice(merged.length - 730);
+      localStorage.setItem(HIST_KEY, JSON.stringify(merged));
+      lastHistory = merged;
+      load();
+    } catch(e) {
+      alert("Could not import that file — expected a JSON export from this dashboard.");
+    }
+  };
+  reader.readAsText(file);
 }
 
 let historyChartInstance = null;
+let lastHistory = null;
 function drawHistoryChart(history){
+  lastHistory = history;
   const canvas = document.getElementById("historyChart");
   if (!canvas || typeof Chart === "undefined") return;
-  if (historyChartInstance) { historyChartInstance.destroy(); }
+  if (historyChartInstance) { historyChartInstance.destroy(); historyChartInstance = null; }
   const styles = getComputedStyle(document.documentElement);
   const accent = styles.getPropertyValue("--accent").trim() || "#0071e3";
+  const pos = styles.getPropertyValue("--pos").trim() || "#1a9d4b";
   const gridColor = styles.getPropertyValue("--border-soft").trim() || "#f2f2f4";
   const textColor = styles.getPropertyValue("--text-tertiary").trim() || "#86868b";
+  // Older snapshots stored eqPct instead of eq — derive so the equities line spans them too
+  const eqSeries = history.map(h => h.eq != null ? h.eq : (h.eqPct != null ? h.netWorth * h.eqPct / 100 : null));
   historyChartInstance = new Chart(canvas.getContext("2d"), {
     type: "line",
     data: {
@@ -752,25 +1085,38 @@ function drawHistoryChart(history){
         tension: 0.35,
         pointRadius: 0,
         borderWidth: 2.5
+      }, {
+        label: "Equities",
+        data: eqSeries,
+        borderColor: pos,
+        fill: false,
+        tension: 0.35,
+        pointRadius: 0,
+        borderWidth: 1.5,
+        borderDash: [5, 4],
+        spanGaps: true
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: true, labels: { color: textColor, boxWidth: 10, boxHeight: 2, font: { size: 10 } } },
+        tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ": " + fmtCurrency(ctx.parsed.y) } }
+      },
       scales: {
         x: { grid: { display: false }, ticks: { color: textColor, font: { size: 10 }, maxTicksLimit: 6 } },
         y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10 },
-              callback: (v) => "$" + (v/1000).toFixed(0) + "k" } }
+              callback: (v) => "$" + (v / 1000).toFixed(0) + "k" } }
       }
     }
   });
 }
 
-// ---- FIRE timeline projection ----
-// The target itself grows every year (income need + home cost inflate in INR),
-// while the portfolio grows via assumed returns + ongoing savings. Find the
-// first year the (FX-converted) inflated target is met.
+/* ================= FIRE timeline projection =================
+   The target itself grows every year (income need + home cost inflate in INR),
+   while the portfolio grows via assumed returns + ongoing savings. Find the
+   first year the (FX-converted) inflated target is met. */
 function projectYearsToFire(currentNetWorth, map, fxRate){
   const monthlyIncomeToday = parseCurrency(map["Desired Monthly Passive Income Today (INR)"]);
   const homeCostToday = parseCurrency(map["Target India Home Cost Today (INR)"]);
@@ -797,172 +1143,206 @@ function projectYearsToFire(currentNetWorth, map, fxRate){
   return { years: "60+", futureCorpusAUD: null };
 }
 
-// ---- Concentration risk score ----
+/* ================= Concentration analytics =================
+   All figures aggregate the same ticker across owners first, so a stock
+   both partners hold is measured as one position. */
 function computeConcentrationRisk(allHoldings, totalMv){
   const byTicker = {};
   allHoldings.forEach(h => {
-    byTicker[h.ticker] = (byTicker[h.ticker] || 0) + h.mv;
+    if (!byTicker[h.ticker]) byTicker[h.ticker] = { ticker: h.ticker, mv: 0, cb: 0, shares: 0, owners: [], sector: sectorOf(h) };
+    const t = byTicker[h.ticker];
+    t.mv += h.mv; t.cb += h.cb; t.shares += h.sharesNum || 0;
+    if (!t.owners.includes(h.owner)) t.owners.push(h.owner);
   });
+
   let topTicker = "—", topMv = 0, hhi = 0;
-  Object.entries(byTicker).forEach(([ticker, mv]) => {
-    if (mv > topMv) { topMv = mv; topTicker = ticker; }
-    const weight = totalMv ? mv / totalMv : 0;
+  const sectorMv = {};
+  Object.values(byTicker).forEach(t => {
+    if (t.mv > topMv) { topMv = t.mv; topTicker = t.ticker; }
+    const weight = totalMv ? t.mv / totalMv : 0;
     hhi += weight * weight * 10000;
+    sectorMv[t.sector] = (sectorMv[t.sector] || 0) + t.mv;
   });
   const topPct = totalMv ? (topMv / totalMv) * 100 : 0;
-  const resourceMv = RESOURCE_TICKERS.reduce((s,t) => s + (byTicker[t] || 0), 0);
-  const resourcePct = totalMv ? (resourceMv / totalMv) * 100 : 0;
 
-  const topBadge = topPct > 25 ? "risk-hi" : topPct > 12 ? "risk-mid" : "risk-lo";
-  const topLabel = topPct > 25 ? "Very concentrated" : topPct > 12 ? "Elevated" : "Reasonable";
-  const hhiBadge = hhi > 2500 ? "risk-hi" : hhi > 1500 ? "risk-mid" : "risk-lo";
-  const hhiLabel = hhi > 2500 ? "Highly concentrated" : hhi > 1500 ? "Moderately concentrated" : "Well diversified";
-  const resourceBadge = resourcePct > 40 ? "risk-hi" : resourcePct > 20 ? "risk-mid" : "risk-lo";
-  const resourceLabel = resourcePct > 40 ? "Single-sector bet" : resourcePct > 20 ? "Overweight" : "Balanced";
+  let topSector = "—", topSectorMv = 0;
+  Object.entries(sectorMv).forEach(([name, mv]) => {
+    if (name !== DIVERSIFIED && mv > topSectorMv) { topSectorMv = mv; topSector = name; }
+  });
+  const topSectorPct = totalMv ? (topSectorMv / totalMv) * 100 : 0;
 
   return {
-    topTicker, topPct, topBadge, topLabel,
-    hhi: Math.round(hhi), hhiBadge, hhiLabel,
-    resourcePct, resourceBadge, resourceLabel
+    byTicker, sectorMv, totalMv,
+    topTicker, topPct,
+    topBadge: topPct > 25 ? "risk-hi" : topPct > 12 ? "risk-mid" : "risk-lo",
+    topLabel: topPct > 25 ? "Very concentrated" : topPct > 12 ? "Elevated" : "Reasonable",
+    hhi: Math.round(hhi),
+    hhiBadge: hhi > 2500 ? "risk-hi" : hhi > 1500 ? "risk-mid" : "risk-lo",
+    hhiLabel: hhi > 2500 ? "Highly concentrated" : hhi > 1500 ? "Moderately concentrated" : "Well diversified",
+    topSector, topSectorPct,
+    topSectorBadge: topSectorPct > 40 ? "risk-hi" : topSectorPct > 20 ? "risk-mid" : "risk-lo",
+    topSectorLabel: topSectorPct > 40 ? "Single-sector bet" : topSectorPct > 20 ? "Overweight" : "Balanced"
   };
 }
 
-const RESOURCE_TICKERS = ["BHP","RIO","FMG","WDS"];
-const SECTOR_MAP = {
-  "BHP": "Resources & Energy", "RIO": "Resources & Energy", "FMG": "Resources & Energy", "WDS": "Resources & Energy",
-  "CSL": "Healthcare",
-  "CBA": "Financials",
-  "IVV": "Diversified ETFs (US/Global)", "VGS": "Diversified ETFs (US/Global)", "NDQ": "Diversified ETFs (US/Global)",
-  "BGBL": "Diversified ETFs (US/Global)", "VAE": "Diversified ETFs (US/Global)"
-};
-const SECTOR_COLORS = {
-  "Resources & Energy": "#d70015",
-  "Healthcare": "#8e44ec",
-  "Financials": "#b26a00",
-  "Diversified ETFs (US/Global)": "#0071e3",
-  "Other": "#86868b"
-};
-const PROPERTY_COLORS = ["#1a9d4b", "#2fbf71", "#7bd4a3"];
-
-// The single biggest asset in the household — could be the whole equity book or one property
-function computeLargestAsset(equitiesMv, properties, netWorth){
+// The single biggest individual asset — one ticker or one property, never an aggregate
+function computeLargestAsset(byTicker, properties, netWorth){
   if (!netWorth) return { name: "—", pct: 0, badge: "risk-lo", label: "—" };
   const candidates = [
-    { name: "Total Equities", value: equitiesMv },
+    ...Object.values(byTicker).map(t => ({ name: t.ticker, value: t.mv })),
     ...properties.map(p => ({ name: p.name, value: p.equity }))
   ];
+  if (!candidates.length) return { name: "—", pct: 0, badge: "risk-lo", label: "—" };
   const top = candidates.reduce((a, b) => (b.value > a.value ? b : a));
   const pct = (top.value / netWorth) * 100;
-  const badge = pct > 60 ? "risk-hi" : pct > 35 ? "risk-mid" : "risk-lo";
-  const label = pct > 60 ? "Dominant asset" : pct > 35 ? "Concentrated" : "Balanced";
+  const badge = pct > 40 ? "risk-hi" : pct > 25 ? "risk-mid" : "risk-lo";
+  const label = pct > 40 ? "Dominant asset" : pct > 25 ? "Concentrated" : "Balanced";
   return { name: top.name, pct, badge, label };
 }
 
 // One breakdown: equity sectors + each property's net equity, all sized against total net worth
-function computeNetWorthBreakdown(allHoldings, equitiesMv, properties, netWorth){
+function computeNetWorthBreakdown(sectorMv, properties, netWorth){
   if (!netWorth) return [];
-  const sectorMv = {};
-  allHoldings.forEach(h => {
-    const sector = SECTOR_MAP[h.ticker] || "Other";
-    sectorMv[sector] = (sectorMv[sector] || 0) + h.mv;
-  });
   const rows = Object.entries(sectorMv).map(([name, mv]) => ({
-    name, group: "Equities", pct: (mv/netWorth)*100, color: SECTOR_COLORS[name] || SECTOR_COLORS.Other
+    name, group: "Equities", pct: (mv / netWorth) * 100, color: SECTOR_COLORS[name] || SECTOR_COLORS.Other
   }));
   properties.forEach((p, i) => {
-    rows.push({ name: p.name, group: "Real Estate", pct: (p.equity/netWorth)*100, color: PROPERTY_COLORS[i % PROPERTY_COLORS.length] });
+    rows.push({ name: p.name, group: "Real Estate", pct: (p.equity / netWorth) * 100, color: PROPERTY_COLORS[i % PROPERTY_COLORS.length] });
   });
-  return rows.sort((a,b) => b.pct - a.pct);
+  return rows.sort((a, b) => b.pct - a.pct);
 }
 
-function buildRecommendations({ holdingsTotal, allHoldings, map }){
+/* ================= Rule-based signals =================
+   Every card below is generated from thresholds applied to live data.
+   Nothing is hardcoded to a specific ticker, owner or dollar figure. */
+function buildRecommendations({ risk, holdingsTotal, re, map, fxRate, fireCorpusTodayAUD }){
   const recs = [];
   const T = holdingsTotal.mv;
-  const byTicker = {};
-  allHoldings.forEach(h => {
-    byTicker[h.ticker] = byTicker[h.ticker] || { mv: 0, owners: [] };
-    byTicker[h.ticker].mv += h.mv;
-    byTicker[h.ticker].owners.push(h.owner);
-  });
+  const tickers = Object.values(risk.byTicker);
 
-  // 1. FMG single-stock concentration
-  const fmg = allHoldings.find(h => h.ticker === "FMG");
-  if (fmg && T > 0) {
-    const fmgPct = (fmg.mv / T) * 100;
-    if (fmgPct > 15) {
-      const targetPct = 15;
-      const sellAmount = fmg.mv - (targetPct/100) * T;
-      recs.push({
-        sev: "high", emoji: "🎯",
-        title: `Trim FMG — it's ${fmtPct(fmgPct,0)} of your entire share portfolio`,
-        body: `${fmg.shares} FMG shares (${fmtCurrency(fmg.mv)}) is a single-stock position bigger than most people's whole portfolio. The unrealised gain is small (only ${fmtPct(fmg.gainPct)}), so there's minimal CGT cost to acting now. Sell roughly ${fmtCurrency(sellAmount)} of FMG (about ${Math.round(sellAmount / (fmg.mv/fmg.shares)).toLocaleString()} shares at current prices) in 2–3 tranches over the next two quarters and route the proceeds into VGS or IVV, which you already hold — no new admin required. This alone brings FMG down to ~${targetPct}% of the book.`
+  // 1. Oversized single-stock positions (diversified ETFs exempt), worst two
+  if (T > 0){
+    tickers
+      .filter(t => t.sector !== DIVERSIFIED && (t.mv / T) * 100 > 15)
+      .sort((a, b) => b.mv - a.mv)
+      .slice(0, 2)
+      .forEach(t => {
+        const pct = (t.mv / T) * 100;
+        const sellAmount = t.mv - 0.15 * T;
+        const sellShares = t.shares > 0 ? Math.round(sellAmount / (t.mv / t.shares)) : 0;
+        const gainPct = t.cb ? ((t.mv - t.cb) / t.cb) * 100 : 0;
+        const cgtNote = gainPct < 0
+          ? `It's under water (${fmtPct(gainPct)}), so selling realises a capital loss you can offset against other gains.`
+          : gainPct < 10
+            ? `The unrealised gain is small (${fmtPct(gainPct)}), so the CGT cost of acting now is minimal.`
+            : `It's sitting on a +${fmtPct(gainPct)} gain — spread sales across financial years and use the 12-month CGT discount where parcels qualify.`;
+        recs.push({
+          sev: "high", emoji: "🎯",
+          title: `Trim ${esc(t.ticker)} — it's ${fmtPct(pct, 0)} of your entire share portfolio`,
+          body: `${fmtCurrency(t.mv)} in a single company is well past a prudent single-stock cap. ${cgtNote} Selling roughly ${fmtCurrency(sellAmount)}${sellShares ? ` (≈${sellShares.toLocaleString("en-AU")} shares at current prices)` : ""} in 2–3 tranches brings it down to ~15% of the book, with proceeds into the diversified ETFs you already hold.`
+        });
       });
-    }
   }
 
-  // 2. Resources sector concentration
-  const resourceMv = RESOURCE_TICKERS.reduce((s,t) => s + (byTicker[t]?.mv || 0), 0);
-  if (T > 0) {
-    const resPct = (resourceMv / T) * 100;
-    if (resPct > 25) {
-      const targetPct = 20;
-      const trimAmount = resourceMv - (targetPct/100) * T;
-      const held = RESOURCE_TICKERS.filter(t => byTicker[t]).join(", ");
-      recs.push({
-        sev: "high", emoji: "⛏️",
-        title: `Resources sector is ${fmtPct(resPct,0)} of your shares — one commodity cycle, one outcome`,
-        body: `BHP, RIO, FMG and WDS combined (${held}) total ${fmtCurrency(resourceMv)} — all correlated to iron ore/energy prices and China demand, so this isn't really four separate bets, it's one. After trimming FMG, review BHP and RIO too: cutting a further ${fmtCurrency(Math.max(trimAmount,0))} across the basket gets the sector to ~${targetPct}% of the share portfolio. Set a standing rule: don't let any single sector exceed 20% of equities, and rebalance every 6 months against that line.`
-      });
-    }
-  }
-
-  // 3. CSL cost-basis anomaly
-  const csl = allHoldings.find(h => h.ticker === "CSL");
-  if (csl && csl.gainPct < -30) {
+  // 2. Sector concentration (largest non-diversified sector > 25% of equities)
+  if (T > 0 && risk.topSectorPct > 25){
+    const sectorTickers = tickers.filter(t => t.sector === risk.topSector).map(t => t.ticker).join(", ");
+    const sectorMv = risk.sectorMv[risk.topSector] || 0;
+    const trimAmount = Math.max(sectorMv - 0.20 * T, 0);
     recs.push({
-      sev: "med", emoji: "🔍",
-      title: "CSL is showing an unusually large loss — verify before acting",
-      body: `Your CHESS data shows CSL at a ${fmtPct(Math.abs(csl.gainPct))} loss (cost ${fmtCurrency(csl.cb)} vs current ${fmtCurrency(csl.mv)}), which is a bigger drawdown than CSL's actual share price history supports. Check your broker statement for a corporate action (capital return, consolidation) that may have distorted the recorded cost base. If the loss is genuine, it's a candidate for tax-loss harvesting — sell to realise the loss against this year's gains (e.g. on FMG or BHP if trimmed), then either stay out of CSL for 30+ days or switch into a healthcare-sector ETF to avoid a wash-sale-style ATO challenge.`
+      sev: "high", emoji: "⚖️",
+      title: `${esc(risk.topSector)} is ${fmtPct(risk.topSectorPct, 0)} of your shares — one macro driver, one outcome`,
+      body: `${esc(sectorTickers)} total ${fmtCurrency(sectorMv)} and are driven by the same cycle, so this isn't ${tickers.filter(t => t.sector === risk.topSector).length} separate bets — it's one. Trimming ${fmtCurrency(trimAmount)} across the basket gets the sector to ~20% of the share portfolio. Set a standing rule: no single sector above 20% of equities, rebalanced every 6 months.`
     });
   }
 
-  // 4. Duplicate NDQ across both portfolios
-  const ndq = byTicker["NDQ"];
-  if (ndq && ndq.owners.length > 1) {
-    const sankalpNdq = allHoldings.find(h => h.ticker === "NDQ" && h.owner === "Sankalp");
-    const adwaitaNdq = allHoldings.find(h => h.ticker === "NDQ" && h.owner === "Adwaita");
+  // 3. Unusually large losses — verify the cost base, then consider harvesting
+  tickers
+    .filter(t => t.cb > 0 && ((t.mv - t.cb) / t.cb) * 100 < -30)
+    .sort((a, b) => (a.mv - a.cb) / a.cb - (b.mv - b.cb) / b.cb)
+    .slice(0, 2)
+    .forEach(t => {
+      const lossPct = ((t.mv - t.cb) / t.cb) * 100;
+      recs.push({
+        sev: "med", emoji: "🔍",
+        title: `${esc(t.ticker)} shows a ${fmtPct(Math.abs(lossPct), 0)} loss — verify before acting`,
+        body: `Cost ${fmtCurrency(t.cb)} vs current ${fmtCurrency(t.mv)}. First check your broker statement for a corporate action (capital return, demerger, consolidation) that may have distorted the recorded cost base. If the loss is genuine, it's a tax-loss harvesting candidate: realise it against this year's capital gains, then either stay out for 30+ days or switch to a sector ETF to keep the exposure without a wash-sale-style ATO challenge.`
+      });
+    });
+
+  // 4. Same ticker held by multiple owners — admin overhead, not diversification
+  const dupes = tickers.filter(t => t.owners.length > 1);
+  if (dupes.length){
     recs.push({
       sev: "info", emoji: "🗂️",
-      title: "You're both independently holding NDQ — consolidate the tracking",
-      body: `Sankalp holds ${sankalpNdq ? sankalpNdq.shares : "?"} NDQ units and Adwaita holds ${adwaitaNdq ? adwaitaNdq.shares : "?"} — ${fmtCurrency(ndq.mv)} combined in the same ETF across two brokers (CHESS + Stake). This isn't a diversification problem, but it doubles the admin (two DRPs, two tax statements for the same exposure). Going forward, top up NDQ from whichever account already holds the larger position rather than splitting new buys across both, so CGT records stay in one place.`
+      title: `${dupes.map(t => esc(t.ticker)).join(", ")} held in both portfolios — consolidate the tracking`,
+      body: `${dupes.map(t => `${esc(t.ticker)} (${fmtCurrency(t.mv)} across ${t.owners.map(esc).join(" + ")})`).join("; ")}. Not a diversification problem, but it doubles the admin — two DRPs and two tax statements per holding for the same exposure. Going forward, top up each ETF from whichever account already holds the larger position so CGT records stay in one place.`
     });
   }
 
-  // 5. Monthly savings allocation — specific, no super
-  const monthlyStr = map["Monthly Savings Rate"] || "";
-  const monthly = parseCurrency(monthlyStr);
-  if (monthly > 0) {
+  // 5. Put monthly surplus on autopilot
+  const monthly = parseCurrency(map["Monthly Savings Rate"]);
+  const hasIndiaGoal = parseCurrency(map["Target India Home Cost Today (INR)"]) > 0 || parseCurrency(map["Desired Monthly Passive Income Today (INR)"]) > 0;
+  if (monthly > 0){
     const toEquities = Math.round(monthly * 0.7 / 100) * 100;
-    const toFxFund = monthly - toEquities;
+    const toOther = monthly - toEquities;
     recs.push({
       sev: "info", emoji: "💵",
       title: `Put the ${fmtCurrency(monthly)}/month surplus on autopilot`,
-      body: `Set up two standing transfers on payday: ${fmtCurrency(toEquities)}/month (70%) into VGS/IVV via your existing broker until FMG and the resources basket are back under their targets above, and ${fmtCurrency(toFxFund)}/month (30%) held back for the India-relocation fund below. Automating this removes the temptation to let surplus cash sit idle or drift back into another AU property purchase.`
+      body: `Set up two standing transfers on payday: ${fmtCurrency(toEquities)}/month (70%) into your diversified ETFs${T > 0 && risk.topPct > 15 ? " until the oversized positions above are back under their caps" : ""}, and ${fmtCurrency(toOther)}/month (30%) ${hasIndiaGoal ? "earmarked for the relocation fund (next card)" : re.loan > 0 ? "into the offset against your highest-rate loan" : "into a cash buffer"}. Automating this removes the temptation to let surplus cash drift.`
     });
   }
 
-  // 6. FX / India tilt
-  if (monthly > 0) {
+  // 6. Currency mismatch vs the India goal
+  if (hasIndiaGoal && monthly > 0){
     const fxAmount = Math.round(monthly * 0.3 / 100) * 100;
     recs.push({
       sev: "info", emoji: "🌏",
       title: "Start building the India fund now, not at move time",
-      body: `Your assets are 100% AUD while the goal (₹10cr+ home, lifetime income in India) is INR-denominated — converting a lump sum in one hit at relocation is a timing bet you don't need to take. Direct the ${fmtCurrency(fxAmount)}/month earmarked above into an ASX-listed India ETF (e.g. NDIA) or a recurring AUD→INR transfer into an Indian NRE fixed deposit/mutual fund via your bank's forex desk. Review the AUD/INR rate quarterly and accelerate transfers when it's favourable rather than on a fixed schedule.`
+      body: `Your assets are AUD-denominated while the goal${fireCorpusTodayAUD ? ` (${fmtCurrency(fireCorpusTodayAUD)} target corpus)` : ""} is INR-denominated — converting one lump sum at relocation is a currency-timing bet you don't need to take. Direct the ${fmtCurrency(fxAmount)}/month earmarked above into an ASX-listed India ETF (e.g. NDIA) or recurring AUD→INR transfers into an NRE deposit/mutual fund. Review the rate${fxRate ? ` (currently ${fxRate.toFixed(2)})` : ""} quarterly and accelerate when it's favourable.`
     });
   }
 
-  return recs;
+  // 7. All clear
+  if (!recs.some(r => r.sev === "high" || r.sev === "med")){
+    recs.unshift({
+      sev: "good", emoji: "✅",
+      title: "No concentration flags right now",
+      body: `Largest single position ${esc(risk.topTicker)} at ${fmtPct(risk.topPct, 0)} of equities and top sector ${esc(risk.topSector)} at ${fmtPct(risk.topSectorPct, 0)} are both inside the 15% / 25% lines. Keep rebalancing against those thresholds every 6 months.`
+    });
+  }
+
+  const order = { high: 0, med: 1, info: 2, good: 3 };
+  return recs.sort((a, b) => order[a.sev] - order[b.sev]);
 }
+
+/* ================= Theme & boot ================= */
+function setTheme(mode){
+  document.documentElement.setAttribute("data-theme", mode);
+  localStorage.setItem("pad-theme", mode);
+  document.querySelectorAll(".theme-toggle .opt").forEach(el => {
+    el.classList.toggle("active", el.dataset.mode === mode);
+  });
+  // Redraw the chart so gridlines/labels pick up the new theme immediately
+  if (historyChartInstance && lastHistory) drawHistoryChart(lastHistory);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  setTheme(localStorage.getItem("pad-theme") || "light");
+  document.getElementById("themeToggle").addEventListener("click", (e) => {
+    const opt = e.target.closest(".opt");
+    const cur = document.documentElement.getAttribute("data-theme") || "light";
+    setTheme(opt ? opt.dataset.mode : (cur === "light" ? "dark" : "light"));
+  });
+  document.getElementById("refreshBtn").addEventListener("click", load);
+  document.getElementById("settingsBtn").addEventListener("click", () => renderSetup());
+  load();
+  // Auto-refresh every 5 minutes, but only while the tab is visible
+  setInterval(() => { if (!document.hidden) load(); }, REFRESH_MS);
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && Date.now() - lastLoadAt > REFRESH_MS) load();
+  });
+});
 </script>
 </body>
 </html>
